@@ -8,6 +8,9 @@
 
 #define PORT 5000
 
+
+
+
 void remove_message_delimeter(char* buffer) {
     char* end = strstr(buffer, "\r\n\r\n");
     if (end) {
@@ -113,23 +116,19 @@ size_t send_message(const int client_fd, const char *message) {
 }
 
 void search(size_t client_fd, char** tokens) {
-   send_message(client_fd, "SEARCH\n"); 
 }
 
 void info(size_t client_fd, char** tokens) {
-    send_message(client_fd, "INFO\n");
 }
 
 void add_item(size_t client_fd, char** tokens) {
-    send_message(client_fd, "ADD ITEM\n");
+    
 }
 
 void edit_item(size_t client_fd, char** tokens) {
-    send_message(client_fd, "EDIT ITEM\n");
 }
 
 void remove_item(size_t client_fd, char** tokens) {
-    send_message(client_fd, "REMOVE ITEM\n");
 }
 
 void hello_from_server(int client_fd) {
@@ -200,29 +199,20 @@ int main() {
                     sprintf(token_str, "%s\n", *(tokens + i));
                 }
                 printf("%s\n", token_str);
-                if (strcmp(tokens[0], "SEARCH") == 0) {
+                if (strcmp(tokens[0], "SEARCH ITEM") == 0) {
                     search(client_fd, tokens);
                 }
-                else if (strcmp(tokens[0], "INFO") == 0) {
+                else if (strcmp(tokens[0], "INFO ITEM") == 0) {
                     info(client_fd, tokens);
                 }
-                else if (strcmp(tokens[0], "ADD_ITEM") == 0) {
+                else if (strcmp(tokens[0], "ADD ITEM") == 0) {
                     add_item(client_fd, tokens);
                 }
-                else if (strcmp(tokens[0], "EDIT_ITEM") == 0) {
+                else if (strcmp(tokens[0], "EDIT ITEM") == 0) {
                     edit_item(client_fd, tokens);
                 }
-                else if (strcmp(tokens[0], "REMOVE_ITEM") == 0) {
+                else if (strcmp(tokens[0], "REMOVE ITEM") == 0) {
                     remove_item(client_fd, tokens);
-                }
-                else if (strcmp(tokens[0], "ADD") == 0) {
-                    int num1 = atoi(*(tokens + 1));
-                    int num2 = atoi(*(tokens + 2));
-                    int result = num1 + num2;
-                    char message[256];
-                    sprintf(message, "Adding numbers %d + %d = %d.\r\n\r\n", num1, num2, result);
-                    printf("%s", message);
-                    send_all(client_fd, message, strlen(message));
                 }
                 else if (strcmp(tokens[0], "EXIT") == 0) {
                     free_tokens(tokens);
