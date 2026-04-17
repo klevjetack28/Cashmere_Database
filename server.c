@@ -4,12 +4,154 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include <assert.h>
 
 #define PORT 5000
+#define KEY_LENGTH 32
+#define STR_LENGTH 256
 
+typedef enum {
+    TABLE_NULL,
+    TABLE_SWEATER,
+    TABLE_NOTES,
+    TABLE_PIECES,
+    TABLE_PIECE_TYPE,
+    TABLE_BRAND,
+    TABLE_COLOR,
+    TABLE_NECKLINE,
+    TABLE_SLEEVES,
+    TABLE_TYPE,
+    TABLE_CONDITION,
+    TABLE_SIZE,
+    NUM_TABLES
+} Tables;
 
+const char* tables[NUM_TABLES] = {
+    "NULL",
+    "SWEATER",
+    "NOTES",
+    "PIECES",
+    "PIECE_TYPE",
+    "BRAND",
+    "COLOR",
+    "NECKLINE",
+    "SLEEVES",
+    "TYPE",
+    "CONDITION",
+    "SIZE",
+};
 
+typedef struct {
+    int id;
+    char cashmere_code[KEY_LENGTH];
+    int brand_id;
+    int color_id;
+    int neckline_id;
+    int sleeves_id;
+    int type_id;
+    int weight;
+    int condition_id;
+    int size_id;
+    bool in_inventory;
+    // some form of date
+} Sweater;
+
+typedef struct {
+    int id;
+    int sweater_id;
+    char content[STR_LENGTH];
+    // some form of date;
+} Notes;
+
+typedef struct {
+    int id;
+    int sweater_id;
+    int piece_type_id;
+    int original_weight;
+    int current_weight;
+    bool continuous;
+    bool scraped;
+    // some form of date;
+} Pieces;
+
+typedef struct {
+    int id;
+    char piece_type[KEY_LENGTH];
+} PieceType;
+
+typedef struct {
+    int id;
+    char brand[KEY_LENGTH];
+} Brand;
+
+typedef struct {
+    int id;
+    char color[KEY_LENGTH];
+} Color;
+
+typedef struct {
+    int id;
+    char neckline[KEY_LENGTH];
+} Neckline;
+
+typedef struct {
+    int id;
+    char sleeves[KEY_LENGTH];
+} Sleeves;
+
+typedef struct {
+    int id;
+    char type[KEY_LENGTH];
+} Type;
+
+typedef struct {
+    int id;
+    char condition[KEY_LENGTH];
+} Condition;
+
+typedef struct {
+    int id;
+    char size[KEY_LENGTH];
+} Size;
+
+// ----------------------------------------------------------------------------
+// Start Miscellaneous Functions
+char *trim_whitespace(char *str)
+{
+  char *end;
+
+  // Trim leading space
+  while(isspace((unsigned char)*str)) str++;
+
+  if(*str == 0)  // All spaces?
+    return str;
+
+  // Trim trailing space
+  end = str + strlen(str) - 1;
+  while(end > str && isspace((unsigned char)*end)) end--;
+
+  // Write new null terminator character
+  end[1] = '\0';
+
+  return str;
+}
+
+void normalize_key(char* out, char* in) {
+    int index = 0;
+    in = trim_whitespace(in);
+    
+    for(int i = 0; i < strlen(in); i++) {
+        if (in[i] == '.' || in[i] == ',') {
+            continue;
+        } else if (in[i] >= 'a' && in[i] <= 'z') {
+            out[index++] = in[i] - 32;
+        } else {
+            out[index++] = in[i];
+        }
+    }
+    out[index] = '\0';
+}
 
 void remove_message_delimeter(char* buffer) {
     char* end = strstr(buffer, "\r\n\r\n");
@@ -25,7 +167,7 @@ ssize_t send_all(int socket, const char *data, size_t length) {
         ssize_t sent = send(socket, data + total_sent, length - total_sent, 0);
         
         if (sent == -1) {
-            return -1;
+            return -1; // Handle error (e.g., connection lost)
         }
         total_sent += sent;
     }
@@ -35,7 +177,6 @@ ssize_t send_all(int socket, const char *data, size_t length) {
 void recv_all(const int client_id, char* buffer, int buffer_size) {
     int total_recieved = 0;
     int bytes_read;
-
     while ((bytes_read = recv(client_id, &buffer[total_recieved], buffer_size - total_recieved - 1, 0)) > 0) {
         total_recieved += bytes_read;
         buffer[total_recieved] = '\0';
@@ -52,6 +193,114 @@ void recv_all(const int client_id, char* buffer, int buffer_size) {
     } else if (bytes_read < 0) {
     // Handle error (e.g., perror("recv"))
     }
+}
+
+size_t send_message(const int client_fd, const char *message) {
+    return send_all(client_fd, message, strlen(message));
+}
+// End Miscellaneous Functions
+
+// ----------------------------------------------------------------------------
+// Start Tokenizing Tables
+
+void tokenize_sweater(Sweater *sweater) {
+
+}
+
+void tokenize_notes(Notes *note) {
+
+}
+
+void tokenize_pieces(Pieces *piece) {
+
+}
+
+void tokenize_piece_type(PieceType *piece_type) {
+
+}
+
+void tokenize_brand(Brand *brand) {
+
+}
+
+void tokenize_color(Color *color) {
+
+}
+
+void tokenize_neckline(Neckline *neckline) {
+
+}
+
+void tokenize_sleeves(Sleeves *sleeve) {
+
+}
+
+void tokenize_type(Type *type) {
+
+}
+
+void tokenize_condition(Condition *condition) {
+
+}
+
+void tokenize_size(Size *size) {
+
+}
+// End Tokenizing Tables
+
+// ----------------------------------------------------------------------------
+// Start Parsing Tokens
+Tables table_from_string(const char* token) {
+    for (int i = 0; i < NUM_TABLES; i++) {
+        if (strcmp(token, tables[i]) == 0) {
+            return (Tables)i;
+        }
+    }
+    return TABLE_NULL; // fallback / error
+}
+
+void parse_sweater(char** tokens, Sweater *out) {
+    
+}
+
+void parse_notes(char** tokens, Notes *out) {
+    
+}
+
+void parse_pieces(char** tokens, Pieces *out) {
+    
+}
+
+void parse_piece_type(char** tokens, PieceType *out) {
+    
+}
+
+void parse_brand(char** tokens, Brand *out) {
+    
+}
+
+void parse_color(char** tokens, Color *out) {
+    
+}
+
+void parse_neckline(char** tokens, Neckline *out) {
+    
+}
+
+void parse_sleeves(char** tokens, Sleeves *out) {
+    
+}
+
+void parse_type(char** tokens, Type *out) {
+    
+}
+
+void parse_condition(char** tokens, Condition *out) {
+    
+}
+
+void parse_size(char** tokens, Size *out) {
+    
 }
 
 void free_tokens(char** tokens) {
@@ -110,20 +359,177 @@ char** str_split(char* str, char delimeter) {
 
     return result;
 }
+// End Parsing Tokens
 
-size_t send_message(const int client_fd, const char *message) {
-    return send_all(client_fd, message, strlen(message));
+//-----------------------------------------------------------------------------
+// Start SQLite Functions
+
+int db_insert_sweater(Sweater *sweater) {
+
 }
 
-void search(size_t client_fd, char** tokens) {
+int db_insert_notes(Notes *note) {
+
 }
 
-void info(size_t client_fd, char** tokens) {
+int db_insert_pieces(Pieces *piece) {
+
 }
 
-void add_item(size_t client_fd, char** tokens) {
+int db_insert_piece_type(PieceType *piece_type) {
+
+}
+
+int db_insert_brand(Brand *brand) {
+
+}
+
+int db_insert_color(Color *color) {
+
+}
+
+int db_insert_neckline(Neckline *neckline) {
+
+}
+
+int db_insert_sleeves(Sleeves *sleeves) {
+
+}
+
+int db_insert_type(Type *type) {
+
+}
+
+int db_insert_condition(Condition *condition) {
+
+}
+
+int db_insert_size(Size *size) {
+
+}
+
+// End SQLite Functions
+
+void search_item(size_t client_fd, char** tokens) {
+}
+
+void info_item(size_t client_fd, char** tokens) {
+}
+
+// ----------------------------------------------------------------------------
+// Start Add Item
+void add_sweater(Sweater *sweater) {
+    sweater->id = db_insert_sweater(sweater);
+}
+
+void add_notes(Notes *note) {
+
+}
+
+void add_pieces(Pieces *piece) {
+
+}
+
+void add_piece_type(PieceType *piece_type) {
+
+}
+
+void add_brand(Brand *brand) {
+
+}
+
+void add_color(Color *color) {
+
+}
+
+void add_neckline(Neckline *neckline) {
+
+}
+
+void add_sleeves(Sleeves *sleeve) {
     
 }
+
+void add_type(Type *type) {
+
+}
+
+void add_condition(Condition *condition) {
+
+}
+
+void add_size(Size *size) {
+
+}
+
+#define TABLE_IDX 1
+
+void add_item(size_t client_fd, char** tokens) {
+    Tables table = table_from_string(tokens[TABLE_IDX]);
+    switch (table) {
+        case TABLE_SWEATER:
+            Sweater sweater = {0};
+            parse_sweater(&tokens[2], &sweater);
+            sweater.id = db_insert_sweater(&sweater);
+            break;
+        case TABLE_NOTES:
+            Notes note = {0};
+            parse_notes(&tokens[2], &note);
+            note.id = db_insert_notes(&note);
+            break;
+        case TABLE_PIECES:
+            Pieces piece = {0};
+            parse_pieces(&tokens[2], &piece);
+            piece.id = db_insert_pieces(&piece);
+            break;
+        case TABLE_PIECE_TYPE:
+            PieceType piece_type = {0};
+            parse_piece_type(&tokens[2], &piece_type);
+            piece_type.id = db_insert_piece_type(&piece_type);
+            break;
+        case TABLE_BRAND:
+            Brand brand = {0};
+            parse_brand(&tokens[2], &brand);
+            brand.id = db_insert_brand(&brand);
+            break;
+        case TABLE_COLOR:
+            Color color = {0};
+            parse_color(&tokens[2], &color);
+            color.id = db_insert_color(&color);
+            break;
+        case TABLE_NECKLINE:
+            Neckline neckline = {0};
+            parse_neckline(&tokens[2], &neckline);
+            neckline.id = db_insert_neckline(&neckline);
+            break;
+        case TABLE_SLEEVES:
+            Sleeves sleeves = {0};
+            parse_sleeves(&tokens[2], &sleeves);
+            sleeves.id = db_insert_sleeves(&sleeves);
+            break;
+        case TABLE_TYPE:
+            Type type = {0};
+            parse_type(&tokens[2], &type);
+            type.id = db_insert_type(&type);
+            break;
+        case TABLE_CONDITION:
+            Condition condition = {0};
+            parse_condition(&tokens[2], &condition);
+            condition.id = db_insert_condition(&condition);
+            break;
+        case TABLE_SIZE:
+            Size size = {0};
+            parse_size(&tokens[2], &size);
+            size.id = db_insert_size(&size);
+            break;
+        default:
+            printf("OHH NO LUKAS WHAT HAVE YOU DOOOOONE ~ 0xCA75 04/16/2026");
+    }
+    
+    
+    send_message(client_fd, "Added item into database.");
+}
+// End Add Item
 
 void edit_item(size_t client_fd, char** tokens) {
 }
@@ -190,20 +596,16 @@ int main() {
             if (tokens) {
                 printf("Tokens: \n");
                 int i;
-                char token_str[256];
                 // Tokens are nothing being printed but it knows it is SEARCHING
-                for (i = 0; *(tokens + i + 1); i++) {
-                    sprintf(token_str, "%s\n", *(tokens + i));
+                for (i = 0; *(tokens + i); i++) {
+                    printf("%s\n", *(tokens + i));
                 }
-                if (*(tokens + i)) {
-                    sprintf(token_str, "%s\n", *(tokens + i));
-                }
-                printf("%s\n", token_str);
+
                 if (strcmp(tokens[0], "SEARCH ITEM") == 0) {
-                    search(client_fd, tokens);
+                    search_item(client_fd, tokens);
                 }
                 else if (strcmp(tokens[0], "INFO ITEM") == 0) {
-                    info(client_fd, tokens);
+                    info_item(client_fd, tokens);
                 }
                 else if (strcmp(tokens[0], "ADD ITEM") == 0) {
                     add_item(client_fd, tokens);

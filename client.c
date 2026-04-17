@@ -77,6 +77,11 @@ typedef struct {
 
 typedef struct {
     int id;
+    char piece_type[KEY_LENGTH];
+} PieceType;
+
+typedef struct {
+    int id;
     char brand[KEY_LENGTH];
 } Brand;
 
@@ -200,7 +205,10 @@ void recv_all(const int client_id, char* buffer, int buffer_size) {
 size_t send_message(const int client_fd, const char *message) {
     return send_all(client_fd, message, strlen(message));
 }
+// End Miscellaneous Functions
 
+// ----------------------------------------------------------------------------
+// Start Get Input Functions
 void get_input(char* input) {
     char buffer[KEY_LENGTH] = {0};
     fgets(buffer, sizeof(buffer), stdin);
@@ -269,7 +277,7 @@ void get_add_sweater_input(char* input, Sweater* sweater) {
 void get_search_sweater_input(char* input, Sweater* sweater) {
     
 }
-// End Miscellaneous Functions
+// End Get Input Functions
 
 
 void system_status() {
