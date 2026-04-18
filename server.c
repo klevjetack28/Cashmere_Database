@@ -62,7 +62,7 @@ typedef struct {
     int sweater_id;
     char content[STR_LENGTH];
     // some form of date;
-} Notes;
+} Note;
 
 typedef struct {
     int id;
@@ -73,7 +73,7 @@ typedef struct {
     bool continuous;
     bool scraped;
     // some form of date;
-} Pieces;
+} Piece;
 
 typedef struct {
     int id;
@@ -207,11 +207,11 @@ void tokenize_sweater(Sweater *sweater) {
 
 }
 
-void tokenize_notes(Notes *note) {
+void tokenize_note(Note *note) {
 
 }
 
-void tokenize_pieces(Pieces *piece) {
+void tokenize_piece(Piece *piece) {
 
 }
 
@@ -263,11 +263,11 @@ void parse_sweater(char** tokens, Sweater *out) {
     
 }
 
-void parse_notes(char** tokens, Notes *out) {
+void parse_note(char** tokens, Note *out) {
     
 }
 
-void parse_pieces(char** tokens, Pieces *out) {
+void parse_piece(char** tokens, Piece *out) {
     
 }
 
@@ -368,11 +368,11 @@ int db_insert_sweater(Sweater *sweater) {
 
 }
 
-int db_insert_notes(Notes *note) {
+int db_insert_note(Note *note) {
 
 }
 
-int db_insert_pieces(Pieces *piece) {
+int db_insert_piece(Piece *piece) {
 
 }
 
@@ -420,46 +420,68 @@ void info_item(size_t client_fd, char** tokens) {
 // Start Add Item
 void add_sweater(Sweater *sweater) {
     sweater->id = db_insert_sweater(sweater);
+    char message[STR_LENGTH];
+    sprintf(message, "SWEATER:ID:%d\r\n\r\n", sweater->id);
 }
 
-void add_notes(Notes *note) {
-
+void add_note(Note *note) {
+    note->id = db_insert_note(note);
+    char message[STR_LENGTH];
+    sprintf(message, "Note:ID:%d\r\n\r\n", note->id);
 }
 
-void add_pieces(Pieces *piece) {
-
+void add_piece(Piece *piece) {
+    piece->id = db_insert_piece(piece);
+    char message[STR_LENGTH];
+    sprintf(message, "PIECE:ID:%d\r\n\r\n", piece->id);
 }
 
 void add_piece_type(PieceType *piece_type) {
-
+    piece_type->id = db_insert_piece_type(piece_type);
+    char message[STR_LENGTH];
+    sprintf(message, "PIECE TYPE:ID:%d\r\n\r\n", piece_type->id);
 }
 
 void add_brand(Brand *brand) {
-
+    brand->id = db_insert_brand(brand);
+    char message[STR_LENGTH];
+    sprintf(message, "BRAND:ID:%d\r\n\r\n", brand->id);
 }
 
 void add_color(Color *color) {
-
+    color->id = db_insert_color(color);
+    char message[STR_LENGTH];
+    sprintf(message, "COLOR:ID:%d\r\n\r\n", color->id);
 }
 
 void add_neckline(Neckline *neckline) {
-
+    neckline->id = db_insert_neckline(neckline);
+    char message[STR_LENGTH];
+    sprintf(message, "NECKLINE:ID:%d\r\n\r\n", neckline->id);
 }
 
 void add_sleeves(Sleeves *sleeve) {
-    
+    sleeves->id = db_insert_sleeves(sleeves);
+    char message[STR_LENGTH];
+    sprintf(message, "SLEEVES:ID:%d\r\n\r\n", sleeves->id);
 }
 
 void add_type(Type *type) {
-
+    type->id = db_insert_type(type);
+    char message[STR_LENGTH];
+    sprintf(message, "TYPE:ID:%d\r\n\r\n", type->id);
 }
 
 void add_condition(Condition *condition) {
-
+    condition->id = db_insert_condition(condition);
+    char message[STR_LENGTH];
+    sprintf(message, "CONDITION:ID:%d\r\n\r\n", condition->id);
 }
 
 void add_size(Size *size) {
-
+    size->id = db_insert_size(size);
+    char message[STR_LENGTH];
+    sprintf(message, "SIZE:ID:%d\r\n\r\n", size->id);
 }
 
 #define TABLE_IDX 1
@@ -470,57 +492,57 @@ void add_item(size_t client_fd, char** tokens) {
         case TABLE_SWEATER:
             Sweater sweater = {0};
             parse_sweater(&tokens[2], &sweater);
-            sweater.id = db_insert_sweater(&sweater);
+            add_sweater(&sweater);
             break;
-        case TABLE_NOTES:
-            Notes note = {0};
-            parse_notes(&tokens[2], &note);
-            note.id = db_insert_notes(&note);
+        case TABLE_NOTE:
+            Note note = {0};
+            parse_note(&tokens[2], &note);
+            add_note(&note);
             break;
-        case TABLE_PIECES:
-            Pieces piece = {0};
-            parse_pieces(&tokens[2], &piece);
-            piece.id = db_insert_pieces(&piece);
+        case TABLE_PIECE:
+            Piece piece = {0};
+            parse_piece(&tokens[2], &piece);
+            add_piece(&piece);
             break;
         case TABLE_PIECE_TYPE:
             PieceType piece_type = {0};
             parse_piece_type(&tokens[2], &piece_type);
-            piece_type.id = db_insert_piece_type(&piece_type);
+            add_piece_type(&piece_type);
             break;
         case TABLE_BRAND:
             Brand brand = {0};
             parse_brand(&tokens[2], &brand);
-            brand.id = db_insert_brand(&brand);
+            add_brand(&brand);
             break;
         case TABLE_COLOR:
             Color color = {0};
             parse_color(&tokens[2], &color);
-            color.id = db_insert_color(&color);
+            add_color(&color);
             break;
         case TABLE_NECKLINE:
             Neckline neckline = {0};
             parse_neckline(&tokens[2], &neckline);
-            neckline.id = db_insert_neckline(&neckline);
+            add_neckline(&neckline);
             break;
         case TABLE_SLEEVES:
             Sleeves sleeves = {0};
             parse_sleeves(&tokens[2], &sleeves);
-            sleeves.id = db_insert_sleeves(&sleeves);
+            add_sleeves(&sleeves);
             break;
         case TABLE_TYPE:
             Type type = {0};
             parse_type(&tokens[2], &type);
-            type.id = db_insert_type(&type);
+            add_type(&type);
             break;
         case TABLE_CONDITION:
             Condition condition = {0};
             parse_condition(&tokens[2], &condition);
-            condition.id = db_insert_condition(&condition);
+            add_condition(&condition);
             break;
         case TABLE_SIZE:
             Size size = {0};
             parse_size(&tokens[2], &size);
-            size.id = db_insert_size(&size);
+            add_size(&size);
             break;
         default:
             printf("OHH NO LUKAS WHAT HAVE YOU DOOOOONE ~ 0xCA75 04/16/2026");
