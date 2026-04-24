@@ -242,6 +242,24 @@ char* get_string_input(char* input) {
     get_input(input);
 }
 
+void get_search_sweater_input(char* input, Sweater* sweater) {
+    
+}
+
+void get_search_piece_input(char* input, Piece* piece) {
+
+}
+void get_search_note_input(char* input, Note* note) {
+
+}
+
+void get_add_note_input(char* input, Note* note) {
+    printf("SweaterID: ");
+    note->sweater_id = get_int_input(input);
+    printf("Enter Contents: ");
+    get_string_input(note->content);
+}
+
 void get_add_piece_input(char* input, Piece* piece) {
     printf("Sweater ID: ");
     piece->sweater_id = get_int_input(input);
@@ -253,21 +271,6 @@ void get_add_piece_input(char* input, Piece* piece) {
     printf("Continuos True(1)/False(0): ");
     piece->continuous = get_int_input(input);
     piece->scraped = 0; 
-}
-
-void get_search_piece_input(char* input, Piece* piece) {
-
-}
-
-void get_add_note_input(char* input, Note* note) {
-    printf("SweaterID: ");
-    note->sweater_id = get_int_input(input);
-    printf("Enter Contents: ");
-    get_string_input(note->content);
-}
-
-void get_search_note_input(char* input, Note* note) {
-
 }
 
 void get_add_sweater_input(char* input, Sweater* sweater) {
@@ -288,10 +291,6 @@ void get_add_sweater_input(char* input, Sweater* sweater) {
     sweater->condition_id = get_int_input(input);
     printf("SizeID: ");
     sweater->size_id = get_int_input(input);
-}
-
-void get_search_sweater_input(char* input, Sweater* sweater) {
-    
 }
 // End Get Input Functions
 
@@ -549,55 +548,8 @@ void info_item(char* token_str) {
 
 // ----------------------------------------------------------------------------
 // Start Search Item
-void search_size(char* token_str, int size_id) {
-    char tokens[KEY_LENGTH];
-    sprintf(tokens, "SIZE:%d", size_id);
-    add_token(token_str, tokens);
-}
 
-void search_condition(char* token_str, int size_id) {
-    char tokens[KEY_LENGTH];
-    sprintf(tokens, "CONDITION:%d", size_id);
-    add_token(token_str, tokens);
-}
-
-void search_type(char* token_str, int type_id) {
-    char tokens[KEY_LENGTH];
-    sprintf(tokens, "TYPE:%d", type_id);
-    add_token(token_str, tokens);
-}
-
-void search_sleeves(char* token_str, int sleeves_id) {
-    char tokens[KEY_LENGTH];
-    sprintf(tokens, "SLEEVES:%d", sleeves_id);
-    add_token(token_str, tokens);
-}
-
-void search_neckline(char* token_str, int neckline_id) {
-    char tokens[KEY_LENGTH];
-    sprintf(tokens, "NECKLINE:%d", neckline_id);
-    add_token(token_str, tokens);
-}
-
-void search_color(char* token_str, int color_id) {
-    char tokens[KEY_LENGTH];
-    sprintf(tokens, "COLOR:%d", color_id);
-    add_token(token_str, tokens);
-}
-
-void search_brand(char* token_str, int brand_id) {
-    char tokens[KEY_LENGTH];
-    sprintf(tokens, "BRAND:%d", brand_id);
-    add_token(token_str, tokens);
-}
-
-void search_piece_type(char* token_str, int piece_type_id) {
-    char tokens[KEY_LENGTH];
-    sprintf(tokens, "PIECE TYPE:%d", piece_type_id);
-    add_token(token_str, tokens);
-}
-
-void search_piece(char* token_str) {
+void search_sweater(char* token_str) {
     // TODO
 }
 
@@ -605,8 +557,105 @@ void search_note(char* token_str) {
     // TODO
 }
 
-void search_sweater(char* token_str) {
+void search_piece(char* token_str) {
     // TODO
+}
+
+void search_piece_type(char* token_str, int piece_type_id) {
+    add_token(token_str, "PIECE_TYPE");
+    char tokens[KEY_LENGTH];
+    if (piece_type_id != NULL) {
+        printf(tokens, "PIECE_TYPE:%d", piece_type_id);
+    }
+    else {
+        sprintf(tokens, "PIECE_TYPE:NULL");
+    }
+    add_token(token_str, tokens);
+}
+
+void search_brand(char* token_str, int brand_id) {
+    add_token(token_str, "BRAND");
+    char tokens[KEY_LENGTH];
+    if (brand_id != NULL) {
+        printf(tokens, "BRAND:%d", brand_id);
+    }
+    else {
+        sprintf(tokens, "BRAND:NULL");
+    }
+    add_token(token_str, tokens);
+}
+
+void search_color(char* token_str, int color_id) {
+    add_token(token_str, "COLOR");
+    char tokens[KEY_LENGTH];
+    if (color_id != NULL) {
+        printf(tokens, "COLOR:%d", color_id);
+    }
+    else {
+        sprintf(tokens, "COLOR:NULL");
+    }
+    add_token(token_str, tokens);
+}
+
+void search_neckline(char* token_str, int neckline_id) {
+    add_token(token_str, "NECKLINE");
+    char tokens[KEY_LENGTH];
+    if (neckline_id != NULL) {
+        printf(tokens, "NECKLINE:%d", neckline_id);
+    }
+    else {
+        sprintf(tokens, "NECKLINE:NULL");
+    }
+    add_token(token_str, tokens);
+}
+
+void search_sleeves(char* token_str, int sleeves_id) {
+    add_token(token_str, "SLEEVES");
+    char tokens[KEY_LENGTH];
+    if (sleeves_id != NULL) {
+        printf(tokens, "SLEEVES:%d", sleeves_id);
+    }
+    else {
+        sprintf(tokens, "SLEEVES:NULL");
+    }
+    add_token(token_str, tokens);
+}
+
+void search_type(char* token_str, int type_id) {
+    add_token(token_str, "TYPE");
+    char tokens[KEY_LENGTH];
+    if (type_id != NULL) {
+        printf(tokens, "TYPE:%d", type_id);
+    }
+    else {
+        sprintf(tokens, "TYPE:NULL");
+    }
+    add_token(token_str, tokens);
+}
+
+void search_condition(char* token_str, int size_id) {
+    add_token(token_str, "CONDITION");
+    char tokens[KEY_LENGTH];
+    if (condition_id != NULL) {
+        printf(tokens, "CONDITION:%d", condition_id);
+    }
+    else {
+        sprintf(tokens, "CONDITION:NULL");
+    }
+    add_token(token_str, tokens);
+}
+
+void search_size(char* token_str, int size_id) {
+    add_token(token_str, "SIZE");
+    char tokens[KEY_LENGTH];
+    if (size_id != NULL) {
+        printf(tokens, "SIZE:%d", size_id);
+    }
+    else {
+        sprintf(tokens, "SIZE:NULL");
+    }
+    add_token(token_str, tokens);
+    // "SELECT * FROM Brand b WHERE (? IS NULL OR brand.id IS ?)"
 }
 
 void search_item(char* token_str) {
@@ -621,11 +670,11 @@ void search_item(char* token_str) {
         switch(table) {
             case TABLE_SWEATER:
                 printf("Searching for sweater.");
-                search_sweater(token_str);
+                search_sweater(token_str, sweater.id);
                 break;
             case TABLE_NOTE:
                 printf("Searching for sweater.");
-                search_note(token_str);
+                search_note(token_str, note.id);
                 break;
             case TABLE_PIECE:
                 search_piece(token_str);
