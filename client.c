@@ -14,8 +14,8 @@
 typedef enum {
     TABLE_NULL,
     TABLE_SWEATER,
-    TABLE_NOTES,
-    TABLE_PIECES,
+    TABLE_NOTE,
+    TABLE_PIECE,
     TABLE_PIECE_TYPE,
     TABLE_BRAND,
     TABLE_COLOR,
@@ -30,8 +30,8 @@ typedef enum {
 const char* tables[NUM_TABLES] = {
     "NULL",
     "SWEATER",
-    "NOTES",
-    "PIECES",
+    "NOTE",
+    "PIECE",
     "PIECE_TYPE",
     "BRAND",
     "COLOR",
@@ -53,7 +53,6 @@ typedef struct {
     int weight;
     int condition_id;
     int size_id;
-    bool in_inventory;
     // some form of date
 } Sweater;
 
@@ -62,7 +61,7 @@ typedef struct {
     int sweater_id;
     char content[STR_LENGTH];
     // some form of date;
-} Notes;
+} Note;
 
 typedef struct {
     int id;
@@ -70,10 +69,10 @@ typedef struct {
     int piece_type_id;
     int original_weight;
     int current_weight;
-    bool continuous;
-    bool scraped;
+    int continuous;
+    int scraped;
     // some form of date;
-} Pieces;
+} Piece;
 
 typedef struct {
     int id;
@@ -115,6 +114,24 @@ typedef struct {
     char size[KEY_LENGTH];
 } Size;
 
+// ----------------------------------------------------------------------------
+// Start Sweater Table
+
+void tokenize_sweater(Sweater* s) {
+    
+}
+/*
+void print_sweater(Sweater* s) {
+    printf("%s: ", s.cashmere_code);
+    printf("%s ", search_brand(s->brand_id));
+    printf("%s ", search_color(s->color_id));
+    printf("%s ", search_neckline(s->neckline_id));
+    printf("%s ", search_type(s->type_id));
+    printf("with %s sleeves ", search_sleeves(s->sleeves_id));
+    printf("in %s condition ", search_condition(s->condition_id));
+    printf("size %s.", search_size(s->size_id));
+}
+*/// End Sweater Table
 
 // ----------------------------------------------------------------------------
 // Start Miscellaneous Functions
@@ -225,7 +242,7 @@ char* get_string_input(char* input) {
     get_input(input);
 }
 
-void get_add_pieces_input(char* input, Pieces* piece) {
+void get_add_piece_input(char* input, Piece* piece) {
     printf("Sweater ID: ");
     piece->sweater_id = get_int_input(input);
     printf("Piece Type ID: ");
@@ -235,21 +252,21 @@ void get_add_pieces_input(char* input, Pieces* piece) {
     piece->current_weight = piece->original_weight;
     printf("Continuos True(1)/False(0): ");
     piece->continuous = get_int_input(input);
-    piece->scraped = false; 
+    piece->scraped = 0; 
 }
 
-void get_search_pieces_input(char* input, Pieces* piece) {
+void get_search_piece_input(char* input, Piece* piece) {
 
 }
 
-void get_add_notes_input(char* input, Notes* note) {
+void get_add_note_input(char* input, Note* note) {
     printf("SweaterID: ");
     note->sweater_id = get_int_input(input);
     printf("Enter Contents: ");
     get_string_input(note->content);
 }
 
-void get_search_notes_input(char* input, Notes* note) {
+void get_search_note_input(char* input, Note* note) {
 
 }
 
@@ -271,7 +288,6 @@ void get_add_sweater_input(char* input, Sweater* sweater) {
     sweater->condition_id = get_int_input(input);
     printf("SizeID: ");
     sweater->size_id = get_int_input(input);
-    sweater->in_inventory = true;
 }
 
 void get_search_sweater_input(char* input, Sweater* sweater) {
@@ -328,8 +344,8 @@ void edit_item(char* token_str) {
 // Start Add Item
 
 void add_sweater(char* token_str, Sweater* sweater) {
-    char token[KEY_LENGTH] = {0};
     add_token(token_str, "SWEATER");
+    char token[KEY_LENGTH] = {0};
     sprintf(token, "BRAND:%d", sweater->brand_id);
     add_token(token_str, token);
     token[0] = 0;
@@ -356,19 +372,21 @@ void add_sweater(char* token_str, Sweater* sweater) {
     token[0] = 0;
 }
 
-void add_notes(char* token_str, Notes* note) {
-    char token[STR_LENGTH * 2];
-    sprintf(token, "SWEATER:%d", note->sweater_id);
+void add_note(char* token_str, Note* note) {
+    add_token(token_str, "NOTE");
+    char token[STR_LENGTH * 2] = {0};
+    sprintf(token, "NOTE:%d", note->sweater_id);
     add_token(token_str, token);
     token[0] = 0;
-    sprintf(token, "CONTENTS:%s", note->content);
+    sprintf(token, "CONTENT:%s", note->content);
     add_token(token_str, token);
     token[0] = 0;
 }
 
-void add_pieces(char* token_str, Pieces* piece) {
-    char token[STR_LENGTH];
-    sprintf(token, "SWEATER:%d", piece->sweater_id);
+void add_piece(char* token_str, Piece* piece) {
+    add_token(token_str, "PIECE");
+    char token[STR_LENGTH] = {0};
+    sprintf(token, "PIECE:%d", piece->sweater_id);
     add_token(token_str, token);
     token[0] = 0;
     sprintf(token, "PIECE TYPE:%d", piece->piece_type_id);
@@ -377,7 +395,7 @@ void add_pieces(char* token_str, Pieces* piece) {
     sprintf(token, "ORIGINAL WEIGHT:%d", piece->original_weight);
     add_token(token_str, token);
     token[0] = 0;
-    sprintf(token, "CURRENT_WEIGHT:%d", piece->current_weight);
+    sprintf(token, "CURRENT WEIGHT:%d", piece->current_weight);
     add_token(token_str, token);
     token[0] = 0;
     sprintf(token, "CONTINUOUS:%d", piece->continuous);
@@ -389,55 +407,63 @@ void add_pieces(char* token_str, Pieces* piece) {
 
 }
 
-void add_piece_type(char* token_str, int input) {
-    char tokens[KEY_LENGTH];
-    sprintf(tokens, "PIECE TYPE:%d", input);
+void add_piece_type(char* token_str, char *input) {
+    add_token(token_str, "PIECE TYPE");
+    char tokens[KEY_LENGTH] = {0};
+    sprintf(tokens, "PIECE TYPE:%s", input);
     add_token(token_str, tokens);
 }
 
-void add_brand(char* token_str, int input) {
-    char tokens[KEY_LENGTH];
-    sprintf(tokens, "BRAND:%d", input);
+void add_brand(char* token_str, char *input) {
+    add_token(token_str, "BRAND");
+    char tokens[KEY_LENGTH] = {0};
+    sprintf(tokens, "BRAND:%s", input);
     add_token(token_str, tokens);
 }
 
-void add_color(char* token_str, int input) {
-    char tokens[KEY_LENGTH];
-    sprintf(tokens, "COLOR:%d", input);
+void add_color(char* token_str, char *input) {
+    add_token(token_str, "COLOR");
+    char tokens[KEY_LENGTH] = {0};
+    sprintf(tokens, "COLOR:%s", input);
     add_token(token_str, tokens);
 }
 
-void add_sleeves(char* token_str, int input) {
-    char tokens[KEY_LENGTH];
-    sprintf(tokens, "SLEEVES:%d", input);
+void add_sleeves(char* token_str, char *input) {
+    add_token(token_str, "SLEEVES");
+    char tokens[KEY_LENGTH] = {0};
+    sprintf(tokens, "SLEEVES:%s", input);
     add_token(token_str, tokens);
 }
 
-void add_neckline(char* token_str, int input) {
-    char tokens[KEY_LENGTH];
-    sprintf(tokens, "NECKLINE:%d", input);
+void add_neckline(char* token_str, char *input) {
+    add_token(token_str, "NECKLINE");
+    char tokens[KEY_LENGTH] = {0};
+    sprintf(tokens, "NECKLINE:%s", input);
     add_token(token_str, tokens);
 }
 
-void add_type(char* token_str, int input) {
-    char tokens[KEY_LENGTH];
-    sprintf(tokens, "TYPE:%d", input);
+void add_type(char* token_str, char *input) {
+    add_token(token_str, "TYPE");
+    char tokens[KEY_LENGTH] = {0};
+    sprintf(tokens, "TYPE:%s", input);
     add_token(token_str, tokens);
 }
 
-void add_condition(char* token_str, int input) {
-    char tokens[KEY_LENGTH];
-    sprintf(tokens, "CONDITION:%d", input);
+void add_condition(char* token_str, char *input) {
+    add_token(token_str, "CONDITION");
+    char tokens[KEY_LENGTH] = {0};
+    sprintf(tokens, "CONDITION:%s", input);
     add_token(token_str, tokens);
 }
 
-void add_size(char* token_str, int input) {
-    char tokens[KEY_LENGTH];
-    sprintf(tokens, "SIZE:%d", input);
+void add_size(char* token_str, char *input) {
+    add_token(token_str, "SIZE");
+    char tokens[KEY_LENGTH] = {0};
+    sprintf(tokens, "SIZE:%s", input);
     add_token(token_str, tokens);
 }
 
-void add_item(char* token_str) {
+void add_item(size_t server_fd, char* token_str) {
     add_token(token_str, "ADD ITEM");
     bool adding = true;
     static char buffer[KEY_LENGTH] = {0};
@@ -446,54 +472,62 @@ void add_item(char* token_str) {
 
         char table_id[KEY_LENGTH];
         Tables table = (Tables)get_int_input(table_id);
-        char input[STR_LENGTH];
+        char input[STR_LENGTH] = {0};
         switch(table) {
             case TABLE_SWEATER:
                 Sweater sweater;
                 get_add_sweater_input(input, &sweater);
                 add_sweater(token_str, &sweater);
                 break;
-            case TABLE_NOTES:
-                Notes note;
-                get_add_notes_input(input, &note);
-                add_notes(token_str, &note);
+            case TABLE_NOTE:
+                Note note;
+                get_add_note_input(input, &note);
+                add_note(token_str, &note);
                 break;
-            case TABLE_PIECES:
-                Pieces piece;
-                get_add_pieces_input(input, &piece);
-                add_pieces(token_str, &piece);
+            case TABLE_PIECE:
+                Piece piece;
+                get_add_piece_input(input, &piece);
+                add_piece(token_str, &piece);
                 break;
             case TABLE_PIECE_TYPE:
-                printf("Enter Piece Type ID: ");
-                add_piece_type(token_str, get_int_input(input));
+                printf("Enter Piece Type: ");
+                get_string_input(input);
+                add_piece_type(token_str, input);
                 break;
             case TABLE_BRAND:
-                printf("Enter Brand ID: ");
-                add_brand(token_str, get_int_input(input));
+                printf("Enter Brand: ");
+                get_string_input(input);
+                add_brand(token_str, input);
                 break;
             case TABLE_COLOR:
-                printf("Enter Color ID: ");
-                add_color(token_str, get_int_input(input));
+                printf("Enter Color: ");
+                get_string_input(input);
+                add_color(token_str, input);
                 break;
             case TABLE_NECKLINE:
-                printf("Enter Neckline ID: ");
-                add_neckline(token_str, get_int_input(input));
+                printf("Enter Neckline: ");
+                get_string_input(input);
+                add_neckline(token_str, input);
                 break;
             case TABLE_SLEEVES:
-                printf("Enter Sleeves ID: ");
-                add_sleeves(token_str, get_int_input(input));
+                printf("Enter Sleeves: ");
+                get_string_input(input);
+                add_sleeves(token_str, input);
                 break;
             case TABLE_TYPE:
-                printf("Enter Type ID: ");
-                add_type(token_str, get_int_input(input));
+                printf("Enter Type: ");
+                get_string_input(input);
+                add_type(token_str, input);
                 break;
             case TABLE_CONDITION:
-                printf("Enter Condition ID: ");
-                add_condition(token_str, get_int_input(input));
+                printf("Enter Condition: ");
+                get_string_input(input);
+                add_condition(token_str, input);
                 break;
             case TABLE_SIZE:
-                printf("Enter Size ID: ");
-                add_size(token_str, get_int_input(input));
+                printf("Enter Size: ");
+                get_string_input(input);
+                add_size(token_str, input);
                 break;
             default:
                 printf("Something went wrong...\n");
@@ -563,11 +597,11 @@ void search_piece_type(char* token_str, int piece_type_id) {
     add_token(token_str, tokens);
 }
 
-void search_pieces(char* token_str) {
+void search_piece(char* token_str) {
     // TODO
 }
 
-void search_notes(char* token_str) {
+void search_note(char* token_str) {
     // TODO
 }
 
@@ -581,20 +615,20 @@ void search_item(char* token_str) {
     while (searching) {
         print_table_options();
 
-        char table_id[KEY_LENGTH];
+        char table_id[KEY_LENGTH] = {0};
         Tables table = (Tables)get_int_input(table_id);
-        char input[KEY_LENGTH];
+        char input[KEY_LENGTH * 2] = {0};
         switch(table) {
             case TABLE_SWEATER:
                 printf("Searching for sweater.");
                 search_sweater(token_str);
                 break;
-            case TABLE_NOTES:
+            case TABLE_NOTE:
                 printf("Searching for sweater.");
-                search_notes(token_str);
+                search_note(token_str);
                 break;
-            case TABLE_PIECES:
-                search_pieces(token_str);
+            case TABLE_PIECE:
+                search_piece(token_str);
                 break;
             case TABLE_PIECE_TYPE:
                 printf("Enter Piece Type ID: ");
@@ -642,57 +676,46 @@ void database_menu() {
 }
 
 void cashmere_database(size_t server_fd) {
-    database_menu();
+    char buffer[STR_LENGTH] = {0};
+    bool exit = false;
+    while(!exit) {
 
-    char token_str[STR_LENGTH] = {0};
-    char c = getchar();
-    getchar();
-    switch (c) {
-        case '1':
-            search_item(token_str);
-            break;
-        case '2':
-            info_item(token_str);
-            break;
-        case '3':
-            add_item(token_str);
-            break;
-        case '4':
-            edit_item(token_str);
-            break;
-        case '5':
-            remove_item(token_str);
-            break;
-        case '6':
-            exit_db(token_str);
-            break;
-        default:
+        database_menu();
+
+        char token_str[STR_LENGTH] = {0};
+        char c = getchar();
+        getchar();
+        switch (c) {
+            case '1':
+                search_item(token_str);
+                break;
+            case '2':
+                info_item(token_str);
+                break;
+            case '3':
+                add_item(server_fd, token_str);
+                break;
+            case '4':
+                edit_item(token_str);
+                break;
+            case '5':
+                remove_item(token_str);
+                break;
+            case '6':
+                exit_db(token_str);
+                exit = true;
+                break;
+            default:
+        }
+    
+        strcat(token_str, "\r\n\r\n");
+        printf("%s\n", token_str);
+    
+        send_all(server_fd, token_str, strlen(token_str));
+        recv_all(server_fd, buffer, sizeof(buffer));
+        printf("%s\n", buffer);
     }
-    strcat(token_str, "\r\n\r\n");
-    printf("%s\n", token_str);
-    
-    send_all(server_fd, token_str, strlen(token_str));
 }
-
-// ----------------------------------------------------------------------------
-// Start Sweater Table
-
-void tokenize_sweater(Sweater* s) {
-    
-}
-
-void print_sweater(Sweater* s) {
-    /*
-    printf("%s: ", s.cashmere_code);
-    printf("%s ", search_brand(s->brand_id));
-    printf("%s ", search_color(s->color_id));
-    printf("%s ", search_neckline(s->neckline_id));
-    printf("%s ", search_type(s->type_id));
-    printf("with %s sleeves ", search_sleeves(s->sleeves_id));
-    printf("in %s condition ", search_condition(s->condition_id));
-    printf("size %s.", search_size(s->size_id));*/
-}
-// End Sweater Table
 
 int main() {
     int sock;
