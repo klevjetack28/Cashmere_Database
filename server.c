@@ -110,6 +110,7 @@ void db_close() {
 #define PORT 5000
 #define KEY_LENGTH 32
 #define STR_LENGTH 256
+#define BUFFER 8192
 
 typedef enum {
     TABLE_NULL,
@@ -128,18 +129,18 @@ typedef enum {
 } Tables;
 
 const char *tables[NUM_TABLES] = {
-    "NULL",
-    "SWEATER",
-    "NOTE",
-    "PIECE",
-    "PIECE_TYPE",
-    "BRAND",
-    "COLOR",
-    "NECKLINE",
-    "SLEEVES",
-    "TYPE",
-    "CONDITION",
-    "SIZE",
+    "TABLE NULL",
+    "TABLE SWEATER",
+    "TABLE NOTE",
+    "TABLE PIECE",
+    "TABLE PIECE_TYPE",
+    "TABLE BRAND",
+    "TABLE COLOR",
+    "TABLE NECKLINE",
+    "TABLE SLEEVES",
+    "TABLE TYPE",
+    "TABLE CONDITION",
+    "TABLE SIZE",
 };
 
 typedef struct {
@@ -307,109 +308,250 @@ void recv_all(const int client_id, char *buffer, int buffer_size) {
 size_t send_message(const int client_fd, const char *message) {
     return send_all(client_fd, message, strlen(message));
 }
+
+void add_token(char* token_str, char* token) {
+    if (token_str[0] == 0) {
+        sprintf(token_str, "%s", token);
+    } else {
+        strcat(token_str, ":");
+        strcat(token_str, token);
+    }
+}
+
 // End Miscellaneous Functions
 
 // ----------------------------------------------------------------------------
 // Start Tokenizing Tables
 
-void tokenize_sweater(Sweater *sweater) {
+void tokenize_sweater(char *token_str, Sweater *sweater) {
+    char tmp[KEY_LENGTH] = {0};
+    add_token(token_str, "SWEATER");
+    add_token(token_str, "ID");
+    sprintf(tmp, "%d", sweater->id);
+    add_token(token_str, tmp);
+    add_token(token_str, "BRAND ID");
+    add_token(token_str, sweater->brand_id);
+    add_token(token_str, "COLOR ID");
+    add_token(token_str, sweater->color_id);
+    add_token(token_str, "NECKLINE ID");
+    add_token(token_str, sweater->neckline_id);
+    add_token(token_str, "SLEEVES ID");
+    add_token(token_str, sweater->sleeves_id);
+    add_token(token_str, "TYPE ID");
+    add_token(token_str, sweater->type_id);
+    add_token(token_str, "CONDITION ID");
+    add_token(token_str, sweater->condition_id);
+    add_token(token_str, "SIZE");
+    add_token(token_str, sweater->size_id);
+}
+
+void tokenize_note(char *token_str, Note *note) {
+    char tmp[KEY_LENGTH] = {0};
+    add_token(token_str, "NOTE");
+    add_token(token_str, "ID");
+    sprintf(tmp, "%d", note->id);
+    add_token(token_str, tmp);
+    add_token(token_str, "SWEATER ID");
+    add_token(token_str, note->sweater_id);
+    add_token(token_str, "CONTENT");
+    add_token(token_str, note->content);
+}
+
+void tokenize_piece(char *token_str, Piece *piece) {
+    char tmp[KEY_LENGTH] = {0};
+    add_token(token_str, "PIECE");
+    add_token(token_str, "ID");
+    sprintf(tmp, "%d", piece->id);
+    add_token(token_str, tmp);
+    add_token(token_str, "SWEATER ID");
+    add_token(token_str, piece->sweater_id);
+    add_token(token_str, "PIECE ID");
+    add_token(token_str, piece->piece_type_id);
+    add_token(token_str, "ORIGINAL WEIGHT");
+    add_token(token_str, piece->original_weight);
+    add_token(token_str, "CURRENT WEIGHT");
+    add_token(token_str, piece->current_weight);
+    add_token(token_str, "CONTINUOUS");
+    add_token(token_str, piece->continuous);
+    add_token(token_str, "SCRAPED");
+    add_token(token_str, piece->scraped);
+}
+
+void tokenize_piece_type(char *token_str, PieceType *piece_type) {
+    char tmp[KEY_LENGTH] = {0};
+    add_token(token_str, "PIECE_TYPE");
+    add_token(token_str, "ID");
+    sprintf(tmp, "%d", piece_type->id);
+    add_token(token_str, tmp);
+    add_token(token_str, "PIECE_TYPE");
+    add_token(token_str, piece_type->piece_type);
+}
+
+void tokenize_brand(char *token_str, Brand *brand) {
+    char tmp[KEY_LENGTH] = {0};
+    add_token(token_str, "BRAND");
+    add_token(token_str, "ID");
+    sprintf(tmp, "%d", brand->id);
+    add_token(token_str, tmp);
+    add_token(token_str, "BRAND");
+    add_token(token_str, brand->brand);
+}
+
+void tokenize_color(char *token_str, Color *color) {
+    char tmp[KEY_LENGTH] = {0};
+    add_token(token_str, "COLOR");
+    add_token(token_str, "ID");
+    sprintf(tmp, "%d", color->id);
+    add_token(token_str, tmp);
+    add_token(token_str, "COLOR");
+    add_token(token_str, color->color);
 
 }
 
-void tokenize_note(Note *note) {
-
+void tokenize_neckline(char *token_str, Neckline *neckline) {
+    char tmp[KEY_LENGTH] = {0};
+    add_token(token_str, "NECKLINE");
+    add_token(token_str, "ID");
+    sprintf(tmp, "%d", neckline->id);
+    add_token(token_str, tmp);
+    add_token(token_str, "NECKLINE");
+    add_token(token_str, neckline->neckline);
 }
 
-void tokenize_piece(Piece *piece) {
-
+void tokenize_sleeves(char *token_str, Sleeves *sleeves) {
+    char tmp[KEY_LENGTH] = {0};
+    add_token(token_str, "SLEEVES");
+    add_token(token_str, "ID");
+    sprintf(tmp, "%d", sleeves->id);
+    add_token(token_str, tmp);
+    add_token(token_str, "SLEEVES");
+    add_token(token_str, sleeves->sleeves);
 }
 
-void tokenize_piece_type(PieceType *piece_type) {
-
+void tokenize_type(char *token_str, Type *type) {
+    char tmp[KEY_LENGTH] = {0};
+    add_token(token_str, "TYPE");
+    add_token(token_str, "ID");
+    sprintf(tmp, "%d", type->id);
+    add_token(token_str, tmp);
+    add_token(token_str, "TYPE");
+    add_token(token_str, type->type);
 }
 
-void tokenize_brand(Brand *brand) {
-
+void tokenize_condition(char *token_str, Condition *condition) {
+    char tmp[KEY_LENGTH] = {0};
+    add_token(token_str, "CONDITION");
+    add_token(token_str, "ID");
+    sprintf(tmp, "%d", condition->id);
+    add_token(token_str, tmp);
+    add_token(token_str, "CONDITION");
+    add_token(token_str, condition->condition);
 }
 
-void tokenize_color(Color *color) {
-
-}
-
-void tokenize_neckline(Neckline *neckline) {
-
-}
-
-void tokenize_sleeves(Sleeves *sleeve) {
-
-}
-
-void tokenize_type(Type *type) {
-
-}
-
-void tokenize_condition(Condition *condition) {
-
-}
-
-void tokenize_size(Size *size) {
-
+void tokenize_size(char *token_str, Size *size) {
+    char tmp[KEY_LENGTH] = {0};
+    add_token(token_str, "SIZE");
+    add_token(token_str, "ID");
+    sprintf(tmp, "%d", size->id);
+    add_token(token_str, tmp);
+    add_token(token_str, "SIZE");
+    add_token(token_str, size->size);
 }
 // End Tokenizing Tables
 
 // ----------------------------------------------------------------------------
 // Start Parsing Tokens
-Tables table_from_string(const char *token) {
+Tables table_from_string(const char *token_str) {
     for (int i = 0; i < NUM_TABLES; i++) {
-        if (strcmp(token, tables[i]) == 0) {
+        if (strcmp(token_str, tables[i]) == 0) {
             return (Tables)i;
         }
     }
     return TABLE_NULL; // fallback / error
 }
 
-void parse_search_sweater(size_t client_fd, char **tokens) {
+void parse_search_sweater(char **tokens, Sweater *sweater) {
 
 }
 
-void parse_search_note(size_t client_fd, char **tokens) {
+void parse_search_note(char **tokens, Note *note) {
 
 }
 
-void parse_search_piece(size_t client_fd, char **tokens) {
+void parse_search_piece(char **tokens, Piece *piece) {
 
 }
 
-void parse_search_piece_type(size_t client_fd, char **tokens) {
-
+void parse_search_piece_type(char **tokens, PieceType *piece_type) {
+    if (strcmp(tokens[0], "ALL") == 0) {
+        piece_type->id = -1;
+    }
+    else {
+        piece_type->id = atoi(tokens[2]);
+    }
 }
 
-void parse_search_brand(size_t client_fd, char **tokens) {
-
+void parse_search_brand(char **tokens, Brand *brand) {
+    if (strcmp(tokens[0], "ALL") == 0) {
+        brand->id = -1;
+    }
+    else {
+        brand->id = atoi(tokens[2]);
+    }
 }
 
-void parse_search_color(size_t client_fd, char **tokens) {
-
+void parse_search_color(char **tokens, Color *color) {
+    if (strcmp(tokens[0], "ALL") == 0) {
+        color->id = -1;
+    }
+    else {
+        color->id = atoi(tokens[2]);
+    }
 }
 
-void parse_search_neckline(size_t client_fd, char **tokens) {
-
+void parse_search_neckline(char **tokens, Neckline *neckline) {
+    if (strcmp(tokens[0], "ALL") == 0) {
+        neckline->id = -1;
+    }
+    else {
+        neckline->id = atoi(tokens[2]);
+    }
 }
 
-void parse_search_sleeves(size_t client_fd, char **tokens) {
-
+void parse_search_sleeves(char **tokens, Sleeves *sleeves) {
+    if (strcmp(tokens[0], "ALL") == 0) {
+        sleeves->id = -1;
+    }
+    else {
+        sleeves->id = atoi(tokens[2]);
+    }
 }
 
-void parse_search_type(size_t client_fd, char **tokens) {
-
+void parse_search_type(char **tokens, Type *type) {
+    if (strcmp(tokens[0], "ALL") == 0) {
+        type->id = -1;
+    }
+    else {
+        type->id = atoi(tokens[2]);
+    }
 }
 
-void parse_search_condition(size_t client_fd, char **tokens) {
-
+void parse_search_condition(char **tokens, Condition *condition) {
+    if (strcmp(tokens[0], "ALL") == 0) {
+        condition->id = -1;
+    }
+    else {
+        condition->id = atoi(tokens[2]);
+    }
 }
 
-void parse_search_size(size_t client_fd, char **tokens) {
-
+void parse_search_size(char **tokens, Size *size) {
+    if (strcmp(tokens[0], "ALL") == 0) {
+        size->id = -1;
+    }
+    else {
+        size->id = atoi(tokens[2]);
+    }
 }
 
 void parse_add_sweater(char **tokens, Sweater *sweater) {
@@ -421,7 +563,6 @@ void parse_add_sweater(char **tokens, Sweater *sweater) {
     sweater->weight = atoi(tokens[11]);
     sweater->condition_id = atoi(tokens[13]);
     sweater->size_id = atoi(tokens[15]);
-    print_sweater(sweater);
 }
 
 void parse_add_note(char **tokens, Note *note) {
@@ -497,147 +638,358 @@ char **str_split(char *str, char *delim) {
 //-----------------------------------------------------------------------------
 // Start SQLite Functions
 
-int db_select_sweater(Sweater *sweater) {
-    const char *sql = 
-        " ";
+void db_select_all_sweater(char *token_str) {
 
-     sqlite3_stmt *stmt;
-
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     
-     sqlite3_finalize(stmt);
-
-     return (int)sqlite3_last_insert_rowid(db);   
 }
 
-int db_select_note(Note *note) {
-    const char *sql = 
-        " ";
+void db_select_all_note(char *token_str) {
 
-     sqlite3_stmt *stmt;
-
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     
-     sqlite3_finalize(stmt);
-
-     return (int)sqlite3_last_insert_rowid(db);   
 }
 
-int db_select_piece(Piece *piece) {
-    const char *sql = 
-        " ";
+void db_select_all_piece(char *token_str) {
 
-     sqlite3_stmt *stmt;
-
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     
-     sqlite3_finalize(stmt);
-
-     return (int)sqlite3_last_insert_rowid(db);   
 }
 
-int db_select_piece_type(PieceType *piece_type) {
-    const char *sql = 
-        " ";
+void db_select_all_piece_type(char *token_str) {
+     const char *sql = 
+        "SELECT * FROM PieceType";
 
-     sqlite3_stmt *stmt;
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     
-     sqlite3_finalize(stmt);
-
-     return (int)sqlite3_last_insert_rowid(db);   
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    
+    PieceType piece_type;
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        memset(&piece_type, 0, sizeof(piece_type));
+        piece_type.id = sqlite3_column_int(stmt, 0);
+        strcpy(piece_type.piece_type, sqlite3_column_text(stmt, 1));
+        // I can always add token 1 start and end as a delimeter for item retrival
+        tokenize_piece_type(token_str, &piece_type);        
+    }
+    sqlite3_finalize(stmt);
 }
 
-int db_select_brand(Brand *brand) {
-    const char *sql = 
-        " ";
+void db_select_all_brand(char *token_str) {
+     const char *sql = 
+        "SELECT * FROM Brand";
 
-     sqlite3_stmt *stmt;
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     
-     sqlite3_finalize(stmt);
-
-     return (int)sqlite3_last_insert_rowid(db);   
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    
+    Brand brand;
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        memset(&brand, 0, sizeof(brand));
+        brand.id = sqlite3_column_int(stmt, 0);
+        strcpy(brand.brand, sqlite3_column_text(stmt, 1));
+        // I can always add token 1 start and end as a delimeter for item retrival
+        tokenize_brand(token_str, &brand);        
+    }
+    sqlite3_finalize(stmt);
+    printf("%s\n", token_str);
 }
 
-int db_select_color(Color *color) {
-    const char *sql = 
-        " ";
+void db_select_all_color(char *token_str) {
+     const char *sql = 
+        "SELECT * FROM Color";
 
-     sqlite3_stmt *stmt;
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     
-     sqlite3_finalize(stmt);
-
-     return (int)sqlite3_last_insert_rowid(db);   
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    
+    Color color;
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        memset(&color, 0, sizeof(color));
+        color.id = sqlite3_column_int(stmt, 0);
+        strcpy(color.color, sqlite3_column_text(stmt, 1));
+        // I can always add token 1 start and end as a delimeter for item retrival
+        tokenize_color(token_str, &color);        
+    }
+    sqlite3_finalize(stmt);
 }
 
-int db_select_neckline(Neckline *neckline) {
-    const char *sql = 
-        " ";
+void db_select_all_neckline(char *token_str) {
+     const char *sql = 
+        "SELECT * FROM Neckline";
 
-     sqlite3_stmt *stmt;
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     
-     sqlite3_finalize(stmt);
-
-     return (int)sqlite3_last_insert_rowid(db);   
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    
+    Neckline neckline;
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        memset(&neckline, 0, sizeof(neckline));
+        neckline.id = sqlite3_column_int(stmt, 0);
+        strcpy(neckline.neckline, sqlite3_column_text(stmt, 1));
+        // I can always add token 1 start and end as a delimeter for item retrival
+        tokenize_neckline(token_str, &neckline);        
+    }
+    sqlite3_finalize(stmt);
 }
 
-int db_select_sleeves(Sleeves *sleeves) {
-    const char *sql = 
-        " ";
+void db_select_all_sleeves(char *token_str) {
+     const char *sql = 
+        "SELECT * FROM Sleeves";
 
-     sqlite3_stmt *stmt;
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     
-     sqlite3_finalize(stmt);
-
-     return (int)sqlite3_last_insert_rowid(db);   
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    
+    Sleeves sleeves;
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        memset(&sleeves, 0, sizeof(sleeves));
+        sleeves.id = sqlite3_column_int(stmt, 0);
+        strcpy(sleeves.sleeves, sqlite3_column_text(stmt, 1));
+        // I can always add token 1 start and end as a delimeter for item retrival
+        tokenize_sleeves(token_str, &sleeves);        
+    }
+    sqlite3_finalize(stmt);
 }
 
-int db_select_type(Type *type) {
-    const char *sql = 
-        " ";
+void db_select_all_type(char *token_str) {
+     const char *sql = 
+        "SELECT * FROM Type";
 
-     sqlite3_stmt *stmt;
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     
-     sqlite3_finalize(stmt);
-
-     return (int)sqlite3_last_insert_rowid(db);   
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    
+    Type type;
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        memset(&type, 0, sizeof(type));
+        type.id = sqlite3_column_int(stmt, 0);
+        strcpy(type.type, sqlite3_column_text(stmt, 1));
+        // I can always add token 1 start and end as a delimeter for item retrival
+        tokenize_type(token_str, &type);        
+    }
+    sqlite3_finalize(stmt);
 }
 
-int db_select_condition(Condition *condition) {
-    const char *sql = 
-        " ";
+void db_select_all_condition(char *token_str) {
+     const char *sql = 
+        "SELECT * FROM Condition";
 
-     sqlite3_stmt *stmt;
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     
-     sqlite3_finalize(stmt);
-
-     return (int)sqlite3_last_insert_rowid(db);   
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    
+    Condition condition;
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        memset(&condition, 0, sizeof(condition));
+        condition.id = sqlite3_column_int(stmt, 0);
+        strcpy(condition.condition, sqlite3_column_text(stmt, 1));
+        // I can always add token 1 start and end as a delimeter for item retrival
+        tokenize_condition(token_str, &condition);        
+    }
+    sqlite3_finalize(stmt);
 }
 
-int db_select_size(Size *size) {
+void db_select_all_size(char *token_str) {
+     const char *sql = 
+        "SELECT * FROM Size";
+
+    sqlite3_stmt *stmt;
+
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    
+    Size size;
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        memset(&size, 0, sizeof(size));
+        size.id = sqlite3_column_int(stmt, 0);
+        strcpy(size.size, sqlite3_column_text(stmt, 1));
+        // I can always add token 1 start and end as a delimeter for item retrival
+        tokenize_size(token_str, &size);        
+    }
+    sqlite3_finalize(stmt);
+}
+
+void db_select_sweater(char *token_str, Sweater *sweater) {
     const char *sql = 
-        " ";
+        "SELECT id, sweater FROM sweater WHERE id = ?";
 
-     sqlite3_stmt *stmt;
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     
-     sqlite3_finalize(stmt);
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, sweater->id);
+    sqlite3_step(stmt);
 
-     return (int)sqlite3_last_insert_rowid(db);   
+    sweater->id = sqlite3_column_int(stmt, 0);
+    //strcpy(sweater->sweater, sqlite3_column_text(stmt, 1));
+    tokenize_sweater(token_str, sweater);
+    
+    sqlite3_finalize(stmt);
+}
+
+void db_select_note(char *token_str, Note *note) {
+    const char *sql = 
+        "SELECT id, note FROM Note WHERE id = ?";
+
+    sqlite3_stmt *stmt;
+
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, note->id);
+    sqlite3_step(stmt);
+
+    note->id = sqlite3_column_int(stmt, 0);
+    //strcpy(note->note, sqlite3_column_text(stmt, 1));
+    tokenize_note(token_str, note);
+    
+    sqlite3_finalize(stmt);
+}
+
+void db_select_piece(char *token_str, Piece *piece) {
+    const char *sql = 
+        "SELECT id, piece FROM Piece WHERE id = ?";
+
+    sqlite3_stmt *stmt;
+
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, piece->id);
+    sqlite3_step(stmt);
+
+    piece->id = sqlite3_column_int(stmt, 0);
+    //strcpy(piece->piece, sqlite3_column_text(stmt, 1));
+    tokenize_piece(token_str, piece);
+    
+    sqlite3_finalize(stmt);
+}
+
+void db_select_piece_type(char *token_str, PieceType *piece_type) {
+    const char *sql = 
+        "SELECT id, piece_type FROM PieceType WHERE id = ?";
+
+    sqlite3_stmt *stmt;
+
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, piece_type->id);
+    sqlite3_step(stmt);
+
+    piece_type->id = sqlite3_column_int(stmt, 0);
+    const char *tmp = sqlite3_column_text(stmt, 1);
+    strcpy(piece_type->piece_type, tmp);
+    tokenize_piece_type(token_str, piece_type);
+    sqlite3_finalize(stmt);
+}
+
+void db_select_brand(char *token_str, Brand *brand) {
+    const char *sql = 
+        "SELECT id, brand FROM Brand WHERE id = ?";
+
+    sqlite3_stmt *stmt;
+
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, brand->id);
+    printf("%d\n", brand->id);
+    sqlite3_step(stmt);
+
+    brand->id = sqlite3_column_int(stmt, 0);
+    const char *tmp = sqlite3_column_text(stmt, 1);
+    printf("%s\n", tmp);
+    strcpy(brand->brand, tmp);
+    tokenize_brand(token_str, brand);
+    sqlite3_finalize(stmt);
+}
+
+void db_select_color(char *token_str, Color *color) {
+    const char *sql = 
+        "SELECT id, color FROM Color WHERE id = ?";
+
+    sqlite3_stmt *stmt;
+
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, color->id);
+    sqlite3_step(stmt);
+
+    color->id = sqlite3_column_int(stmt, 0);
+    const char *tmp = sqlite3_column_text(stmt, 1);
+    strcpy(color->color, tmp);
+    tokenize_color(token_str, color);
+    sqlite3_finalize(stmt);
+}
+
+void db_select_neckline(char *token_str, Neckline *neckline) {
+    const char *sql = 
+        "SELECT id, neckline FROM Neckline WHERE id = ?";
+
+    sqlite3_stmt *stmt;
+
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, neckline->id);
+    sqlite3_step(stmt);
+
+    neckline->id = sqlite3_column_int(stmt, 0);
+    const char *tmp = sqlite3_column_text(stmt, 1);
+    strcpy(neckline->neckline, tmp);
+    tokenize_neckline(token_str, neckline);
+    sqlite3_finalize(stmt);
+}
+
+void db_select_sleeves(char *token_str, Sleeves *sleeves) {
+    const char *sql = 
+        "SELECT id, sleeves FROM Sleeves WHERE id = ?";
+
+    sqlite3_stmt *stmt;
+
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, sleeves->id);
+    sqlite3_step(stmt);
+
+    sleeves->id = sqlite3_column_int(stmt, 0);
+    const char *tmp = sqlite3_column_text(stmt, 1);
+    strcpy(sleeves->sleeves, tmp);
+    tokenize_sleeves(token_str, sleeves);
+    sqlite3_finalize(stmt);
+}
+
+void db_select_type(char *token_str, Type *type) {
+    const char *sql = 
+        "SELECT id, type FROM Type WHERE id = ?";
+
+    sqlite3_stmt *stmt;
+
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, type->id);
+    sqlite3_step(stmt);
+
+    type->id = sqlite3_column_int(stmt, 0);
+    const char *tmp = sqlite3_column_text(stmt, 1);
+    strcpy(type->type, tmp);
+    tokenize_type(token_str, type);
+    sqlite3_finalize(stmt);
+}
+
+void db_select_condition(char *token_str, Condition *condition) {
+    const char *sql = 
+        "SELECT id, condition FROM Condition WHERE id = ?";
+
+    sqlite3_stmt *stmt;
+
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, condition->id);
+    sqlite3_step(stmt);
+
+    condition->id = sqlite3_column_int(stmt, 0);
+    const char *tmp = sqlite3_column_text(stmt, 1);
+    strcpy(condition->condition, tmp);
+    tokenize_condition(token_str, condition);
+    sqlite3_finalize(stmt);
+}
+
+void db_select_size(char *token_str, Size *size) {
+    const char *sql = 
+        "SELECT id, size FROM Size WHERE id = ?";
+
+    sqlite3_stmt *stmt;
+
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, size->id);
+    sqlite3_step(stmt);
+
+    size->id = sqlite3_column_int(stmt, 0);
+    const char *tmp = sqlite3_column_text(stmt, 1);
+    strcpy(size->size, tmp);
+    tokenize_size(token_str, size);
+    sqlite3_finalize(stmt);
 }
 
 int db_insert_sweater(Sweater *sweater) {
@@ -812,51 +1164,266 @@ int db_insert_size(Size *size) {
 // ----------------------------------------------------------------------------
 // Start Search Item
 
-void search_sweater(size_t client_fd, char **tokens) {
+typedef enum {
+    SEARCH_BY_ID,
+    SEARCH_BY_FILTER,
+    SEARCH_ALL,
+    NUM_SEARCH_TYPE
+} TypeSearch;
 
+const char *type_search_token[NUM_SEARCH_TYPE] = {
+    "ID",
+    "FILTER",
+    "ALL"
+};
+
+TypeSearch type_search_from_string(const char* string) {
+    for (int i = 0; i < NUM_SEARCH_TYPE; i++) {
+        if (strcmp(string, type_search_token[i]) == 0) {
+            return (TypeSearch)i;
+        }
+    }
 }
 
-void search_note(size_t client_fd, char **tokens) {
-
+void search_sweater(size_t client_fd, Sweater *sweater, TypeSearch type_search) {
+    char token_str[BUFFER] = {0};
+    switch (type_search) {
+        case SEARCH_BY_ID:
+            db_select_sweater(token_str, sweater);
+            break;
+        case SEARCH_ALL:
+            db_select_all_sweater(token_str);          
+            break;
+        case SEARCH_BY_FILTER:
+        default:
+    }
+    strcat(token_str, "\r\n\r\n");
+    send_message(client_fd, token_str);   
 }
 
-void search_piece(size_t client_fd, char **tokens) {
-
+void search_note(size_t client_fd, Note *note, TypeSearch type_search) {
+    char token_str[BUFFER] = {0};
+    switch (type_search) {
+        case SEARCH_BY_ID:
+            db_select_note(token_str, note);
+            break;
+        case SEARCH_ALL:
+            db_select_all_note(token_str);          
+            break;
+        case SEARCH_BY_FILTER:
+        default:
+    }
+    strcat(token_str, "\r\n\r\n");
+    send_message(client_fd, token_str);
 }
 
-void search_piece_type(size_t client_fd, char **tokens) {
-
+void search_piece(size_t client_fd, Piece *piece, TypeSearch type_search) {
+    char token_str[BUFFER] = {0};
+    switch (type_search) {
+        case SEARCH_BY_ID:
+            db_select_piece(token_str, piece);
+            break;
+        case SEARCH_ALL:
+            db_select_all_piece(token_str);          
+            break;
+        case SEARCH_BY_FILTER:
+        default:
+    }
+    strcat(token_str, "\r\n\r\n");
+    send_message(client_fd, token_str);
 }
 
-void search_brand(size_t client_fd, char **tokens) {
-
+void search_piece_type(size_t client_fd, PieceType *piece_type, TypeSearch type_search) {
+    char token_str[BUFFER] = {0};
+    switch (type_search) {
+        case SEARCH_BY_ID:
+            db_select_piece_type(token_str, piece_type);
+            break;
+        case SEARCH_ALL:
+            db_select_all_piece_type(token_str);          
+            break;
+        case SEARCH_BY_FILTER:
+        default:
+    }
+    strcat(token_str, "\r\n\r\n");
+    send_message(client_fd, token_str);
 }
 
-void search_color(size_t client_fd, char **tokens) {
-
+void search_brand(size_t client_fd, Brand *brand, TypeSearch type_search) {
+    char token_str[BUFFER] = {0};
+    switch (type_search) {
+        case SEARCH_BY_ID:
+            db_select_brand(token_str, brand);
+            break;
+        case SEARCH_ALL:
+            db_select_all_brand(token_str);          
+            break;
+        case SEARCH_BY_FILTER:
+        default:
+            printf("SOMETHING WRONG\n");
+    }
+    strcat(token_str, "\r\n\r\n");
+    send_message(client_fd, token_str);
 }
 
-void search_neckline(size_t client_fd, char **tokens) {
-
+void search_color(size_t client_fd, Color *color, TypeSearch type_search) {
+    char token_str[BUFFER] = {0};
+    switch (type_search) {
+        case SEARCH_BY_ID:
+            db_select_color(token_str, color);
+            break;
+        case SEARCH_ALL:
+            db_select_all_color(token_str);          
+            break;
+        case SEARCH_BY_FILTER:
+        default:
+    }
+    strcat(token_str, "\r\n\r\n");
+    send_message(client_fd, token_str);
 }
 
-void search_sleeves(size_t client_fd, char **tokens) {
-
+void search_neckline(size_t client_fd, Neckline *neckline, TypeSearch type_search) {
+    char token_str[BUFFER] = {0};
+    switch (type_search) {
+        case SEARCH_BY_ID:
+            db_select_neckline(token_str, neckline);
+            break;
+        case SEARCH_ALL:
+            db_select_all_neckline(token_str);          
+            break;
+        case SEARCH_BY_FILTER:
+        default:
+    }
+    strcat(token_str, "\r\n\r\n");
+    send_message(client_fd, token_str);
 }
 
-void search_type(size_t client_fd, char **tokens) {
-
+void search_sleeves(size_t client_fd, Sleeves *sleeves, TypeSearch type_search) {
+    char token_str[BUFFER] = {0};
+    switch (type_search) {
+        case SEARCH_BY_ID:
+            db_select_sleeves(token_str, sleeves);
+            break;
+        case SEARCH_ALL:
+            db_select_all_sleeves(token_str);          
+            break;
+        case SEARCH_BY_FILTER:
+        default:
+    }
+    strcat(token_str, "\r\n\r\n");
+    send_message(client_fd, token_str);
 }
 
-void search_condition(size_t client_fd, char **tokens) {
-
+void search_type(size_t client_fd, Type *type, TypeSearch type_search) {
+    char token_str[BUFFER] = {0};
+    switch (type_search) {
+        case SEARCH_BY_ID:
+            db_select_type(token_str, type);
+            break;
+        case SEARCH_ALL:
+            db_select_all_type(token_str);          
+            break;
+        case SEARCH_BY_FILTER:
+        default:
+    }
+    strcat(token_str, "\r\n\r\n");
+    send_message(client_fd, token_str);
 }
 
-void search_size(size_t client_fd, char **tokens) {
+void search_condition(size_t client_fd, Condition *condition, TypeSearch type_search) {
+    char token_str[BUFFER] = {0};
+    switch (type_search) {
+        case SEARCH_BY_ID:
+            db_select_condition(token_str, condition);
+            break;
+        case SEARCH_ALL:
+            db_select_all_condition(token_str);          
+            break;
+        case SEARCH_BY_FILTER:
+        default:
+    }
+    strcat(token_str, "\r\n\r\n");
+    send_message(client_fd, token_str);
+}
 
+void search_size(size_t client_fd, Size *size, TypeSearch type_search) {
+    char token_str[BUFFER] = {0};
+    switch (type_search) {
+        case SEARCH_BY_ID:
+            db_select_size(token_str, size);
+            break;
+        case SEARCH_ALL:
+            db_select_all_size(token_str);          
+            break;
+        case SEARCH_BY_FILTER:
+        default:
+    }
+    strcat(token_str, "\r\n\r\n");
+    send_message(client_fd, token_str);
 }
 
 void search_item(size_t client_fd, char **tokens) {
+    Tables table = table_from_string(tokens[1]);
+    TypeSearch type_search = type_search_from_string(tokens[2]);
+    switch (table) {
+        case TABLE_SWEATER:
+            Sweater sweater = {0};
+            parse_search_sweater(&tokens[2], &sweater);
+            search_sweater(client_fd, &sweater, type_search);
+            break;
+        case TABLE_NOTE:
+            Note note = {0};
+            parse_search_note(&tokens[2], &note);
+            search_note(client_fd, &note, type_search);
+            break;
+        case TABLE_PIECE:
+            Piece piece = {0};
+            parse_search_piece(&tokens[2], &piece);
+            search_piece(client_fd, &piece, type_search);
+            break;
+        case TABLE_PIECE_TYPE:
+            PieceType piece_type = {0};
+            parse_search_piece_type(&tokens[2], &piece_type);
+            search_piece_type(client_fd, &piece_type, type_search);
+            break;
+        case TABLE_BRAND:
+            Brand brand = {0};
+            parse_search_brand(&tokens[2], &brand);
+            search_brand(client_fd, &brand, type_search);
+            break;
+        case TABLE_COLOR:
+            Color color = {0};
+            parse_search_color(&tokens[2], &color);
+            search_color(client_fd, &color, type_search);
+            break;
+        case TABLE_NECKLINE:
+            Neckline neckline = {0};
+            parse_search_neckline(&tokens[2], &neckline);
+            search_neckline(client_fd, &neckline, type_search);
+            break;
+        case TABLE_SLEEVES:
+            Sleeves sleeves = {0};
+            parse_search_sleeves(&tokens[2], &sleeves);
+            search_sleeves(client_fd, &sleeves, type_search);
+            break;
+        case TABLE_TYPE:
+            Type type = {0};
+            parse_search_type(&tokens[2], &type);
+            search_type(client_fd, &type, type_search);
+            break;
+        case TABLE_CONDITION:
+            Condition condition = {0};
+            parse_search_condition(&tokens[2], &condition);
+            search_condition(client_fd, &condition, type_search);
+            break;
+        case TABLE_SIZE:
+            Size size = {0};
+            parse_search_size(&tokens[2], &size);
+            search_size(client_fd, &size, type_search);
+            break;
+        default:
+            printf("OHH NO LUKAS WHAT HAVE YOU DOOOOONE ~ 0xCA75 04/16/2026");
+    }
 }
 // End Search Item
 void info_item(size_t client_fd, char **tokens) {
@@ -1015,9 +1582,6 @@ void add_item(size_t client_fd, char **tokens) {
         default:
             printf("OHH NO LUKAS WHAT HAVE YOU DOOOOONE ~ 0xCA75 04/16/2026");
     }
-    
-    
-    send_message(client_fd, "Added item into database.");
 }
 // End Add Item
 
@@ -1066,6 +1630,7 @@ int main() {
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;  // accept connections from any LAN IP
     address.sin_port = htons(PORT);
+
 
     if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
         perror("bind failed");
