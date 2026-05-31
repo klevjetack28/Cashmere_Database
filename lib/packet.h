@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <arpa/inet.h>
 
 #include "constants.h"
 
@@ -47,5 +48,7 @@ Packet packet_connect_init(char *payload);
 Packet packet_disconnect_init(char *payload);
 Packet packet_request_init(RequestType request_type, char *payload);
 Packet packet_response_init(char *payload);
+int packet_serialize(Packet *packet, unsigned char byte_array[BUFFER_LENGTH]);
+void packet_deserialize(unsigned char byte_array[BUFFER_LENGTH], int bytes_read, Packet *packet);
 
 #endif // PACKET_H

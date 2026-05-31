@@ -62,7 +62,6 @@ Packet packet_delete_request_init(char *payload) {
 Packet packet_import_request_init(char *payload) {
     return packet_request_init(REQUEST_TYPE_IMPORT, payload);
 }
-
 Packet packet_export_request_init(char *payload) {
     return packet_request_init(REQUEST_TYPE_EXPORT, payload);
 }
@@ -71,4 +70,56 @@ Packet packet_response_init(char *payload) {
     PacketHeader header;
     header = packet_header_init(PACKET_TYPE_RESPONSE, REQUEST_TYPE_NONE, PACKET_STATUS_OK, strlen(payload));
     return packet_init(header, payload);
+}
+
+int packet_serialize(Packet *packet, unsigned char byte_array[BUFFER_LENGTH]) {
+    int offset = 0;
+
+    PacketType packet_type = htons(packet->header.packet_type);
+    RequestType request_type = htons(packet->header.request_type);
+    PacketStatus status = htons(packet->header.packet_type);
+    int payload_size = htons(packet->header.payload_size);
+
+    memcpy(byte_array + offset, &packet_type, sizeof(packet_type));
+    offset += sizeof(packet_type);
+
+    memcpy(byte_array + offset, &request_type, sizeof(request_type));
+    offset += sizeof(request_type);
+
+    memcpy(byte_array + offset, &status, sizeof(status));
+    offset += sizeof(status);
+
+    memcpy(byte_array + offset, &payload_size, sizeof(payload_size));
+    offset += sizeof(payload_size);
+
+    memcpy(byte_array + offset, packet->payload, packet->header.payload_size);
+    offset += packet->header.payload_size;
+
+    return offset;
+}
+
+void packet_deserialize(unsigned char byte_array[BUFFER_LENGTH], int bytes_received, Packet *packet) {
+    int offset = 0;
+
+    PacketType packet_type;
+    RequestType request_type;
+    PacketStatus status;
+    int payload_size;
+
+    memcpy(&packet_type, byte_array + offset, sizeof(packet_type));
+    offset += sizeof(packet_type);
+
+    memcpy(&request_type, byte_array + offset, sizeof(request_type));
+    offset += sizeof(request_type);
+
+    memcpy(&status, byte_array + offset, sizeof(status));
+    offset += sizeof(status);
+
+    memcpy(&payload_size, byte_array + offset, sizeof(payload_size));
+    offset += sizeof(payload_size);
+
+    PacketHeader tmp;
+    tmp = packet_header_init(ntohs(packet_type), ntohs(request_type), ntohs(status), ntohs(payload_size));
+    memcpy(&packet->header, &tmp, sizeof(tmp));
+    memcpy(&packet->payload, byte_array + offset, bytes_received - offset);
 }
