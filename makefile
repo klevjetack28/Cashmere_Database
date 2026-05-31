@@ -1,6 +1,16 @@
-server: server.c
-	gcc -g -O0 server.c -lsqlite3 -o server
+CC = gcc
+CFLAGS = -Wall -Wextra -g -Ilib
+LDFLAGS = -lsqlite3
 
-client: client.c
-	gcc -g -O0 -o client client.c
+SRC = src/network.c src/packet.c
 
+all: c s
+
+c: src/client.c $(SRC)
+	$(CC) $(CFLAGS) src/client.c $(SRC) -o client/c $(LDFLAGS)
+
+s: src/server.c $(SRC)
+	$(CC) $(CFLAGS) src/server.c $(SRC) -o server/s $(LDFLAGS)
+
+clean:
+	rm -f client/c server/s

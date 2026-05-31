@@ -8,6 +8,10 @@
 #include <assert.h>
 #include <sqlite3.h>
 
+#include "network.h"
+#include "packet.h"
+#include "constants.h"
+
 sqlite3 *db = NULL;
 
 int db_init(const char *path) {
@@ -108,9 +112,6 @@ void db_close() {
 }
 
 #define PORT 5000
-#define KEY_LENGTH 32
-#define STR_LENGTH 256
-#define BUFFER 8192
 
 typedef enum {
     TABLE_NULL,
@@ -217,6 +218,14 @@ typedef struct {
 
 // ----------------------------------------------------------------------------
 // Start Miscellaneous Functions
+/*
+void read_config() {
+    FILE* fptr;
+
+    fptr = fopen(".config", "r");
+
+}*/
+
 void print_sweater(Sweater *s) {
     printf("%d ", s->brand_id);
     printf("%d ", s->color_id);
@@ -1186,7 +1195,7 @@ TypeSearch type_search_from_string(const char* string) {
 }
 
 void search_sweater(size_t client_fd, Sweater *sweater, TypeSearch type_search) {
-    char token_str[BUFFER] = {0};
+    char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
             db_select_sweater(token_str, sweater);
@@ -1202,7 +1211,7 @@ void search_sweater(size_t client_fd, Sweater *sweater, TypeSearch type_search) 
 }
 
 void search_note(size_t client_fd, Note *note, TypeSearch type_search) {
-    char token_str[BUFFER] = {0};
+    char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
             db_select_note(token_str, note);
@@ -1218,7 +1227,7 @@ void search_note(size_t client_fd, Note *note, TypeSearch type_search) {
 }
 
 void search_piece(size_t client_fd, Piece *piece, TypeSearch type_search) {
-    char token_str[BUFFER] = {0};
+    char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
             db_select_piece(token_str, piece);
@@ -1234,7 +1243,7 @@ void search_piece(size_t client_fd, Piece *piece, TypeSearch type_search) {
 }
 
 void search_piece_type(size_t client_fd, PieceType *piece_type, TypeSearch type_search) {
-    char token_str[BUFFER] = {0};
+    char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
             db_select_piece_type(token_str, piece_type);
@@ -1250,7 +1259,7 @@ void search_piece_type(size_t client_fd, PieceType *piece_type, TypeSearch type_
 }
 
 void search_brand(size_t client_fd, Brand *brand, TypeSearch type_search) {
-    char token_str[BUFFER] = {0};
+    char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
             db_select_brand(token_str, brand);
@@ -1267,7 +1276,7 @@ void search_brand(size_t client_fd, Brand *brand, TypeSearch type_search) {
 }
 
 void search_color(size_t client_fd, Color *color, TypeSearch type_search) {
-    char token_str[BUFFER] = {0};
+    char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
             db_select_color(token_str, color);
@@ -1283,7 +1292,7 @@ void search_color(size_t client_fd, Color *color, TypeSearch type_search) {
 }
 
 void search_neckline(size_t client_fd, Neckline *neckline, TypeSearch type_search) {
-    char token_str[BUFFER] = {0};
+    char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
             db_select_neckline(token_str, neckline);
@@ -1299,7 +1308,7 @@ void search_neckline(size_t client_fd, Neckline *neckline, TypeSearch type_searc
 }
 
 void search_sleeves(size_t client_fd, Sleeves *sleeves, TypeSearch type_search) {
-    char token_str[BUFFER] = {0};
+    char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
             db_select_sleeves(token_str, sleeves);
@@ -1315,7 +1324,7 @@ void search_sleeves(size_t client_fd, Sleeves *sleeves, TypeSearch type_search) 
 }
 
 void search_type(size_t client_fd, Type *type, TypeSearch type_search) {
-    char token_str[BUFFER] = {0};
+    char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
             db_select_type(token_str, type);
@@ -1331,7 +1340,7 @@ void search_type(size_t client_fd, Type *type, TypeSearch type_search) {
 }
 
 void search_condition(size_t client_fd, Condition *condition, TypeSearch type_search) {
-    char token_str[BUFFER] = {0};
+    char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
             db_select_condition(token_str, condition);
@@ -1347,7 +1356,7 @@ void search_condition(size_t client_fd, Condition *condition, TypeSearch type_se
 }
 
 void search_size(size_t client_fd, Size *size, TypeSearch type_search) {
-    char token_str[BUFFER] = {0};
+    char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
             db_select_size(token_str, size);
@@ -1591,11 +1600,6 @@ void edit_item(size_t client_fd, char **tokens) {
 void remove_item(size_t client_fd, char **tokens) {
 }
 
-void hello_from_server(int client_fd) {
-    printf("Connection Accepted.\n");
-    send_message(client_fd, "Hello from the Cashmere Database server!\r\n\r\n");
-}
-
 // ----------------------------------------------------------------------------
 // Sart Print Functions
 /*
@@ -1611,66 +1615,26 @@ void print_sweater(Sweater *s) {
 */
 // End Print Functions
 
-#define BUFFER_LENGTH 8192
-
 int main() {
     int server_fd, client_fd;
-    struct sockaddr_in address;
-    int addrlen = sizeof(address);
-    char buffer[BUFFER_LENGTH] = {0};
-    bool exit_client = false;
-
-    // 1. Create socket
-    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-        perror("socket failed");
-        exit(EXIT_FAILURE);
-    }
-
-    // 2. Bind to port
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;  // accept connections from any LAN IP
-    address.sin_port = htons(PORT);
-
-
-    if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
-        perror("bind failed");
-        exit(EXIT_FAILURE);
-    }
-
-    // 3. Listen for connections
-    if (listen(server_fd, 3) < 0) {
-        perror("listen");
-        exit(EXIT_FAILURE);
-    }
-    printf("Server listening on port %d\n", PORT);
+    server_fd = network_create_server_socket(PORT);
+    printf("server_fd: %d\n", server_fd);
     
     db_init("cashmere.db");
 
-    // 4. Accept connections in a loop
+    bool exit_client = false;
     while (1) {
-        if ((client_fd = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0) {
-            perror("accept");
-            continue;
-        }
-       
-        hello_from_server(client_fd);
-        memset(buffer, 0, sizeof(buffer));
-        recv_all(client_fd, buffer, sizeof(buffer));
-        printf("%s\n", buffer);
-       
+        client_fd = network_accept_client(server_fd);
+
+        char buffer[BUFFER_LENGTH] = {0};
         while (1) {
             memset(buffer, 0, sizeof(buffer)); 
             recv_all(client_fd, buffer, sizeof(buffer));
             remove_message_delimeter(buffer);
-            // TODO: want to add a way to have multiple connections
-            /* TODO: Merge out of main function into a handle_command helper*/
             printf("%s\n", buffer);
             char tmp[BUFFER_LENGTH];
             strcpy(tmp, buffer);
             char **tokens = str_split(buffer, ":");
-            // TODO: add logging so i know what commands are being used with what tokens
-            // TODO: token count + tokens safety
-            // TODO: we should know how many tokens are required for a search or an add just like a C function parameters.
             if (tokens) {
                 printf("Tokens: \n");
                 int i;

@@ -7,9 +7,11 @@
 #include <sys/socket.h>
 #include <stdbool.h>
 
+#include "network.h"
+#include "packet.h"
+#include "constants.h"
+
 #define PORT 5000
-#define KEY_LENGTH 32
-#define STR_LENGTH 256
 
 typedef enum {
     TABLE_NULL,
@@ -577,7 +579,7 @@ void search_brand(char* token_str, int brand_id) {
     add_token(token_str, "TABLE BRAND");
     char tokens[KEY_LENGTH];
     if (brand_id == -1) {
-        sprintf(tokens, "ADD:BRAND");
+        sprintf(tokens, "ALL:BRAND");
     }
     else {
         sprintf(tokens, "ID:BRAND:%d", brand_id);
@@ -766,38 +768,19 @@ void cashmere_database(size_t server_fd) {
 }
 
 int main() {
-    int sock;
-    struct sockaddr_in server;
-    static char buffer[8192] = {0};
+    int client_fd;
+
+    client_fd = network_client_connect("127.0.0.1", PORT);
+
     bool exit_client = false;
-
-    sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (sock < 0) {
-        perror("Socket failed");
-        return 1;
-    }
-
-    server.sin_family = AF_INET;
-    server.sin_port = htons(PORT);
-    inet_pton(AF_INET, "127.0.0.1", &server.sin_addr);
-
-    if (connect(sock, (struct sockaddr*)&server, sizeof(server)) < 0) {
-        perror("Connect failed");
-        return 1;
-    }
-
-    recv_all(sock, buffer, sizeof(buffer));
-    printf("%s", buffer);
-    char* id = "Client Lukas Laptop is joinging the server.\r\n\r\n";
-    send_all(sock, id, strlen(id));
     while (!exit_client) {
-        printf("1> Cashmere Database\n2> Logs\n3> System Status\n4> Exit\n5> BONUS!!! Add two numbers.\n");
+        printf("1> Cashmere Database\n2> Logs\n3> System Status\n4> Exit\n");
                     
         switch(getchar()) {
             case '1':
                 getchar();
                 printf("Loading Cashmere Database...\n");
-                cashmere_database(sock);
+                cashmere_database(client_fd);
                 break;
             case '2':
                 // logs();
@@ -808,22 +791,10 @@ int main() {
             case '4':
                 exit_client = true;
                 break;
-            case '5':
-                getchar();
-                printf("Enter two positive, single digit, numbers.\nNumbers: ");
-                char num1 = getchar();
-                getchar();
-                char num2 =getchar();
-                char message[256];
-                sprintf(message, "ADD:%c:%c\r\n\r\n", num1, num2);
-                send_all(sock, message, strlen(message));
-                recv_all(sock, buffer, sizeof(buffer));
-                printf("%s\n", buffer);
-                break;
             default:
         }
     }
 
-    close(sock);
+    close(client_fd);
     return 0;
 }
