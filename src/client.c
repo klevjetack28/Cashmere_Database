@@ -3,118 +3,14 @@
 #include <stdlib.h>
 #include <unistd.h>   
 #include <ctype.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
 #include <stdbool.h>
 
 #include "network.h"
 #include "packet.h"
 #include "constants.h"
+#include "db_tables.h"
 
 #define PORT 5000
-
-typedef enum {
-    TABLE_NULL,
-    TABLE_SWEATER,
-    TABLE_NOTE,
-    TABLE_PIECE,
-    TABLE_PIECE_TYPE,
-    TABLE_BRAND,
-    TABLE_COLOR,
-    TABLE_NECKLINE,
-    TABLE_SLEEVES,
-    TABLE_TYPE,
-    TABLE_CONDITION,
-    TABLE_SIZE,
-    NUM_TABLES
-} Tables;
-
-const char* tables[NUM_TABLES] = {
-    "NULL",
-    "SWEATER",
-    "NOTE",
-    "PIECE",
-    "PIECE_TYPE",
-    "BRAND",
-    "COLOR",
-    "NECKLINE",
-    "SLEEVES",
-    "TYPE",
-    "CONDITION",
-    "SIZE",
-};
-
-typedef struct {
-    int id;
-    char cashmere_code[KEY_LENGTH];
-    int brand_id;
-    int color_id;
-    int neckline_id;
-    int sleeves_id;
-    int type_id;
-    int weight;
-    int condition_id;
-    int size_id;
-    // some form of date
-} Sweater;
-
-typedef struct {
-    int id;
-    int sweater_id;
-    char content[STR_LENGTH];
-    // some form of date;
-} Note;
-
-typedef struct {
-    int id;
-    int sweater_id;
-    int piece_type_id;
-    int original_weight;
-    int current_weight;
-    int continuous;
-    int scraped;
-    // some form of date;
-} Piece;
-
-typedef struct {
-    int id;
-    char piece_type[KEY_LENGTH];
-} PieceType;
-
-typedef struct {
-    int id;
-    char brand[KEY_LENGTH];
-} Brand;
-
-typedef struct {
-    int id;
-    char color[KEY_LENGTH];
-} Color;
-
-typedef struct {
-    int id;
-    char neckline[KEY_LENGTH];
-} Neckline;
-
-typedef struct {
-    int id;
-    char sleeves[KEY_LENGTH];
-} Sleeves;
-
-typedef struct {
-    int id;
-    char type[KEY_LENGTH];
-} Type;
-
-typedef struct {
-    int id;
-    char condition[KEY_LENGTH];
-} Condition;
-
-typedef struct {
-    int id;
-    char size[KEY_LENGTH];
-} Size;
 
 // ----------------------------------------------------------------------------
 // Start Sweater Table
@@ -179,51 +75,6 @@ void normalize_key(char* out, char* in) {
     out[index] = '\0';
 }
 
-void remove_message_delimeter(char* buffer) {
-    char* end = strstr(buffer, "\r\n\r\n");
-    if (end) {
-        *end = '\0';  // terminate string at start of delimiter
-    }
-}
-
-ssize_t send_all(int socket, const char *data, size_t length) {
-    size_t total_sent = 0;
-    while (total_sent < length) {
-        // Send from the current offset in the data buffer
-        ssize_t sent = send(socket, data + total_sent, length - total_sent, 0);
-        
-        if (sent == -1) {
-            return -1; // Handle error (e.g., connection lost)
-        }
-        total_sent += sent;
-    }
-    return total_sent;
-}
-
-void recv_all(const int client_id, char* buffer, int buffer_size) {
-    int total_recieved = 0;
-    int bytes_read;
-    while ((bytes_read = recv(client_id, &buffer[total_recieved], buffer_size - total_recieved - 1, 0)) > 0) {
-        total_recieved += bytes_read;
-        buffer[total_recieved] = '\0';
-
-        if (strstr(buffer, "\r\n\r\n")) {
-            break; 
-        }
-        if (total_recieved >= buffer_size - 1) {
-            break;
-        }
-    }
-    if (bytes_read == 0) {
-    // Connection was closed by the client
-    } else if (bytes_read < 0) {
-    // Handle error (e.g., perror("recv"))
-    }
-}
-
-size_t send_message(const int client_fd, const char *message) {
-    return send_all(client_fd, message, strlen(message));
-}
 // End Miscellaneous Functions
 
 // ----------------------------------------------------------------------------
@@ -307,7 +158,7 @@ void logs() {
 
 void print_table_options() {
     for (int i = 1; i < (int)NUM_TABLES; i++) {
-        printf("%d> %s\n", i, tables[i]);
+        printf("%d> %s\n", i, TABLE_NAMES[i]);
     }
 }
 
@@ -315,7 +166,7 @@ void add_token(char* token_str, char* token) {
     if (token_str[0] == 0) {
         sprintf(token_str, "%s", token);
     } else {
-        strcat(token_str, ":");
+        strcat(token_str, " ");
         strcat(token_str, token);
     }
 }
@@ -409,30 +260,30 @@ void add_piece(char* token_str, Piece* piece) {
 }
 
 void add_piece_type(char* token_str, char *input) {
-    add_token(token_str, "TABLE PIECE TYPE");
+    add_token(token_str, " TABLE=PIECE_TYPE");
     char tokens[KEY_LENGTH] = {0};
-    sprintf(tokens, "PIECE TYPE:%s", input);
+    sprintf(tokens, " PIECE_TYPE_NAME=%s", input);
     add_token(token_str, tokens);
 }
 
 void add_brand(char* token_str, char *input) {
-    add_token(token_str, "TABLE BRAND");
+    add_token(token_str, "TABLE=BRAND");
     char tokens[KEY_LENGTH] = {0};
-    sprintf(tokens, "BRAND:%s", input);
+    sprintf(tokens, "BRAND_NAME=%s", input);
     add_token(token_str, tokens);
 }
 
 void add_color(char* token_str, char *input) {
-    add_token(token_str, "TABLE COLOR");
+    add_token(token_str, " TABLE=COLOR");
     char tokens[KEY_LENGTH] = {0};
-    sprintf(tokens, "COLOR:%s", input);
+    sprintf(tokens, " COLOR_NAME=%s", input);
     add_token(token_str, tokens);
 }
 
 void add_sleeves(char* token_str, char *input) {
-    add_token(token_str, "TABLE SLEEVES");
+    add_token(token_str, " TABLE=SLEEVES");
     char tokens[KEY_LENGTH] = {0};
-    sprintf(tokens, "SLEEVES:%s", input);
+    sprintf(tokens, " SLEEVES_NAME=%s", input);
     add_token(token_str, tokens);
 }
 
@@ -464,8 +315,7 @@ void add_size(char* token_str, char *input) {
     add_token(token_str, tokens);
 }
 
-void add_item(size_t server_fd, char* token_str) {
-    add_token(token_str, "ADD ITEM");
+void add_item(int server_fd, char* token_str) {
     bool adding = true;
     static char buffer[KEY_LENGTH] = {0};
     while (adding) {
@@ -725,11 +575,11 @@ void database_menu() {
     printf("1> Search\n2> Info\n3> Add Item\n4> Edit\n5> Remove\n6> Exit\n");
 }
 
-void cashmere_database(size_t server_fd) {
+void cashmere_database(int server_fd) {
     char buffer[STR_LENGTH] = {0};
     bool exit = false;
     while(!exit) {
-
+        Packet packet;
         database_menu();
 
         char token_str[STR_LENGTH] = {0};
@@ -744,6 +594,9 @@ void cashmere_database(size_t server_fd) {
                 break;
             case '3':
                 add_item(server_fd, token_str);
+                printf("%s\n", token_str);
+                packet = packet_create_request_init(token_str);
+                packet_print(&packet);
                 break;
             case '4':
                 edit_item(token_str);
@@ -758,12 +611,10 @@ void cashmere_database(size_t server_fd) {
             default:
         }
     
-        strcat(token_str, "\r\n\r\n");
-        printf("%s\n", token_str);
-    
-        send_all(server_fd, token_str, strlen(token_str));
-        recv_all(server_fd, buffer, sizeof(buffer));
-        printf("%s\n", buffer);
+        network_send_packet(server_fd, &packet);
+        network_recv_packet(server_fd, &packet);
+        packet_print(&packet);
+        printf("%s\n", packet.payload);
     }
 }
 

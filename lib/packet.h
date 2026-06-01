@@ -34,21 +34,31 @@ typedef struct {
     PacketType packet_type;
     RequestType request_type;
     PacketStatus status;
-    int payload_size;
+    int payload_length;
 } PacketHeader;
+
+#define HEADER_LENGTH sizeof(PacketHeader)
+#define PAYLOAD_MAX_LENGTH BUFFER_LENGTH - HEADER_LENGTH
 
 typedef struct {
     PacketHeader header;
-    char payload[BUFFER_LENGTH];
+    char payload[PAYLOAD_MAX_LENGTH];
 } Packet;
 
-PacketHeader packet_header_init(PacketType packet_type, RequestType request_type, PacketStatus status, int payload_size);
+void packet_print(Packet *packet);
+PacketHeader packet_header_init(PacketType packet_type, RequestType request_type, PacketStatus status, int payload_length);
 Packet packet_init(PacketHeader header, char *payload);
 Packet packet_connect_init(char *payload);
 Packet packet_disconnect_init(char *payload);
 Packet packet_request_init(RequestType request_type, char *payload);
+Packet packet_create_request_init(char *payload);
+Packet packet_read_request_init(char *payload);
+Packet packet_update_request_init(char *payload);
+Packet packet_delete_request_init(char *payload);
+Packet packet_import_request_init(char *payload);
+Packet packet_export_request_init(char *payload);
 Packet packet_response_init(char *payload);
-int packet_serialize(Packet *packet, unsigned char byte_array[BUFFER_LENGTH]);
-void packet_deserialize(unsigned char byte_array[BUFFER_LENGTH], int bytes_read, Packet *packet);
+int packet_serialize(const Packet *packet, unsigned char byte_array[BUFFER_LENGTH]);
+void packet_deserialize(const unsigned char byte_array[BUFFER_LENGTH], int bytes_read, Packet *packet);
 
 #endif // PACKET_H
