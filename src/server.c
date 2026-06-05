@@ -6,10 +6,11 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <assert.h>
-#include <sqlite3.h>
 
+#include "0xca75.h"
 #include "network.h"
 #include "packet.h"
+#include "payload.h"
 #include "database.h"
 #include "constants.h"
 #include "db_tables.h"
@@ -17,25 +18,6 @@
 
 #define PORT 5000
 
-char *trim_whitespace(char *str)
-{
-  char *end;
-
-  // Trim leading space
-  while(isspace((unsigned char)*str)) str++;
-
-  if(*str == 0)  // All spaces?
-    return str;
-
-  // Trim trailing space
-  end = str + strlen(str) - 1;
-  while(end > str && isspace((unsigned char)*end)) end--;
-
-  // Write new null terminator character
-  end[1] = '\0';
-
-  return str;
-}
 
 void normalize_key(char *out, char *in) {
     int index = 0;
@@ -63,7 +45,7 @@ void add_token(char* token_str, char* token) {
 }
 
 // ----------------------------------------------------------------------------
-// Start Tokenizing Tables
+// Start Tokenizing Table
 
 void tokenize_sweater(char *token_str, Sweater *sweater) {
     char tmp[KEY_LENGTH] = {0};
@@ -199,17 +181,17 @@ void tokenize_size(char *token_str, Size *size) {
     add_token(token_str, "SIZE");
     add_token(token_str, size->size);
 }
-// End Tokenizing Tables
+// End Tokenizing Table
 
 // ----------------------------------------------------------------------------
 // Start Parsing Tokens
-Tables table_from_string(const char *token_str) {
+Table table_from_string(const char *token_str) {
     for (int i = 0; i < NUM_TABLES; i++) {
-        if (strcmp(token_str, tables[i]) == 0) {
-            return (Tables)i;
+        if (strcmp(token_str, TABLE_NAMES[i]) == 0) {
+            return (Table)i;
         }
     }
-    return TABLE_NULL; // fallback / error
+    return TABLE_NULL;
 }
 
 void parse_search_sweater(char **tokens, Sweater *sweater) {
@@ -410,181 +392,181 @@ void search_sweater(size_t client_fd, Sweater *sweater, TypeSearch type_search) 
     char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
-            db_select_sweater(token_str, sweater);
+            db_select_sweater(sweater);
             break;
         case SEARCH_ALL:
-            db_select_all_sweater(token_str);          
+            db_select_all_sweater();          
             break;
         case SEARCH_BY_FILTER:
         default:
     }
     strcat(token_str, "\r\n\r\n");
-    send_message(client_fd, token_str);   
+    //send_message(client_fd, token_str);   
 }
 
 void search_note(size_t client_fd, Note *note, TypeSearch type_search) {
     char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
-            db_select_note(token_str, note);
+            db_select_note(note);
             break;
         case SEARCH_ALL:
-            db_select_all_note(token_str);          
+            db_select_all_note();          
             break;
         case SEARCH_BY_FILTER:
         default:
     }
     strcat(token_str, "\r\n\r\n");
-    send_message(client_fd, token_str);
+    //send_message(client_fd, token_str);
 }
 
 void search_piece(size_t client_fd, Piece *piece, TypeSearch type_search) {
     char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
-            db_select_piece(token_str, piece);
+            db_select_piece(piece);
             break;
         case SEARCH_ALL:
-            db_select_all_piece(token_str);          
+            db_select_all_piece();          
             break;
         case SEARCH_BY_FILTER:
         default:
     }
     strcat(token_str, "\r\n\r\n");
-    send_message(client_fd, token_str);
+    //send_message(client_fd, token_str);
 }
 
 void search_piece_type(size_t client_fd, PieceType *piece_type, TypeSearch type_search) {
     char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
-            db_select_piece_type(token_str, piece_type);
+            db_select_piece_type(piece_type);
             break;
         case SEARCH_ALL:
-            db_select_all_piece_type(token_str);          
+            db_select_all_piece_type();          
             break;
         case SEARCH_BY_FILTER:
         default:
     }
     strcat(token_str, "\r\n\r\n");
-    send_message(client_fd, token_str);
+    //send_message(client_fd, token_str);
 }
 
 void search_brand(size_t client_fd, Brand *brand, TypeSearch type_search) {
     char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
-            db_select_brand(token_str, brand);
+            db_select_brand(brand);
             break;
         case SEARCH_ALL:
-            db_select_all_brand(token_str);          
+            db_select_all_brand();          
             break;
         case SEARCH_BY_FILTER:
         default:
             printf("SOMETHING WRONG\n");
     }
     strcat(token_str, "\r\n\r\n");
-    send_message(client_fd, token_str);
+    //send_message(client_fd, token_str);
 }
 
 void search_color(size_t client_fd, Color *color, TypeSearch type_search) {
     char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
-            db_select_color(token_str, color);
+            db_select_color(color);
             break;
         case SEARCH_ALL:
-            db_select_all_color(token_str);          
+            db_select_all_color();          
             break;
         case SEARCH_BY_FILTER:
         default:
     }
     strcat(token_str, "\r\n\r\n");
-    send_message(client_fd, token_str);
+    //send_message(client_fd, token_str);
 }
 
 void search_neckline(size_t client_fd, Neckline *neckline, TypeSearch type_search) {
     char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
-            db_select_neckline(token_str, neckline);
+            db_select_neckline(neckline);
             break;
         case SEARCH_ALL:
-            db_select_all_neckline(token_str);          
+            db_select_all_neckline();          
             break;
         case SEARCH_BY_FILTER:
         default:
     }
     strcat(token_str, "\r\n\r\n");
-    send_message(client_fd, token_str);
+    //send_message(client_fd, token_str);
 }
 
 void search_sleeves(size_t client_fd, Sleeves *sleeves, TypeSearch type_search) {
     char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
-            db_select_sleeves(token_str, sleeves);
+            db_select_sleeves(sleeves);
             break;
         case SEARCH_ALL:
-            db_select_all_sleeves(token_str);          
+            db_select_all_sleeves();          
             break;
         case SEARCH_BY_FILTER:
         default:
     }
     strcat(token_str, "\r\n\r\n");
-    send_message(client_fd, token_str);
+    //send_message(client_fd, token_str);
 }
 
 void search_type(size_t client_fd, Type *type, TypeSearch type_search) {
     char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
-            db_select_type(token_str, type);
+            db_select_type(type);
             break;
         case SEARCH_ALL:
-            db_select_all_type(token_str);          
+            db_select_all_type();          
             break;
         case SEARCH_BY_FILTER:
         default:
     }
     strcat(token_str, "\r\n\r\n");
-    send_message(client_fd, token_str);
+    //send_message(client_fd, token_str);
 }
 
 void search_condition(size_t client_fd, Condition *condition, TypeSearch type_search) {
     char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
-            db_select_condition(token_str, condition);
+            db_select_condition(condition);
             break;
         case SEARCH_ALL:
-            db_select_all_condition(token_str);          
+            db_select_all_condition();          
             break;
         case SEARCH_BY_FILTER:
         default:
     }
     strcat(token_str, "\r\n\r\n");
-    send_message(client_fd, token_str);
+    //send_message(client_fd, token_str);
 }
 
 void search_size(size_t client_fd, Size *size, TypeSearch type_search) {
     char token_str[BUFFER_LENGTH] = {0};
     switch (type_search) {
         case SEARCH_BY_ID:
-            db_select_size(token_str, size);
+            db_select_size(size);
             break;
         case SEARCH_ALL:
-            db_select_all_size(token_str);          
+            db_select_all_size();          
             break;
         case SEARCH_BY_FILTER:
         default:
     }
     strcat(token_str, "\r\n\r\n");
-    send_message(client_fd, token_str);
+    //send_message(client_fd, token_str);
 }
 
 void search_item(size_t client_fd, char **tokens) {
-    Tables table = table_from_string(tokens[1]);
+    Table table = table_from_string(tokens[1]);
     TypeSearch type_search = type_search_from_string(tokens[2]);
     switch (table) {
         case TABLE_SWEATER:
@@ -657,7 +639,7 @@ void add_sweater(size_t client_fd, Sweater *sweater) {
     char message[STR_LENGTH] = {0};
     sprintf(message, "SWEATER:ID:%d\r\n\r\n", sweater->id);
     printf("%s\n", message);
-    send_all(client_fd, message, strlen(message));
+    //send_all(client_fd, message, strlen(message));
 }
 
 void add_note(size_t client_fd, Note *note) {
@@ -665,7 +647,7 @@ void add_note(size_t client_fd, Note *note) {
     char message[STR_LENGTH] = {0};
     sprintf(message, "Note:ID:%d\r\n\r\n", note->id);
     printf("%s\n", message);
-    send_all(client_fd, message, strlen(message));
+    //send_all(client_fd, message, strlen(message));
 }
 
 void add_piece(size_t client_fd, Piece *piece) {
@@ -673,7 +655,7 @@ void add_piece(size_t client_fd, Piece *piece) {
     char message[STR_LENGTH] = {0};
     sprintf(message, "PIECE:ID:%d\r\n\r\n", piece->id);
     printf("%s\n", message);
-    send_all(client_fd, message, strlen(message));
+    //send_all(client_fd, message, strlen(message));
 }
 
 void add_piece_type(size_t client_fd, PieceType *piece_type) {
@@ -681,7 +663,7 @@ void add_piece_type(size_t client_fd, PieceType *piece_type) {
     char message[STR_LENGTH] = {0};
     sprintf(message, "PIECE TYPE:ID:%d\r\n\r\n", piece_type->id);
     printf("%s\n", message);
-    send_all(client_fd, message, strlen(message));
+    //send_all(client_fd, message, strlen(message));
 }
 
 void add_brand(size_t client_fd, Brand *brand) {
@@ -689,7 +671,7 @@ void add_brand(size_t client_fd, Brand *brand) {
     char message[STR_LENGTH] = {0};
     sprintf(message, "BRAND:ID:%d\r\n\r\n", brand->id);
     printf("%s\n", message);
-    send_all(client_fd, message, strlen(message));
+    //send_all(client_fd, message, strlen(message));
 }
 
 void add_color(size_t client_fd, Color *color) {
@@ -697,7 +679,7 @@ void add_color(size_t client_fd, Color *color) {
     char message[STR_LENGTH] = {0};
     sprintf(message, "COLOR:ID:%d\r\n\r\n", color->id);
     printf("%s\n", message);
-    send_all(client_fd, message, strlen(message));
+    //send_all(client_fd, message, strlen(message));
 }
 
 void add_neckline(size_t client_fd, Neckline *neckline) {
@@ -705,7 +687,7 @@ void add_neckline(size_t client_fd, Neckline *neckline) {
     char message[STR_LENGTH] = {0};
     sprintf(message, "NECKLINE:ID:%d\r\n\r\n", neckline->id);
     printf("%s\n", message);
-    send_all(client_fd, message, strlen(message));
+    //send_all(client_fd, message, strlen(message));
 }
 
 void add_sleeves(size_t client_fd, Sleeves *sleeves) {
@@ -713,7 +695,7 @@ void add_sleeves(size_t client_fd, Sleeves *sleeves) {
     char message[STR_LENGTH] = {0};
     sprintf(message, "SLEEVES:ID:%d\r\n\r\n", sleeves->id);
     printf("%s\n", message);
-    send_all(client_fd, message, strlen(message));
+    //send_all(client_fd, message, strlen(message));
 }
 
 void add_type(size_t client_fd, Type *type) {
@@ -721,7 +703,7 @@ void add_type(size_t client_fd, Type *type) {
     char message[STR_LENGTH] = {0};
     sprintf(message, "TYPE:ID:%d\r\n\r\n", type->id);
     printf("%s\n", message);
-    send_all(client_fd, message, strlen(message));
+    //send_all(client_fd, message, strlen(message));
 }
 
 void add_condition(size_t client_fd, Condition *condition) {
@@ -729,7 +711,7 @@ void add_condition(size_t client_fd, Condition *condition) {
     char message[STR_LENGTH] = {0};
     sprintf(message, "CONDITION:ID:%d\r\n\r\n", condition->id);
     printf("%s\n", message);
-    send_all(client_fd, message, strlen(message));
+    //send_all(client_fd, message, strlen(message));
 }
 
 void add_size(size_t client_fd, Size *size) {
@@ -737,13 +719,13 @@ void add_size(size_t client_fd, Size *size) {
     char message[STR_LENGTH] = {0};
     sprintf(message, "SIZE:ID:%d\r\n\r\n", size->id);
     printf("%s\n", message);
-    send_all(client_fd, message, strlen(message));
+    //send_all(client_fd, message, strlen(message));
 }
 
 #define TABLE_IDX 1
 
 void add_item(size_t client_fd, char **tokens) {
-    Tables table = table_from_string(tokens[TABLE_IDX]);
+    Table table = table_from_string(tokens[TABLE_IDX]);
     switch (table) {
         case TABLE_SWEATER:
             Sweater sweater = {0};
@@ -831,7 +813,7 @@ int main() {
     int server_fd, client_fd;
     server_fd = network_create_server_socket(PORT);
     
-    db_init("cashmere.db");
+    db_init("../data/database_init.sql");
 
     bool exit_client = false;
     while (1) {

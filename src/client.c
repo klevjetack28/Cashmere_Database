@@ -5,59 +5,15 @@
 #include <ctype.h>
 #include <stdbool.h>
 
+#include "0xca75.h"
+#include "database.h"
 #include "network.h"
 #include "packet.h"
+#include "payload.h"
 #include "constants.h"
 #include "db_tables.h"
 
 #define PORT 5000
-
-// ----------------------------------------------------------------------------
-// Start Sweater Table
-
-void tokenize_sweater(Sweater* s) {
-    
-}
-/*
-void print_sweater(Sweater* s) {
-    printf("%s: ", s.cashmere_code);
-    printf("%s ", search_brand(s->brand_id));
-    printf("%s ", search_color(s->color_id));
-    printf("%s ", search_neckline(s->neckline_id));
-    printf("%s ", search_type(s->type_id));
-    printf("with %s sleeves ", search_sleeves(s->sleeves_id));
-    printf("in %s condition ", search_condition(s->condition_id));
-    printf("size %s.", search_size(s->size_id));
-}
-*/// End Sweater Table
-
-// ----------------------------------------------------------------------------
-// Start Miscellaneous Functions
-
-// Note: This function returns a pointer to a substring of the original string.
-// If the given string was allocated dynamically, the caller must not overwrite
-// that pointer with the returned value, since the original pointer must be
-// deallocated using the same allocator with which it was allocated.  The return
-// value must NOT be deallocated using free() etc.
-char *trim_whitespace(char *str)
-{
-  char *end;
-
-  // Trim leading space
-  while(isspace((unsigned char)*str)) str++;
-
-  if(*str == 0)  // All spaces?
-    return str;
-
-  // Trim trailing space
-  end = str + strlen(str) - 1;
-  while(end > str && isspace((unsigned char)*end)) end--;
-
-  // Write new null terminator character
-  end[1] = '\0';
-
-  return str;
-}
 
 void normalize_key(char* out, char* in) {
     int index = 0;
@@ -75,10 +31,6 @@ void normalize_key(char* out, char* in) {
     out[index] = '\0';
 }
 
-// End Miscellaneous Functions
-
-// ----------------------------------------------------------------------------
-// Start Get Input Functions
 void get_input(char* input) {
     char buffer[KEY_LENGTH] = {0};
     fgets(buffer, sizeof(buffer), stdin);
@@ -196,7 +148,6 @@ void edit_item(char* token_str) {
 // Start Add Item
 
 void add_sweater(char* token_str, Sweater* sweater) {
-    add_token(token_str, "TABLE SWEATER");
     char token[KEY_LENGTH] = {0};
     sprintf(token, "BRAND:%d", sweater->brand_id);
     add_token(token_str, token);
@@ -225,7 +176,6 @@ void add_sweater(char* token_str, Sweater* sweater) {
 }
 
 void add_note(char* token_str, Note* note) {
-    add_token(token_str, "TABLE NOTE");
     char token[STR_LENGTH * 2] = {0};
     sprintf(token, "NOTE:%d", note->sweater_id);
     add_token(token_str, token);
@@ -236,7 +186,6 @@ void add_note(char* token_str, Note* note) {
 }
 
 void add_piece(char* token_str, Piece* piece) {
-    add_token(token_str, "TABLE PIECE");
     char token[STR_LENGTH] = {0};
     sprintf(token, "SWEATER:%d", piece->sweater_id);
     add_token(token_str, token);
@@ -260,56 +209,48 @@ void add_piece(char* token_str, Piece* piece) {
 }
 
 void add_piece_type(char* token_str, char *input) {
-    add_token(token_str, " TABLE=PIECE_TYPE");
     char tokens[KEY_LENGTH] = {0};
     sprintf(tokens, " PIECE_TYPE_NAME=%s", input);
     add_token(token_str, tokens);
 }
 
 void add_brand(char* token_str, char *input) {
-    add_token(token_str, "TABLE=BRAND");
     char tokens[KEY_LENGTH] = {0};
     sprintf(tokens, "BRAND_NAME=%s", input);
     add_token(token_str, tokens);
 }
 
 void add_color(char* token_str, char *input) {
-    add_token(token_str, " TABLE=COLOR");
     char tokens[KEY_LENGTH] = {0};
     sprintf(tokens, " COLOR_NAME=%s", input);
     add_token(token_str, tokens);
 }
 
 void add_sleeves(char* token_str, char *input) {
-    add_token(token_str, " TABLE=SLEEVES");
     char tokens[KEY_LENGTH] = {0};
     sprintf(tokens, " SLEEVES_NAME=%s", input);
     add_token(token_str, tokens);
 }
 
 void add_neckline(char* token_str, char *input) {
-    add_token(token_str, "TABLE NECKLINE");
     char tokens[KEY_LENGTH] = {0};
     sprintf(tokens, "NECKLINE:%s", input);
     add_token(token_str, tokens);
 }
 
 void add_type(char* token_str, char *input) {
-    add_token(token_str, "TABLE TYPE");
     char tokens[KEY_LENGTH] = {0};
     sprintf(tokens, "TYPE:%s", input);
     add_token(token_str, tokens);
 }
 
 void add_condition(char* token_str, char *input) {
-    add_token(token_str, "TABLE CONDITION");
     char tokens[KEY_LENGTH] = {0};
     sprintf(tokens, "CONDITION:%s", input);
     add_token(token_str, tokens);
 }
 
 void add_size(char* token_str, char *input) {
-    add_token(token_str, "TABLE SIZE");
     char tokens[KEY_LENGTH] = {0};
     sprintf(tokens, "SIZE:%s", input);
     add_token(token_str, tokens);
@@ -322,7 +263,7 @@ void add_item(int server_fd, char* token_str) {
         print_table_options();
 
         char table_id[KEY_LENGTH];
-        Tables table = (Tables)get_int_input(table_id);
+        Table table = (Table)get_int_input(table_id);
         char input[STR_LENGTH] = {0};
         switch(table) {
             case TABLE_SWEATER:
@@ -516,7 +457,7 @@ void search_item(char* token_str) {
         print_table_options();
 
         char table_id[KEY_LENGTH] = {0};
-        Tables table = (Tables)get_int_input(table_id);
+        Table table = (Table)get_int_input(table_id);
         char input[KEY_LENGTH * 2] = {0};
         switch(table) {
             case TABLE_SWEATER:
@@ -595,7 +536,7 @@ void cashmere_database(int server_fd) {
             case '3':
                 add_item(server_fd, token_str);
                 printf("%s\n", token_str);
-                packet = packet_create_request_init(token_str);
+                packet = packet_create_request_init(TABLE_BRAND, token_str);
                 packet_print(&packet);
                 break;
             case '4':
