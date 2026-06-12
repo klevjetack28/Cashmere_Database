@@ -171,7 +171,7 @@ Size *db_read_sizes(int limit, int offset) {
     sqlite3_finalize(stmt);
 }
 
-Sweater db_read_sweater_by_id(Sweater *sweater) {
+Sweater db_read_sweater_by_id(int id) {
     const char *sql = 
         "SELECT id, sweater FROM sweater WHERE id = ?";
 
@@ -187,7 +187,7 @@ Sweater db_read_sweater_by_id(Sweater *sweater) {
     sqlite3_finalize(stmt);
 }
 
-Note db_read_note_by_id(Note *note) {
+Note db_read_note_by_id(int id) {
     const char *sql = 
         "SELECT id, note FROM Note WHERE id = ?";
 
@@ -203,7 +203,7 @@ Note db_read_note_by_id(Note *note) {
     sqlite3_finalize(stmt);
 }
 
-Piece db_read_piece_by_id(Piece *piece) {
+Piece db_read_piece_by_id(int id) {
     const char *sql = 
         "SELECT id, piece FROM Piece WHERE id = ?";
 
@@ -219,7 +219,7 @@ Piece db_read_piece_by_id(Piece *piece) {
     sqlite3_finalize(stmt);
 }
 
-PieceType db_read_piece_type_by_id(PieceType *piece_type) {
+PieceType db_read_piece_type_by_id(int id) {
     const char *sql = 
         "SELECT id, piece_type FROM PieceType WHERE id = ?";
 
@@ -235,7 +235,7 @@ PieceType db_read_piece_type_by_id(PieceType *piece_type) {
     sqlite3_finalize(stmt);
 }
 
-Brand db_read_brand_by_id(Brand *brand) {
+Brand db_read_brand_by_id(int id) {
     const char *sql = 
         "SELECT id, brand FROM Brand WHERE id = ?";
 
@@ -253,7 +253,7 @@ Brand db_read_brand_by_id(Brand *brand) {
     sqlite3_finalize(stmt);
 }
 
-Color db_read_color_by_id(Color *color) {
+Color db_read_color_by_id(int id) {
     const char *sql = 
         "SELECT id, color FROM Color WHERE id = ?";
 
@@ -269,7 +269,7 @@ Color db_read_color_by_id(Color *color) {
     sqlite3_finalize(stmt);
 }
 
-Neckline db_read_neckline_by_id(Neckline *neckline) {
+Neckline db_read_neckline_by_id(int id) {
     const char *sql = 
         "SELECT id, neckline FROM Neckline WHERE id = ?";
 
@@ -285,7 +285,7 @@ Neckline db_read_neckline_by_id(Neckline *neckline) {
     sqlite3_finalize(stmt);
 }
 
-Sleeves db_read_sleeves_by_id(Sleeves *sleeves) {
+Sleeves db_read_sleeves_by_id(int id) {
     const char *sql = 
         "SELECT id, sleeves FROM Sleeves WHERE id = ?";
 
@@ -301,7 +301,7 @@ Sleeves db_read_sleeves_by_id(Sleeves *sleeves) {
     sqlite3_finalize(stmt);
 }
 
-Type db_read_type_by_id(Type *type) {
+Type db_read_type_by_id(int id) {
     const char *sql = 
         "SELECT id, type FROM Type WHERE id = ?";
 
@@ -317,7 +317,7 @@ Type db_read_type_by_id(Type *type) {
     sqlite3_finalize(stmt);
 }
 
-Condition db_read_condition_by_id(Condition *condition) {
+Condition db_read_condition_by_id(int id) {
     const char *sql = 
         "SELECT id, condition FROM Condition WHERE id = ?";
 
@@ -333,7 +333,7 @@ Condition db_read_condition_by_id(Condition *condition) {
     sqlite3_finalize(stmt);
 }
 
-Size db_read_size_by_id(Size *size) {
+Size db_read_size_by_id(int id) {
     const char *sql = 
         "SELECT id, size FROM Size WHERE id = ?";
 

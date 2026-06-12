@@ -70,3 +70,26 @@ char *trim_whitespace(char *str) {
 
     return str;
 }
+
+char **str_split(char *str, char *delim) {
+    char **result = malloc(2 * STR_LENGTH * sizeof(char*));
+    int i = 0;
+
+    char *token = strtok(str, delim);
+    while (token && i < KEY_LENGTH) {
+        result[i++] = strdup(token);
+        token = strtok(NULL, delim);
+    }
+
+    result[i] = NULL;
+    return result;
+}
+
+size_t ptr_array_length(void **ptr) {
+    size_t count = 0; 
+    while (ptr[count] != NULL) { 
+        count++; 
+    }
+    
+    return count;
+}
