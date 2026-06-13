@@ -178,13 +178,16 @@ Sweater db_read_sweater_by_id(int id) {
     sqlite3_stmt *stmt;
 
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, sweater->id);
+    sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
 
-    sweater->id = sqlite3_column_int(stmt, 0);
+    Sweater sweater;
+    sweater.id = sqlite3_column_int(stmt, 0);
     //strcpy(sweater->sweater, sqlite3_column_text(stmt, 1));
     
     sqlite3_finalize(stmt);
+
+    return sweater;
 }
 
 Note db_read_note_by_id(int id) {
@@ -194,13 +197,16 @@ Note db_read_note_by_id(int id) {
     sqlite3_stmt *stmt;
 
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, note->id);
+    sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
 
-    note->id = sqlite3_column_int(stmt, 0);
+    Note note;
+    note.id = sqlite3_column_int(stmt, 0);
     //strcpy(note->note, sqlite3_column_text(stmt, 1));
     
     sqlite3_finalize(stmt);
+
+    return note;
 }
 
 Piece db_read_piece_by_id(int id) {
@@ -210,13 +216,16 @@ Piece db_read_piece_by_id(int id) {
     sqlite3_stmt *stmt;
 
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, piece->id);
+    sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
 
-    piece->id = sqlite3_column_int(stmt, 0);
+    Piece piece;
+    piece.id = sqlite3_column_int(stmt, 0);
     //strcpy(piece->piece, sqlite3_column_text(stmt, 1));
     
     sqlite3_finalize(stmt);
+
+    return piece;
 }
 
 PieceType db_read_piece_type_by_id(int id) {
@@ -226,13 +235,16 @@ PieceType db_read_piece_type_by_id(int id) {
     sqlite3_stmt *stmt;
 
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, piece_type->id);
+    sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
 
-    piece_type->id = sqlite3_column_int(stmt, 0);
+    PieceType piece_type;
+    piece_type.id = sqlite3_column_int(stmt, 0);
     const char *tmp = sqlite3_column_text(stmt, 1);
-    strcpy(piece_type->piece_type, tmp);
+    strcpy(piece_type.piece_type, tmp);
     sqlite3_finalize(stmt);
+
+    return piece_type;
 }
 
 Brand db_read_brand_by_id(int id) {
@@ -242,15 +254,16 @@ Brand db_read_brand_by_id(int id) {
     sqlite3_stmt *stmt;
 
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, brand->id);
-    printf("%d\n", brand->id);
+    sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
 
-    brand->id = sqlite3_column_int(stmt, 0);
+    Brand brand;
+    brand.id = sqlite3_column_int(stmt, 0);
     const char *tmp = sqlite3_column_text(stmt, 1);
-    printf("%s\n", tmp);
-    strcpy(brand->brand, tmp);
+    strcpy(brand.brand, tmp);
     sqlite3_finalize(stmt);
+
+    return brand;
 }
 
 Color db_read_color_by_id(int id) {
@@ -260,13 +273,16 @@ Color db_read_color_by_id(int id) {
     sqlite3_stmt *stmt;
 
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, color->id);
+    sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
 
-    color->id = sqlite3_column_int(stmt, 0);
+    Color color;
+    color.id = sqlite3_column_int(stmt, 0);
     const char *tmp = sqlite3_column_text(stmt, 1);
-    strcpy(color->color, tmp);
+    strcpy(color.color, tmp);
     sqlite3_finalize(stmt);
+
+    return color;
 }
 
 Neckline db_read_neckline_by_id(int id) {
@@ -276,13 +292,16 @@ Neckline db_read_neckline_by_id(int id) {
     sqlite3_stmt *stmt;
 
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, neckline->id);
+    sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
 
-    neckline->id = sqlite3_column_int(stmt, 0);
+    Neckline neckline;
+    neckline.id = sqlite3_column_int(stmt, 0);
     const char *tmp = sqlite3_column_text(stmt, 1);
-    strcpy(neckline->neckline, tmp);
+    strcpy(neckline.neckline, tmp);
     sqlite3_finalize(stmt);
+
+    return neckline;
 }
 
 Sleeves db_read_sleeves_by_id(int id) {
@@ -292,13 +311,16 @@ Sleeves db_read_sleeves_by_id(int id) {
     sqlite3_stmt *stmt;
 
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, sleeves->id);
+    sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
 
-    sleeves->id = sqlite3_column_int(stmt, 0);
+    Sleeves sleeves;
+    sleeves.id = sqlite3_column_int(stmt, 0);
     const char *tmp = sqlite3_column_text(stmt, 1);
-    strcpy(sleeves->sleeves, tmp);
+    strcpy(sleeves.sleeves, tmp);
     sqlite3_finalize(stmt);
+
+    return sleeves;
 }
 
 Type db_read_type_by_id(int id) {
@@ -308,13 +330,16 @@ Type db_read_type_by_id(int id) {
     sqlite3_stmt *stmt;
 
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, type->id);
+    sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
 
-    type->id = sqlite3_column_int(stmt, 0);
+    Type type;
+    type.id = sqlite3_column_int(stmt, 0);
     const char *tmp = sqlite3_column_text(stmt, 1);
-    strcpy(type->type, tmp);
+    strcpy(type.type, tmp);
     sqlite3_finalize(stmt);
+
+    return type;
 }
 
 Condition db_read_condition_by_id(int id) {
@@ -324,13 +349,16 @@ Condition db_read_condition_by_id(int id) {
     sqlite3_stmt *stmt;
 
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, condition->id);
+    sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
 
-    condition->id = sqlite3_column_int(stmt, 0);
+    Condition condition;
+    condition.id = sqlite3_column_int(stmt, 0);
     const char *tmp = sqlite3_column_text(stmt, 1);
-    strcpy(condition->condition, tmp);
+    strcpy(condition.condition, tmp);
     sqlite3_finalize(stmt);
+
+    return condition;
 }
 
 Size db_read_size_by_id(int id) {
@@ -340,13 +368,16 @@ Size db_read_size_by_id(int id) {
     sqlite3_stmt *stmt;
 
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, size->id);
+    sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
 
-    size->id = sqlite3_column_int(stmt, 0);
+    Size size;
+    size.id = sqlite3_column_int(stmt, 0);
     const char *tmp = sqlite3_column_text(stmt, 1);
-    strcpy(size->size, tmp);
+    strcpy(size.size, tmp);
     sqlite3_finalize(stmt);
+
+    return size;
 }
 
 int db_create_sweater(Sweater *sweater) {
