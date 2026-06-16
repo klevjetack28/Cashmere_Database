@@ -14,3 +14,12 @@ const char *TABLE_NAMES[NUM_TABLES] = {
     "CONDITION",
     "SIZE",
 };
+
+Table table_from_string(const char *token_str) {
+    for (int i = 0; i < NUM_TABLES; i++) {
+        if (strcmp(token_str, TABLE_NAMES[i]) == 0) {
+            return (Table)i;
+        }
+    }
+    return TABLE_NULL;
+}

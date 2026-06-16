@@ -28,7 +28,11 @@ Packet packet_init(PacketHeader header, char *payload) {
     memset(&packet, 0, sizeof(Packet));
 
     packet.header = header;
-    strncpy(packet.payload, payload, packet.header.payload_length);
+
+    if (payload != NULL && header.payload_length > 0) {
+        memcpy(packet.payload, payload, header.payload_length);
+        packet.payload[header.payload_length] = '\0';
+    }
     
     return packet;
 }
@@ -74,10 +78,34 @@ Packet packet_export_request_init(char *payload) {
     return packet_request_init(REQUEST_TYPE_EXPORT, TABLE_NULL, payload);
 }
 
-Packet packet_response_init(Table table, char *payload) {
+Packet packet_response_init(RequestType request_type, Table table, PacketStatus status, char *payload) {
     PacketHeader header;
-    header = packet_header_init(PACKET_TYPE_RESPONSE, REQUEST_TYPE_NONE, table, PACKET_STATUS_OK, strlen(payload));
+    header = packet_header_init(PACKET_TYPE_RESPONSE, request_type, table, status, strlen(payload));
     return packet_init(header, payload);
+}
+
+Packet packet_create_response_init(Table table, PacketStatus status, char *payload) {
+    return packet_response_init(REQUEST_TYPE_CREATE, table, status, payload);
+}
+
+Packet packet_read_response_init(Table table, PacketStatus status, char *payload) {
+    return packet_response_init(REQUEST_TYPE_READ, table, status, payload);
+}
+
+Packet packet_update_response_init(Table table, PacketStatus status, char *payload) {
+    return packet_response_init(REQUEST_TYPE_UPDATE, table, status, payload);
+}
+
+Packet packet_delete_response_init(Table table, PacketStatus status, char *payload) {
+    return packet_response_init(REQUEST_TYPE_DELETE, table, status, payload);
+}
+
+Packet packet_import_response_init(PacketStatus status, char *payload) {
+    return packet_response_init(REQUEST_TYPE_IMPORT, TABLE_NULL, status, payload);
+}
+
+Packet packet_export_response_init(PacketStatus status, char *payload) {
+    return packet_response_init(REQUEST_TYPE_EXPORT, TABLE_NULL, status, payload);
 }
 
 int packet_serialize(const Packet *packet, unsigned char byte_array[BUFFER_LENGTH]) {
@@ -86,7 +114,7 @@ int packet_serialize(const Packet *packet, unsigned char byte_array[BUFFER_LENGT
     PacketType packet_type = packet->header.packet_type;
     RequestType request_type = packet->header.request_type;
     Table table = packet->header.table;
-    PacketStatus status = packet->header.packet_type;
+    PacketStatus status = packet->header.status;
     int payload_length = packet->header.payload_length;
 
     memcpy(byte_array + offset, &packet_type, sizeof(packet_type));
@@ -133,11 +161,10 @@ void packet_deserialize(const unsigned char byte_array[BUFFER_LENGTH], int bytes
 
     memcpy(&payload_length, byte_array + offset, sizeof(payload_length));
     offset += sizeof(payload_length);
-    printf("Payload Length: %d\n", payload_length);
     
     PacketHeader tmp;
     tmp = packet_header_init(packet_type, request_type, table, status, payload_length);
     memcpy(&packet->header, &tmp, sizeof(tmp));
-    memcpy(&packet->payload, byte_array + offset, bytes_received - offset);
-    printf("Payload: %s\n", &packet->payload);
+    memcpy(packet->payload, byte_array + offset, bytes_received - offset);
+    packet->payload[payload_length] = '\0';
 }

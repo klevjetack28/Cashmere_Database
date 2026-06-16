@@ -239,7 +239,7 @@ void edit_item(char* token_str) {
 // Start Add Item
 
 Packet create_item() {
-    Packet packet;
+    Packet request;
 
     while (1) {
         print_table_options();
@@ -250,88 +250,87 @@ Packet create_item() {
             case TABLE_SWEATER: {
                 Sweater sweater = get_create_sweater_input();
                 char *payload = payload_encode_sweater(&sweater);
-                packet = packet_create_request_init(table, payload);
+                request = packet_create_request_init(table, payload);
                 free(payload);
-                return packet;
+                return request;
             }
             case TABLE_NOTE: {
                 Note note = get_create_note_input();
                 char *payload = payload_encode_note(&note);
-                packet = packet_create_request_init(table, payload);
+                request = packet_create_request_init(table, payload);
                 free(payload);
-                return packet;
+                return request;
             }
             case TABLE_PIECE: {
                 Piece piece = get_create_piece_input();
                 char *payload = payload_encode_piece(&piece);
-                packet = packet_create_request_init(table, payload);
+                request = packet_create_request_init(table, payload);
                 free(payload);
-                return packet;
+                return request;
             }
             case TABLE_PIECE_TYPE: { 
                 PieceType piece_type = get_create_piece_type_input();
                 char *payload = payload_encode_piece_type(&piece_type);
-                packet = packet_create_request_init(table, payload);
+                request = packet_create_request_init(table, payload);
                 free(payload);
-                return packet;
+                return request;
             }
             case TABLE_BRAND: {
                 Brand brand = get_create_brand_input();
                 char *payload = payload_encode_brand(&brand);
-                packet = packet_create_request_init(table, payload);
+                request = packet_create_request_init(table, payload);
                 free(payload);
-                packet_print(&packet);
-                return packet;
+                return request;
             }
             case TABLE_COLOR: {
                 Color color = get_create_color_input();
                 char *payload = payload_encode_color(&color);
-                packet = packet_create_request_init(table, payload);
+                request = packet_create_request_init(table, payload);
                 free(payload);
-                return packet;
+                return request;
             }
             case TABLE_NECKLINE: {
                 Neckline neckline = get_create_neckline_input();
                 char *payload = payload_encode_neckline(&neckline);
-                packet = packet_create_request_init(table, payload);
+                request = packet_create_request_init(table, payload);
                 free(payload);
-                return packet;
+                return request;
             }
             case TABLE_SLEEVES: {
                 Sleeves sleeves = get_create_sleeves_input();
                 char *payload = payload_encode_sleeves(&sleeves);
-                packet = packet_create_request_init(table, payload);
+                request = packet_create_request_init(table, payload);
                 free(payload);
-                return packet;
+                return request;
             }
             case TABLE_TYPE: {
                 Type type = get_create_type_input();
                 char *payload = payload_encode_type(&type);
-                packet = packet_create_request_init(table, payload);
+                request = packet_create_request_init(table, payload);
                 free(payload);
-                return packet;
+                return request;
             }
             case TABLE_CONDITION: {
                 Condition condition = get_create_condition_input();
                 char *payload = payload_encode_condition(&condition);
-                packet = packet_create_request_init(table, payload);
+                request = packet_create_request_init(table, payload);
                 free(payload);
-                return packet;
+                return request;
             }
             case TABLE_SIZE: {
                 Size size = get_create_size_input();
                 char *payload = payload_encode_size(&size);
-                packet = packet_create_request_init(table, payload);
+                request = packet_create_request_init(table, payload);
                 free(payload);
-                return packet;
+                return request;
             }
             default:
+                // Create error packet
                 printf("Something went wrong...\n");
                 continue;
         }
     }
-    print_packet(packet);
-    return packet;
+    return request;
 }
 // End Add Item
 
@@ -506,8 +505,8 @@ void database_menu() {
 void cashmere_database(int server_fd) {
     char buffer[STR_LENGTH] = {0};
     bool exit = false;
+    Packet request, response;
     while(!exit) {
-        Packet packet;
         database_menu();
 
         char token_str[STR_LENGTH] = {0};
@@ -521,7 +520,7 @@ void cashmere_database(int server_fd) {
                 info_item(token_str);
                 break;
             case '3':
-                packet = create_item();
+                request = create_item();
                 break;
             case '4':
                 edit_item(token_str);
@@ -536,10 +535,10 @@ void cashmere_database(int server_fd) {
             default:
         }
     
-        network_send_packet(server_fd, &packet);
-        network_recv_packet(server_fd, &packet);
-        packet_print(&packet);
-        printf("%s\n", packet.payload);
+        packet_print(&request);
+        network_send_packet(server_fd, &request);
+        network_recv_packet(server_fd, &response);
+        packet_print(&response);
     }
 }
 

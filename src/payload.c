@@ -170,6 +170,7 @@ char *payload_encode_condition(Condition *condition) {
             condition->condition
             );
 
+    printf("%s\n", payload);
     return payload;
 }
 

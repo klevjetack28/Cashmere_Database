@@ -106,6 +106,5 @@ void network_recv_packet(int socket_fd, Packet *packet) {
     
     network_recv_all(socket_fd, &packet_length, sizeof(int));
     network_recv_all(socket_fd, byte_array, packet_length);
-    printf("recv Packet Length: %d\n", packet_length);
     packet_deserialize(byte_array, packet_length, packet);
 }

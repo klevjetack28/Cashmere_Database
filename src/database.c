@@ -471,7 +471,8 @@ int db_create_brand(Brand *brand) {
      sqlite3_step(stmt);
      sqlite3_finalize(stmt);
 
-     return (int)sqlite3_last_insert_rowid(db);
+     int id = (int)sqlite3_last_insert_rowid(db);
+     return id;
 }
 
 int db_create_color(Color *color) {
