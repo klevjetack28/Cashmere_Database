@@ -3,6 +3,7 @@
 static const Table LOOKUP_TABLES[] = {
     TABLE_PIECE_TYPE,
     TABLE_BRAND,
+    TABLE_COLOR_FAMILY,
     TABLE_COLOR,
     TABLE_NECKLINE,
     TABLE_SLEEVES,
@@ -22,6 +23,10 @@ static void seed_create_lookup_item(Table table, char *value) {
         case TABLE_BRAND:
             Brand brand = payload_decode_brand(value);
             db_create_brand(&brand);
+            break;
+        case TABLE_COLOR_FAMILY:
+            ColorFamily color_family = payload_decode_color_family(value);
+            db_create_color_family(&color_family);
             break;
         case TABLE_COLOR:
             Color color = payload_decode_color(value);
@@ -48,6 +53,7 @@ static void seed_create_lookup_item(Table table, char *value) {
             db_create_size(&size);
             break;
         default:
+            printf("ERROR: %s\n", value);
     }
 }
 
@@ -74,6 +80,7 @@ static void seed_create_sweater_item(Table table, char *value) {
             db_create_piece(&piece);
             break;
         default:
+            printf("ERROR: %s\n", value);
     }
 }
 

@@ -7,6 +7,7 @@ const char *TABLE_NAMES[NUM_TABLES] = {
     "PIECE",
     "PIECE_TYPE",
     "BRAND",
+    "COLOR_FAMILY",
     "COLOR",
     "NECKLINE",
     "SLEEVES",

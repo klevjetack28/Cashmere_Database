@@ -41,6 +41,7 @@ int db_create_note(Note *note);
 int db_create_piece(Piece *piece);
 int db_create_piece_type(PieceType *piece_type);
 int db_create_brand(Brand *brand);
+int db_create_color_family(ColorFamily *color_family);
 int db_create_color(Color *color);
 int db_create_neckline(Neckline *neckline);
 int db_create_sleeves(Sleeves *sleeves);

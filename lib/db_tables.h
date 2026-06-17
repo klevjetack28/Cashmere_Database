@@ -6,12 +6,13 @@
 #include "constants.h"
 
 typedef enum {
-    TABLE_NULL,
+    TABLE_NULL = 0,
     TABLE_SWEATER,
     TABLE_NOTE,
     TABLE_PIECE,
     TABLE_PIECE_TYPE,
     TABLE_BRAND,
+    TABLE_COLOR_FAMILY,
     TABLE_COLOR,
     TABLE_NECKLINE,
     TABLE_SLEEVES,
@@ -51,7 +52,6 @@ typedef struct {
     int original_weight;
     int current_weight;
     int continuous;
-    int scraped;
     // some form of date;
 } Piece;
 
@@ -67,6 +67,12 @@ typedef struct {
 
 typedef struct {
     int id;
+    char color_family[KEY_LENGTH];
+} ColorFamily;
+
+typedef struct {
+    int id;
+    int color_family_id;
     char color[KEY_LENGTH];
 } Color;
 

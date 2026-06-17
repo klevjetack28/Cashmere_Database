@@ -48,14 +48,13 @@ char *payload_encode_piece(Piece *piece) {
     }
 
     snprintf(payload, PAYLOAD_MAX_LENGTH, 
-            "ID=%d SWEATER_ID=%d PIECE_TYPE_ID=%d ORIGINAL_WEIGHT=%d CURRENT_WEIGHT=%d CONTINUOUS=%d SCRAPED=%d", 
+            "ID=%d SWEATER_ID=%d PIECE_TYPE_ID=%d ORIGINAL_WEIGHT=%d CURRENT_WEIGHT=%d CONTINUOUS=%d", 
             piece->id, 
             piece->sweater_id, 
             piece->piece_type_id, 
             piece->original_weight, 
             piece->current_weight, 
-            piece->continuous, 
-            piece->scraped
+            piece->continuous 
             );
 
     return payload;
@@ -93,6 +92,22 @@ char *payload_encode_brand(Brand *brand) {
     return payload;
 }
 
+char *payload_encode_color_family(ColorFamily *color_family) {
+    char *payload = malloc(PAYLOAD_MAX_LENGTH);
+
+    if (payload == NULL) {
+        return NULL;
+    }
+
+    snprintf(payload, PAYLOAD_MAX_LENGTH, 
+            "ID=%d COLOR_FAMILY=%s", 
+            color_family->id, 
+            color_family->color_family
+            );
+
+    return payload;
+}
+
 char *payload_encode_color(Color *color) {
     char *payload = malloc(PAYLOAD_MAX_LENGTH);
 
@@ -101,8 +116,9 @@ char *payload_encode_color(Color *color) {
     }
 
     snprintf(payload, PAYLOAD_MAX_LENGTH, 
-            "ID=%d COLOR=%s", 
+            "ID=%d COLOR_FAMILY_ID=%d COLOR=%s", 
             color->id, 
+            color->color_family_id,
             color->color
             );
 
@@ -260,7 +276,6 @@ Piece payload_decode_piece(char *payload) {
         char **token = str_split(tokens[i], "=");
         char *field = token[0];
         char *value = token[1];
-
         if (strcmp(field, "ID") == 0) {
             piece.id = atoi(value);
         } else if (strcmp(field, "SWEATER_ID") == 0) {
@@ -273,8 +288,6 @@ Piece payload_decode_piece(char *payload) {
             piece.current_weight = atoi(value);
         } else if (strcmp(field, "CONTINUOUS") == 0) {
             piece.continuous = atoi(value);
-        } else if (strcmp(field, "SCRAPED") == 0) {
-            piece.scraped = atoi(value);
         } else {
 
         }
@@ -330,6 +343,29 @@ Brand payload_decode_brand(char *payload) {
     return brand;
 }
 
+ColorFamily payload_decode_color_family(char *payload) {
+    ColorFamily color_family;
+
+    char **tokens = str_split(payload, " ");
+    size_t length = ptr_array_length(tokens);
+    for (int i = 0; i < length; i++) {
+        char **token = str_split(tokens[i], "=");
+        char *field = token[0];
+        char *value = token[1];
+
+        if (strcmp(field, "ID") == 0) {
+            color_family.id = atoi(value);
+        } else if (strcmp(field, "COLOR_FAMILY") == 0) {
+            strcpy(color_family.color_family, value);
+        } else {
+
+        }
+
+    }
+
+    return color_family;
+}
+
 Color payload_decode_color(char *payload) {
     Color color;
 
@@ -342,6 +378,8 @@ Color payload_decode_color(char *payload) {
 
         if (strcmp(field, "ID") == 0) {
             color.id = atoi(value);
+        } else if (strcmp(field, "COLOR_FAMILY_ID") == 0) {
+            color.color_family_id = atoi(value);
         } else if (strcmp(field, "COLOR") == 0) {
             strcpy(color.color, value);
         } else {

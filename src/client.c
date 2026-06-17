@@ -108,96 +108,75 @@ Piece get_create_piece_input() {
     piece.current_weight = piece.original_weight;
     printf("Continuos True(1)/False(0): ");
     piece.continuous = get_int_input(input);
-    piece.scraped = 0; 
 
     return piece;
 }
 
 PieceType get_create_piece_type_input() {
     PieceType piece_type;
-    char input[STR_LENGTH] = {0};
-
     printf("PieceType: ");
-    get_string_input(input);
-    strcpy(piece_type.piece_type, input);
-
+    get_string_input(piece_type.piece_type);
     return piece_type;
 }
 
 Brand get_create_brand_input() {
     Brand brand;
-    char input[STR_LENGTH] = {0};
-
     printf("Brand: ");
-    get_string_input(input);
-    strcpy(brand.brand, input);
-
+    get_string_input(brand.brand);
     return brand;   
+}
+
+ColorFamily get_create_color_family_input() {
+    ColorFamily color_family;
+    printf("Color Family: ");
+    get_string_input(color_family.color_family);   
+    return color_family;   
 }
 
 Color get_create_color_input() {
     Color color;
     char input[STR_LENGTH] = {0};
-
-    printf("color: ");
-    get_string_input(input);   
-    strcpy(color.color, input);
-
+    
+    printf("Color Family ID: ");
+    color.color_family_id = get_int_input(input);
+    printf("Color: ");
+    get_string_input(color.color);
+    
     return color;   
 }
 
 Neckline get_create_neckline_input() {
     Neckline neckline;
-    char input[STR_LENGTH] = {0};
-
     printf("Neckline: ");
-    get_string_input(input);
-    strcpy(neckline.neckline, input);
-
+    get_string_input(neckline.neckline);
     return neckline;   
 }
 
 Sleeves get_create_sleeves_input() {
     Sleeves sleeves;
-    char input[STR_LENGTH] = {0};
-
     printf("Sleeves: ");
-    get_string_input(input);
-    strcpy(sleeves.sleeves, input);
-
+    get_string_input(sleeves.sleeves);
     return sleeves;
 }
 
 Type get_create_type_input() {
     Type type;
-    char input[STR_LENGTH] = {0};
-
     printf("Type: ");
-    get_string_input(input);
-    strcpy(type.type, input);
-
+    get_string_input(type.type);
     return type;
 }
 
 Condition get_create_condition_input() {
     Condition condition;
-    char input[STR_LENGTH] = {0};
-
     printf("Condition: ");
-    get_string_input(input);
-    strcpy(condition.condition, input);
-
+    get_string_input(condition.condition);
     return condition;
 }
 
 Size get_create_size_input() {
     Size size;
-    char input[STR_LENGTH] = {0};
-
     printf("Size: ");
-    get_string_input(input);
-    strcpy(size.size, input);
-
+    get_string_input(size.size);
     return size;
 }
 
@@ -278,6 +257,13 @@ Packet create_item() {
             case TABLE_BRAND: {
                 Brand brand = get_create_brand_input();
                 char *payload = payload_encode_brand(&brand);
+                request = packet_create_request_init(table, payload);
+                free(payload);
+                return request;
+            }
+            case TABLE_COLOR_FAMILY: {
+                ColorFamily color_family = get_create_color_family_input();
+                char *payload = payload_encode_color_family(&color_family);
                 request = packet_create_request_init(table, payload);
                 free(payload);
                 return request;

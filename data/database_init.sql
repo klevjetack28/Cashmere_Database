@@ -10,9 +10,16 @@ CREATE TABLE IF NOT EXISTS brand (
     brand TEXT NOT NULL UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS color (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    color TEXT NOT NULL UNIQUE
+CREATE TABLE color_family (
+    id INTEGER PRIMARY KEY,
+    color_family TEXT UNIQUE NOT NULL
+);
+
+CREATE TABLE color (
+    id INTEGER PRIMARY KEY,
+    color_family_id INTEGER NOT NULL,
+    color TEXT UNIQUE NOT NULL,
+    FOREIGN KEY (color_family_id) REFERENCES color_family(id)
 );
 
 CREATE TABLE IF NOT EXISTS neckline (
@@ -42,7 +49,7 @@ CREATE TABLE IF NOT EXISTS size (
 
 CREATE TABLE IF NOT EXISTS sweater (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    cashmere_code TEXT NOT NULL UNIQUE,
+    cashmere_code TEXT NOT NULL,
     brand_id INTEGER NOT NULL,
     color_id INTEGER NOT NULL,
     neckline_id INTEGER NOT NULL,
@@ -77,7 +84,6 @@ CREATE TABLE IF NOT EXISTS piece (
     original_weight INTEGER NOT NULL,
     current_weight INTEGER NOT NULL,
     continuous INTEGER NOT NULL,
-    scraped INTEGER NOT NULL,
 
     FOREIGN KEY (sweater_id) REFERENCES sweater(id)
         ON DELETE CASCADE,

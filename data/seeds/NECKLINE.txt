@@ -1,0 +1,5 @@
+ID=0 NECKLINE=Crewneck
+ID=0 NECKLINE=V_Neck
+ID=0 NECKLINE=Turtleneck
+ID=0 NECKLINE=Quarter_Zip
+ID=0 NECKLINE=Quarter_Button

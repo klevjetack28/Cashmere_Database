@@ -397,157 +397,167 @@ int db_create_sweater(Sweater *sweater) {
         "   size_id) "
         "   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-     sqlite3_stmt *stmt;
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     sqlite3_bind_text(stmt, 1, "CASH-000", -1, SQLITE_TRANSIENT);
-     sqlite3_bind_int(stmt, 2, sweater->brand_id);
-     sqlite3_bind_int(stmt, 3, sweater->color_id);
-     sqlite3_bind_int(stmt, 4, sweater->neckline_id);
-     sqlite3_bind_int(stmt, 5, sweater->sleeves_id);
-     sqlite3_bind_int(stmt, 6, sweater->type_id);
-     sqlite3_bind_int(stmt, 7, sweater->weight);
-     sqlite3_bind_int(stmt, 8, sweater->condition_id);
-     sqlite3_bind_int(stmt, 9, sweater->size_id);
-     sqlite3_step(stmt);
-     sqlite3_finalize(stmt);
+    sqlite3_stmt *stmt;
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_text(stmt, 1, "CASH-000", -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt, 2, sweater->brand_id);
+    sqlite3_bind_int(stmt, 3, sweater->color_id);
+    sqlite3_bind_int(stmt, 4, sweater->neckline_id);
+    sqlite3_bind_int(stmt, 5, sweater->sleeves_id);
+    sqlite3_bind_int(stmt, 6, sweater->type_id);
+    sqlite3_bind_int(stmt, 7, sweater->weight);
+    sqlite3_bind_int(stmt, 8, sweater->condition_id);
+    sqlite3_bind_int(stmt, 9, sweater->size_id);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
 
-     return (int)sqlite3_last_insert_rowid(db);   
+    return (int)sqlite3_last_insert_rowid(db);   
 }
 
 int db_create_note(Note *note) {
-     const char *sql = "INSERT INTO note(sweater_id, content) VALUES (?, ?);";
-     sqlite3_stmt *stmt;
+    const char *sql = "INSERT INTO note(sweater_id, content) VALUES (?, ?);";
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     sqlite3_bind_int(stmt, 1, note->sweater_id);
-     printf("%s\n", note->content);
-     sqlite3_bind_text(stmt, 2, note->content, -1, SQLITE_TRANSIENT);
-     sqlite3_step(stmt);
-     sqlite3_finalize(stmt);
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, note->sweater_id);
+    sqlite3_bind_text(stmt, 2, note->content, -1, SQLITE_TRANSIENT);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
 
-     return (int)sqlite3_last_insert_rowid(db);
+    return (int)sqlite3_last_insert_rowid(db);
 }
 
 int db_create_piece(Piece *piece) {
-     const char *sql = 
-         "  INSERT INTO piece( "
-         "  sweater_id, "
-         "  piece_type_id, "
-         "  original_weight, "
-         "  current_weight, "
-         "  continuous, "
-         "  scraped) "
-         "  VALUES (?, ?, ?, ?, ?, ?);";
-     sqlite3_stmt *stmt;
+    const char *sql = 
+        "  INSERT INTO piece( "
+        "  sweater_id, "
+        "  piece_type_id, "
+        "  original_weight, "
+        "  current_weight, "
+        "  continuous) "
+        "  VALUES (?, ?, ?, ?, ?);";
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     sqlite3_bind_int(stmt, 1, piece->sweater_id);
-     sqlite3_bind_int(stmt, 2, piece->piece_type_id);
-     sqlite3_bind_int(stmt, 3, piece->original_weight);
-     sqlite3_bind_int(stmt, 4, piece->current_weight);
-     sqlite3_bind_int(stmt, 5, piece->continuous);
-     sqlite3_bind_int(stmt, 6, piece->scraped);
-     sqlite3_step(stmt);
-     sqlite3_finalize(stmt);
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, piece->sweater_id);
+    sqlite3_bind_int(stmt, 2, piece->piece_type_id);
+    sqlite3_bind_int(stmt, 3, piece->original_weight);
+    sqlite3_bind_int(stmt, 4, piece->current_weight);
+    sqlite3_bind_int(stmt, 5, piece->continuous);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
 
-     return (int)sqlite3_last_insert_rowid(db);
+    return (int)sqlite3_last_insert_rowid(db);
 }
 
 int db_create_piece_type(PieceType *piece_type) {
-     const char *sql = "INSERT INTO piece_type(piece_type) VALUES (?);";
-     sqlite3_stmt *stmt;
+    const char *sql = "INSERT INTO piece_type(piece_type) VALUES (?);";
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     sqlite3_bind_text(stmt, 1, piece_type->piece_type, -1, SQLITE_TRANSIENT);
-     sqlite3_step(stmt);
-     sqlite3_finalize(stmt);
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_text(stmt, 1, piece_type->piece_type, -1, SQLITE_TRANSIENT);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
 
-     return (int)sqlite3_last_insert_rowid(db);
+    return (int)sqlite3_last_insert_rowid(db);
 }
 
 int db_create_brand(Brand *brand) {
-     const char *sql = "INSERT INTO brand(brand) VALUES (?);";
-     sqlite3_stmt *stmt;
+    const char *sql = "INSERT INTO brand(brand) VALUES (?);";
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     sqlite3_bind_text(stmt, 1, brand->brand, -1, SQLITE_TRANSIENT);
-     sqlite3_step(stmt);
-     sqlite3_finalize(stmt);
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_text(stmt, 1, brand->brand, -1, SQLITE_TRANSIENT);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
 
-     int id = (int)sqlite3_last_insert_rowid(db);
-     return id;
+    int id = (int)sqlite3_last_insert_rowid(db);
+    return id;
+}
+
+int db_create_color_family(ColorFamily *color_family) {
+    const char *sql = "INSERT INTO color_family(color_family) VALUES (?);";
+    sqlite3_stmt *stmt;
+
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_text(stmt, 1, color_family->color_family, -1, SQLITE_TRANSIENT);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+
+    return (int)sqlite3_last_insert_rowid(db);
 }
 
 int db_create_color(Color *color) {
-     const char *sql = "INSERT INTO color(color) VALUES (?);";
-     sqlite3_stmt *stmt;
+    const char *sql = "INSERT INTO color(color_family_id, color) VALUES (?, ?);";
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     sqlite3_bind_text(stmt, 1, color->color, -1, SQLITE_TRANSIENT);
-     sqlite3_step(stmt);
-     sqlite3_finalize(stmt);
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, color->color_family_id);
+    sqlite3_bind_text(stmt, 2, color->color, -1, SQLITE_TRANSIENT);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
 
-     return (int)sqlite3_last_insert_rowid(db);
+    return (int)sqlite3_last_insert_rowid(db);
 }
 
 int db_create_neckline(Neckline *neckline) {
-     const char *sql = "INSERT INTO neckline(neckline) VALUES (?);";
-     sqlite3_stmt *stmt;
+    const char *sql = "INSERT INTO neckline(neckline) VALUES (?);";
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     sqlite3_bind_text(stmt, 1, neckline->neckline, -1, SQLITE_TRANSIENT);
-     sqlite3_step(stmt);
-     sqlite3_finalize(stmt);
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_text(stmt, 1, neckline->neckline, -1, SQLITE_TRANSIENT);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
 
-     return (int)sqlite3_last_insert_rowid(db);
+    return (int)sqlite3_last_insert_rowid(db);
 }
 
 int db_create_sleeves(Sleeves *sleeves) {
-     const char *sql = "INSERT INTO sleeves(sleeves) VALUES (?);";
-     sqlite3_stmt *stmt;
+    const char *sql = "INSERT INTO sleeves(sleeves) VALUES (?);";
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     sqlite3_bind_text(stmt, 1, sleeves->sleeves, -1, SQLITE_TRANSIENT);
-     sqlite3_step(stmt);
-     sqlite3_finalize(stmt);
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_text(stmt, 1, sleeves->sleeves, -1, SQLITE_TRANSIENT);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
 
-     return (int)sqlite3_last_insert_rowid(db);   
+    return (int)sqlite3_last_insert_rowid(db);   
 }
 
 int db_create_type(Type *type) {
-     const char *sql = "INSERT INTO type(type) VALUES (?);";
-     sqlite3_stmt *stmt;
+    const char *sql = "INSERT INTO type(type) VALUES (?);";
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     sqlite3_bind_text(stmt, 1, type->type, -1, SQLITE_TRANSIENT);
-     sqlite3_step(stmt);
-     sqlite3_finalize(stmt);
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_text(stmt, 1, type->type, -1, SQLITE_TRANSIENT);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
 
-     return (int)sqlite3_last_insert_rowid(db);   
+    return (int)sqlite3_last_insert_rowid(db);   
 }
 
 int db_create_condition(Condition *condition) {
-     const char *sql = "INSERT INTO condition(condition) VALUES (?);";
-     sqlite3_stmt *stmt;
+    const char *sql = "INSERT INTO condition(condition) VALUES (?);";
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     sqlite3_bind_text(stmt, 1, condition->condition, -1, SQLITE_TRANSIENT);
-     sqlite3_step(stmt);
-     sqlite3_finalize(stmt);
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_text(stmt, 1, condition->condition, -1, SQLITE_TRANSIENT);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
 
-     return (int)sqlite3_last_insert_rowid(db);   
+    return (int)sqlite3_last_insert_rowid(db);   
 }
 
 int db_create_size(Size *size) {
-     const char *sql = "INSERT INTO size(size) VALUES (?);";
-     sqlite3_stmt *stmt;
+    const char *sql = "INSERT INTO size(size) VALUES (?);";
+    sqlite3_stmt *stmt;
 
-     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-     sqlite3_bind_text(stmt, 1, size->size, -1, SQLITE_TRANSIENT);
-     sqlite3_step(stmt);
-     sqlite3_finalize(stmt);
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_text(stmt, 1, size->size, -1, SQLITE_TRANSIENT);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
 
-     return (int)sqlite3_last_insert_rowid(db);
+    return (int)sqlite3_last_insert_rowid(db);
 }
 
 int db_update_sweater(Sweater *sweater) {

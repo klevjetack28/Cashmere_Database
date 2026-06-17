@@ -466,6 +466,15 @@ Packet create_item(Packet *request) {
             free(payload);
             break;
         }
+        
+        case TABLE_COLOR_FAMILY: {
+            ColorFamily color_family = payload_decode_color_family(request->payload);            
+            color_family.id = db_create_color_family(&color_family);
+            char *payload = payload_encode_color_family(&color_family);
+            response = packet_create_response_init(TABLE_COLOR_FAMILY, PACKET_STATUS_OK, payload);
+            free(payload);
+            break;
+        }
 
         case TABLE_COLOR: {
             Color color = payload_decode_color(request->payload);            

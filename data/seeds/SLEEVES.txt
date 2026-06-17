@@ -1,0 +1,4 @@
+ID=0 SLEEVES=Sleeveless
+ID=0 SLEEVES=Short_Sleeve
+ID=0 SLEEVES=Three_Quarter_Sleeve
+ID=0 SLEEVES=Long_Sleeve
