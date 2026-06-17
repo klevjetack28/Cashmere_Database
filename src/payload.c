@@ -8,7 +8,7 @@ char *payload_encode_sweater(Sweater *sweater) {
     }
 
     snprintf(payload, PAYLOAD_MAX_LENGTH, 
-            "ID=%d\nBRAND_ID=%dCOLOR_ID=%d\nNECKLINE_ID=%d\nSLEEVES_ID=%d\nTYPE_ID=%d\nCONDITION_ID=%d\nSIZE_ID=%d\nWEIGHT=%d", 
+            "ID=%d BRAND_ID=%d COLOR_ID=%d NECKLINE_ID=%d SLEEVES_ID=%d TYPE_ID=%d CONDITION_ID=%d SIZE_ID=%d WEIGHT=%d", 
             sweater->id, 
             sweater->brand_id, 
             sweater->color_id, 
@@ -31,7 +31,7 @@ char *payload_encode_note(Note *note) {
     }
 
     snprintf(payload, PAYLOAD_MAX_LENGTH, 
-            "ID=%d\nSWEATER_ID=%d\nCONTENT=%s", 
+            "ID=%d SWEATER_ID=%d CONTENT=%s", 
             note->id, 
             note->sweater_id, 
             note->content
@@ -48,7 +48,7 @@ char *payload_encode_piece(Piece *piece) {
     }
 
     snprintf(payload, PAYLOAD_MAX_LENGTH, 
-            "ID=%d\nSWEATER_ID=%d\nPIECE_TYPE_ID=%d\nORIGINAL_WEIGHT=%d\nCURRENT_WEIGHT=%d\nCONTINUOUS=%d\nSCRAPED=%d", 
+            "ID=%d SWEATER_ID=%d PIECE_TYPE_ID=%d ORIGINAL_WEIGHT=%d CURRENT_WEIGHT=%d CONTINUOUS=%d SCRAPED=%d", 
             piece->id, 
             piece->sweater_id, 
             piece->piece_type_id, 
@@ -69,7 +69,7 @@ char *payload_encode_piece_type(PieceType *piece_type) {
     }
 
     snprintf(payload, PAYLOAD_MAX_LENGTH, 
-            "ID=%d\nPIECE_TYPE=%s", 
+            "ID=%d PIECE_TYPE=%s", 
             piece_type->id, 
             piece_type->piece_type
             );
@@ -85,7 +85,7 @@ char *payload_encode_brand(Brand *brand) {
     }
 
     snprintf(payload, PAYLOAD_MAX_LENGTH, 
-            "ID=%d\nBRAND=%s", 
+            "ID=%d BRAND=%s", 
             brand->id, 
             brand->brand
             );
@@ -101,7 +101,7 @@ char *payload_encode_color(Color *color) {
     }
 
     snprintf(payload, PAYLOAD_MAX_LENGTH, 
-            "ID=%d\nCOLOR=%s", 
+            "ID=%d COLOR=%s", 
             color->id, 
             color->color
             );
@@ -117,7 +117,7 @@ char *payload_encode_neckline(Neckline *neckline) {
     }
 
     snprintf(payload, PAYLOAD_MAX_LENGTH, 
-            "ID=%d\nNECKLINE=%s", 
+            "ID=%d NECKLINE=%s", 
             neckline->id, 
             neckline->neckline
             );
@@ -133,7 +133,7 @@ char *payload_encode_sleeves(Sleeves *sleeves) {
     }
 
     snprintf(payload, PAYLOAD_MAX_LENGTH, 
-            "ID=%d\nSLEEVES=%s", 
+            "ID=%d SLEEVES=%s", 
             sleeves->id, 
             sleeves->sleeves
             );
@@ -149,7 +149,7 @@ char *payload_encode_type(Type *type) {
     }
 
     snprintf(payload, PAYLOAD_MAX_LENGTH, 
-            "ID=%d\nTYPE=%s", 
+            "ID=%d TYPE=%s", 
             type->id, 
             type->type
             );
@@ -165,12 +165,11 @@ char *payload_encode_condition(Condition *condition) {
     }
 
     snprintf(payload, PAYLOAD_MAX_LENGTH, 
-            "ID=%d\nCONDITION=%s", 
+            "ID=%d CONDITION=%s", 
             condition->id, 
             condition->condition
             );
 
-    printf("%s\n", payload);
     return payload;
 }
 
@@ -182,7 +181,7 @@ char *payload_encode_size(Size *size) {
     }
 
     snprintf(payload, PAYLOAD_MAX_LENGTH, 
-            "ID=%d\nSIZE=%s", 
+            "ID=%d SIZE=%s", 
             size->id, 
             size->size
             );
@@ -193,7 +192,7 @@ char *payload_encode_size(Size *size) {
 Sweater payload_decode_sweater(char *payload) {
     Sweater sweater;
 
-    char **tokens = str_split(payload, "\n");
+    char **tokens = str_split(payload, " ");
     size_t length = ptr_array_length(tokens);
     for (int i = 0; i < length; i++) {
         char **token = str_split(tokens[i], "=");
@@ -230,7 +229,7 @@ Sweater payload_decode_sweater(char *payload) {
 Note payload_decode_note(char *payload) {
     Note note;
 
-    char **tokens = str_split(payload, "\n");
+    char **tokens = str_split(payload, " ");
     size_t length = ptr_array_length(tokens);
     for (int i = 0; i < length; i++) {
         char **token = str_split(tokens[i], "=");
@@ -255,7 +254,7 @@ Note payload_decode_note(char *payload) {
 Piece payload_decode_piece(char *payload) {
     Piece piece;
 
-    char **tokens = str_split(payload, "\n");
+    char **tokens = str_split(payload, " ");
     size_t length = ptr_array_length(tokens);
     for (int i = 0; i < length; i++) {
         char **token = str_split(tokens[i], "=");
@@ -288,7 +287,7 @@ Piece payload_decode_piece(char *payload) {
 PieceType payload_decode_piece_type(char *payload) {
     PieceType piece_type;
 
-    char **tokens = str_split(payload, "\n");
+    char **tokens = str_split(payload, " ");
     size_t length = ptr_array_length(tokens);
     for (int i = 0; i < length; i++) {
         char **token = str_split(tokens[i], "=");
@@ -311,7 +310,7 @@ PieceType payload_decode_piece_type(char *payload) {
 Brand payload_decode_brand(char *payload) {
     Brand brand;
 
-    char **tokens = str_split(payload, "\n");
+    char **tokens = str_split(payload, " ");
     size_t length = ptr_array_length(tokens);
     for (int i = 0; i < length; i++) {
         char **token = str_split(tokens[i], "=");
@@ -334,7 +333,7 @@ Brand payload_decode_brand(char *payload) {
 Color payload_decode_color(char *payload) {
     Color color;
 
-    char **tokens = str_split(payload, "\n");
+    char **tokens = str_split(payload, " ");
     size_t length = ptr_array_length(tokens);
     for (int i = 0; i < length; i++) {
         char **token = str_split(tokens[i], "=");
@@ -357,7 +356,7 @@ Color payload_decode_color(char *payload) {
 Neckline payload_decode_neckline(char *payload) {
     Neckline neckline;
 
-    char **tokens = str_split(payload, "\n");
+    char **tokens = str_split(payload, " ");
     size_t length = ptr_array_length(tokens);
     for (int i = 0; i < length; i++) {
         char **token = str_split(tokens[i], "=");
@@ -380,7 +379,7 @@ Neckline payload_decode_neckline(char *payload) {
 Sleeves payload_decode_sleeves(char *payload) {
     Sleeves sleeves;
 
-    char **tokens = str_split(payload, "\n");
+    char **tokens = str_split(payload, " ");
     size_t length = ptr_array_length(tokens);
     for (int i = 0; i < length; i++) {
         char **token = str_split(tokens[i], "=");
@@ -403,7 +402,7 @@ Sleeves payload_decode_sleeves(char *payload) {
 Type payload_decode_type(char *payload) {
     Type type;
 
-    char **tokens = str_split(payload, "\n");
+    char **tokens = str_split(payload, " ");
     size_t length = ptr_array_length(tokens);
     for (int i = 0; i < length; i++) {
         char **token = str_split(tokens[i], "=");
@@ -426,7 +425,7 @@ Type payload_decode_type(char *payload) {
 Condition payload_decode_condition(char *payload) {
     Condition condition;
 
-    char **tokens = str_split(payload, "\n");
+    char **tokens = str_split(payload, " ");
     size_t length = ptr_array_length(tokens);
     for (int i = 0; i < length; i++) {
         char **token = str_split(tokens[i], "=");
@@ -449,7 +448,7 @@ Condition payload_decode_condition(char *payload) {
 Size payload_decode_size(char *payload) {
     Size size;
 
-    char **tokens = str_split(payload, "\n");
+    char **tokens = str_split(payload, " ");
     size_t length = ptr_array_length(tokens);
     for (int i = 0; i < length; i++) {
         char **token = str_split(tokens[i], "=");

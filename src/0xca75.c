@@ -1,6 +1,20 @@
 #include "0xca75.h"
 
+int remove_file(const char *path) {
+    if (remove(path) != 0) {
+        if (errno == ENOENT) {
+            return 0; // file does not exist, that's fine
+        }
+
+        fprintf(stderr, "Failed to remove %s: %s\n", path, strerror(errno));
+        return -1;
+    }
+
+    return 0;
+}
+
 char* read_entire_file(const char* filename) {
+    printf("%s\n", filename);
     // 1. Open the file in binary mode to prevent line-ending translations
     FILE* file = fopen(filename, "rb");
     if (file == NULL) {

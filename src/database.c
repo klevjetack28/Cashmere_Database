@@ -16,12 +16,15 @@ int db_init(const char *filename) {
         sqlite3_free(err);
         return -1;
     }
+    
     return 0;
 }
 
 int db_close() {
     if (db) sqlite3_close(db);
 }
+
+
 
 Sweater *db_read_sweaters(int limit, int offset) {
 

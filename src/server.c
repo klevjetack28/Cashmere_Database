@@ -15,7 +15,7 @@
 #include "constants.h"
 #include "db_tables.h"
 #include "misc.h"
-
+#include "seed.h" 
 
 void normalize_key(char *out, char *in) {
     int index = 0;
@@ -553,8 +553,10 @@ void print_sweater(Sweater *s) {
 int main() {
     int server_fd, client_fd;
     server_fd = network_create_server_socket(PORT);
-    
+
+    remove_file("./cashmere.db"); 
     db_init("../data/database_init.sql");
+    seed_load_all();
 
     bool exit_client = false;
     while (1) {

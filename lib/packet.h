@@ -7,6 +7,7 @@
 #include <arpa/inet.h>
 
 #include "constants.h"
+#include "db_tables.h"
 
 typedef enum {
     PACKET_TYPE_CONNECT = 0,
@@ -33,6 +34,7 @@ typedef enum {
 typedef struct {
     PacketType packet_type;
     RequestType request_type;
+    Table table;
     PacketStatus status;
     int payload_length;
 } PacketHeader;
@@ -46,18 +48,29 @@ typedef struct {
 } Packet;
 
 void packet_print(Packet *packet);
-PacketHeader packet_header_init(PacketType packet_type, RequestType request_type, PacketStatus status, int payload_length);
+
+PacketHeader packet_header_init(PacketType packet_type, RequestType request_type, Table table, PacketStatus status, int payload_length);
 Packet packet_init(PacketHeader header, char *payload);
+
 Packet packet_connect_init(char *payload);
 Packet packet_disconnect_init(char *payload);
-Packet packet_request_init(RequestType request_type, char *payload);
-Packet packet_create_request_init(char *payload);
-Packet packet_read_request_init(char *payload);
-Packet packet_update_request_init(char *payload);
-Packet packet_delete_request_init(char *payload);
+
+Packet packet_request_init(RequestType request_type, Table table, char *payload);
+Packet packet_create_request_init(Table table, char *payload);
+Packet packet_read_request_init(Table table, char *payload);
+Packet packet_update_request_init(Table table, char *payload);
+Packet packet_delete_request_init(Table table, char *payload);
 Packet packet_import_request_init(char *payload);
 Packet packet_export_request_init(char *payload);
-Packet packet_response_init(char *payload);
+
+Packet packet_response_init(RequestType request_type, Table table, PacketStatus status, char *payload);
+Packet packet_create_response_init(Table table, PacketStatus status, char *payload);
+Packet packet_read_response_init(Table table, PacketStatus status, char *payload);
+Packet packet_update_response_init(Table table, PacketStatus status, char *payload);
+Packet packet_delete_response_init(Table table, PacketStatus status, char *payload);
+Packet packet_import_response_init(PacketStatus status, char *payload);
+Packet packet_export_response_init(PacketStatus status, char *payload);
+
 int packet_serialize(const Packet *packet, unsigned char byte_array[BUFFER_LENGTH]);
 void packet_deserialize(const unsigned char byte_array[BUFFER_LENGTH], int bytes_read, Packet *packet);
 

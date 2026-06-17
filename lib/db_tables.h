@@ -1,6 +1,8 @@
 #ifndef DB_TABLES_H
 #define DB_TABLES_H
 
+#include <string.h>
+
 #include "constants.h"
 
 typedef enum {
@@ -17,22 +19,9 @@ typedef enum {
     TABLE_CONDITION,
     TABLE_SIZE,
     NUM_TABLES
-} Tables;
+} Table;
 
-const char *TABLE_NAMES[NUM_TABLES] = {
-    "NULL",
-    "SWEATER",
-    "NOTE",
-    "PIECE",
-    "PIECE_TYPE",
-    "BRAND",
-    "COLOR",
-    "NECKLINE",
-    "SLEEVES",
-    "TYPE",
-    "CONDITION",
-    "SIZE",
-};
+extern const char *TABLE_NAMES[NUM_TABLES];
 
 typedef struct {
     int id;
@@ -42,9 +31,9 @@ typedef struct {
     int neckline_id;
     int sleeves_id;
     int type_id;
-    int weight;
     int condition_id;
     int size_id;
+    int weight;
     // some form of date
 } Sweater;
 
@@ -105,5 +94,7 @@ typedef struct {
     int id;
     char size[KEY_LENGTH];
 } Size;
+
+Table table_from_string(const char *token_str);
 
 #endif // DB_TABLES_H
