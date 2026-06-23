@@ -15,22 +15,6 @@
 #include "misc.h"
 #include "query.h"
 
-void normalize_key(char* out, char* in) {
-    int index = 0;
-    in = trim_whitespace(in);
-    
-    for(int i = 0; i < strlen(in); i++) {
-        if (in[i] == '.' || in[i] == ',') {
-            continue;
-        } else if (in[i] >= 'a' && in[i] <= 'z') {
-            out[index++] = in[i] - 32;
-        } else {
-            out[index++] = in[i];
-        }
-    }
-    out[index] = '\0';
-}
-
 void get_input(char *input) {
     char buffer[KEY_LENGTH] = {0};
     fgets(buffer, sizeof(buffer), stdin);

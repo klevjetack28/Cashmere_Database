@@ -70,4 +70,6 @@ typedef struct {
     Pagination page;
 } NoteSearch;
 
+int normalize_key(char *out, char *in);
+
 #endif //QUERY_H
