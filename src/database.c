@@ -26,157 +26,233 @@ int db_close() {
 
 
 
-Sweater *db_read_sweaters(int limit, int offset) {
+int db_read_sweater_rows(Sweater **sweater_rows, Pagination *pagination) {
 
+    int count = 0;
 }
 
-Note *db_read_notes(int limit, int offset) {
+int db_read_note_rows(Note **note_rows, Pagination *pagination) {
 
+    int count = 0;
 }
 
-Piece *db_read_pieces(int limit, int offset) {
+int db_read_piece_rows(Piece **piece_rows, Pagination *pagination) {
 
+    int count = 0;
 }
 
-PieceType *db_read_piece_types(int limit, int offset) {
+int db_read_piece_type_rows(PieceType **piece_type_rows, Pagination *pagination) {
      const char *sql = 
-        "SELECT * FROM PieceType";
+        "SELECT * LIMIT ? OFFSET ? FROM PieceType";
 
     sqlite3_stmt *stmt;
 
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    
-    PieceType piece_type;
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
-        memset(&piece_type, 0, sizeof(piece_type));
-        piece_type.id = sqlite3_column_int(stmt, 0);
-        strcpy(piece_type.piece_type, sqlite3_column_text(stmt, 1));
+    sqlite3_bind_int(stmt, 1, pagination.limit);
+    sqlite3_bind_int(stmt, 2, pagination.offset);
+
+    int count = 0;
+    PieceType *piece_type_rows;
+    for (int i = 0; i < pagination.limit; i++) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            memset(&piece_type_rows[i], 0, sizeof(piece_type_rows[0]));
+            piece_type_rows[i].id = sqlite3_column_int(stmt, 0);
+            strcpy(piece_type_rows[i].piece_type, sqlite3_column_text(stmt, 1));
+        }
+        count++;
     }
+
     sqlite3_finalize(stmt);
+    return count;
 }
 
-Brand *db_read_brands(int limit, int offset) {
-     const char *sql = 
-        "SELECT * FROM Brand";
-
+int db_read_brand_rows(Brand **brand_rows, Pagination *pagination) {
+    const char *sql = 
+        "SELECT * LIMIT ? OFFSET ? FROM Brand";
     sqlite3_stmt *stmt;
-
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    
-    Brand brand;
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
-        memset(&brand, 0, sizeof(brand));
-        brand.id = sqlite3_column_int(stmt, 0);
-        strcpy(brand.brand, sqlite3_column_text(stmt, 1));
+    sqlite3_bind_int(stmt, 1, pagination.limit);
+    sqlite3_bind_int(stmt, 2, pagination.offset);
+   
+    int count = 0;
+    Brand *brand_rows;
+    for (int i = 0; i < pagination.limit; i++) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            memset(&brand_rows[i], 0, sizeof(brand_rows[0]));
+            brand_rows[i].id = sqlite3_column_int(stmt, 0);
+            strcpy(brand_rows[i].brand, sqlite3_column_text(stmt, 1));
+        }
+        count++;
     }
+
     sqlite3_finalize(stmt);
+    return count;
 }
 
-Color *db_read_colors(int limit, int offset) {
-     const char *sql = 
-        "SELECT * FROM Color";
-
+int db_read_color_family(ColorFamily **color_family_rows, Pagination *pagintion) {
+    const char *sql = 
+        "SELECT * LIMIT ? OFFSET ? FROM ColorFamily";
     sqlite3_stmt *stmt;
-
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    
-    Color color;
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
-        memset(&color, 0, sizeof(color));
-        color.id = sqlite3_column_int(stmt, 0);
-        strcpy(color.color, sqlite3_column_text(stmt, 1));
+    sqlite3_bind_int(stmt, 1, pagination.limit);
+    sqlite3_bind_int(stmt, 2, pagination.offset);
+
+    int count = 0;
+    ColorFamily *color_family_rows;
+    for (int i = 0; i < pagination.limit; i++) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            memset(&color_family_rows[i], 0, sizeof(color_family_rows[0]));
+            color_family_rows[i].id = sqlite3_column_int(stmt, 0);
+            strcpy(color_fmaily_rows[i].color_family, sqlite3_column_text(stmt, 1));
+        }
+        count++;
     }
+    
     sqlite3_finalize(stmt);
+    return count;
 }
 
-Neckline *db_read_necklines(int limit, int offset) {
-     const char *sql = 
-        "SELECT * FROM Neckline";
-
+int db_read_color_rows(Color **color_rows, Pagination *pagination) {
+    const char *sql = 
+        "SELECT * LIMIT ? OFFSET ? FROM Color";
     sqlite3_stmt *stmt;
-
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    
-    Neckline neckline;
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
-        memset(&neckline, 0, sizeof(neckline));
-        neckline.id = sqlite3_column_int(stmt, 0);
-        strcpy(neckline.neckline, sqlite3_column_text(stmt, 1));
+    sqlite3_bind_int(stmt, 1, pagination.limit);
+    sqlite3_bind_int(stmt, 2, pagination.offset);
+
+    int count = 0;
+    Color *color_rows;
+    for (int i = 0; i < pagination.limit; i++) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            memset(&color_rows[i], 0, sizeof(color_rows[0]));
+            color_rows[i].id = sqlite3_column_int(stmt, 0);
+            strcpy(color_rows[i].color, sqlite3_column_text(stmt, 1));
+        }
+        count++;
     }
+    
     sqlite3_finalize(stmt);
+    return count;
 }
 
-Sleeves *db_read_sleevess(int limit, int offset) {
-     const char *sql = 
-        "SELECT * FROM Sleeves";
-
+int db_read_neckline_rows(Neckline **neckline_rows, Pagination *pagination) {
+    const char *sql = 
+        "SELECT * LIMIT ? OFFSET ? FROM Neckline";
     sqlite3_stmt *stmt;
-
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    
-    Sleeves sleeves;
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
-        memset(&sleeves, 0, sizeof(sleeves));
-        sleeves.id = sqlite3_column_int(stmt, 0);
-        strcpy(sleeves.sleeves, sqlite3_column_text(stmt, 1));
+    sqlite3_bind_int(stmt, 1, pagination.limit);
+    sqlite3_bind_int(stmt, 2, pagination.offset);
+
+    int count = 0;
+    Neckline *neckline_rows;
+    for (int i = 0; i < pagination.limit; i++) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            memset(&neckline_rows[i], 0, sizeof(neckline_rows[0]));
+            neckline_rows[i].id = sqlite3_column_int(stmt, 0);
+            strcpy(neckline_rows[i].neckline, sqlite3_column_text(stmt, 1));
+        }
+        count++;
     }
+
     sqlite3_finalize(stmt);
+    return count;
 }
 
-Type *db_read_types(int limit, int offset) {
-     const char *sql = 
-        "SELECT * FROM Type";
-
+int db_read_sleeves_rows(Sleeves **sleeves_rows, Pagination *pagination) {
+    const char *sql = 
+        "SELECT * LIMIT ? OFFSET ? FROM Sleeves";
     sqlite3_stmt *stmt;
-
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    
-    Type type;
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
-        memset(&type, 0, sizeof(type));
-        type.id = sqlite3_column_int(stmt, 0);
-        strcpy(type.type, sqlite3_column_text(stmt, 1));
+    sqlite3_bind_int(stmt, 1, pagination.limit);
+    sqlite3_bind_int(stmt, 2, pagination.offset);
+   
+    int count = 0;
+    Sleeves *sleeves_rows;
+    for (int i = 0; i < pagination.limit; i++) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            memset(&sleeves_rows[i], 0, sizeof(sleeves_rows[0]));
+            sleeves_rows[i].id = sqlite3_column_int(stmt, 0);
+            strcpy(sleeves_rows[i].sleeves, sqlite3_column_text(stmt, 1));
+        }
+        count++;
     }
+    
     sqlite3_finalize(stmt);
+    return count;
 }
 
-Condition *db_read_conditions(int limit, int offset) {
-     const char *sql = 
-        "SELECT * FROM Condition";
-
+int db_read_type_rows(Type **type_rows, Pagination *pagination) {
+    const char *sql = 
+        "SELECT * LIMIT ? OFFSET ? FROM Type";
     sqlite3_stmt *stmt;
-
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    
-    Condition condition;
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
-        memset(&condition, 0, sizeof(condition));
-        condition.id = sqlite3_column_int(stmt, 0);
-        strcpy(condition.condition, sqlite3_column_text(stmt, 1));
+    sqlite3_bind_int(stmt, 1, pagination.limit);
+    sqlite3_bind_int(stmt, 2, pagination.offset);
+
+    int count = 0;
+    Type *type_rows;
+    for (int i = 0; i < pagination.limit; i++) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            memset(&type_rows[i], 0, sizeof(type_rows[0]));
+            type_rows[i].id = sqlite3_column_int(stmt, 0);
+            strcpy(type_rows[i].type, sqlite3_column_text(stmt, 1));
+        }
+        count++;
     }
+
     sqlite3_finalize(stmt);
+    return count;
 }
 
-Size *db_read_sizes(int limit, int offset) {
-     const char *sql = 
-        "SELECT * FROM Size";
-
+int db_read_condition_rows(Condition **condition_rows, Pagination *pagination) {
+    const char *sql = 
+        "SELECT * LIMIT ? OFFSET ? FROM Condition";
     sqlite3_stmt *stmt;
-
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    
-    Size size;
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
-        memset(&size, 0, sizeof(size));
-        size.id = sqlite3_column_int(stmt, 0);
-        strcpy(size.size, sqlite3_column_text(stmt, 1));
+    sqlite3_bind_int(stmt, 1, pagination.limit);
+    sqlite3_bind_int(stmt, 2, pagination.offset);
+
+    int count = 0;
+    Condition *condition_rows;
+    for (int i = 0; i < pagination.limit; i++) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            memset(&condition_rows[i], 0, sizeof(condition_rows[0]));
+            condition_rows[i].id = sqlite3_column_int(stmt, 0);
+            strcpy(condition_rows[i].condition, sqlite3_column_text(stmt, 1));
+        }
+        count++;
     }
+
     sqlite3_finalize(stmt);
+    return count;
+}
+
+int db_read_size_rows(Size **size_rows, Pagination *pagination) {
+    const char *sql = 
+        "SELECT * LIMIT ? OFFSET ? FROM Size";
+    sqlite3_stmt *stmt;
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, pagination.limit);
+    sqlite3_bind_int(stmt, 2, pagination.offset);
+    
+    int count = 0;
+    Size *size_rows;
+    for (int i = 0; i < pagination.limit; i++) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            memset(&size_rows[i], 0, size_rowsof(size_rows[0]));
+            size_rows[i].id = sqlite3_column_int(stmt, 0);
+            strcpy(size_rows[i].size, sqlite3_column_text(stmt, 1));
+        }
+        count++; 
+    }
+
+    sqlite3_finalize(stmt);
+    return count;
 }
 
 Sweater db_read_sweater_by_id(int id) {
     const char *sql = 
-        "SELECT id, sweater FROM sweater WHERE id = ?";
+        "SELECT id, brand_id, color_id, neckline_id, sleeves_id, type_id, condition_id, size_id, weight FROM sweater WHERE id = ?";
 
     sqlite3_stmt *stmt;
 
@@ -186,16 +262,22 @@ Sweater db_read_sweater_by_id(int id) {
 
     Sweater sweater;
     sweater.id = sqlite3_column_int(stmt, 0);
-    //strcpy(sweater->sweater, sqlite3_column_text(stmt, 1));
-    
-    sqlite3_finalize(stmt);
+    sweater.brand_id = sqlite3_column_int(stmt, 1);
+    sweater.color_id = sqlite3_column_int(stmt, 2);
+    sweater.neckline_id = sqlite3_column_int(stmt, 3);
+    sweater.sleeves_id = sqlite3_column_int(stmt, 4);
+    sweater.type_id = sqlite3_column_int(stmt, 5);
+    sweater.condition_id = sqlite3_column_int(stmt, 6);
+    sweater.size_id = sqlite3_column_int(stmt, 7);
+    sweater.weight = sqlite3_column_int(stmt, 8);
 
+    sqlite3_finalize(stmt);
     return sweater;
 }
 
 Note db_read_note_by_id(int id) {
     const char *sql = 
-        "SELECT id, note FROM Note WHERE id = ?";
+        "SELECT id, sweater_id, content FROM Note WHERE id = ?";
 
     sqlite3_stmt *stmt;
 
@@ -205,8 +287,8 @@ Note db_read_note_by_id(int id) {
 
     Note note;
     note.id = sqlite3_column_int(stmt, 0);
-    //strcpy(note->note, sqlite3_column_text(stmt, 1));
-    
+    note.sweater_id = sqlite3_column_int(stmt, 1);
+    strcpy(note.content, sqlite3_column_text(stmt, 2));
     sqlite3_finalize(stmt);
 
     return note;
@@ -214,7 +296,7 @@ Note db_read_note_by_id(int id) {
 
 Piece db_read_piece_by_id(int id) {
     const char *sql = 
-        "SELECT id, piece FROM Piece WHERE id = ?";
+        "SELECT id, sweater_id, piece_type_id, original_weight, current_weight, continuous FROM Piece WHERE id = ?";
 
     sqlite3_stmt *stmt;
 
@@ -224,8 +306,11 @@ Piece db_read_piece_by_id(int id) {
 
     Piece piece;
     piece.id = sqlite3_column_int(stmt, 0);
-    //strcpy(piece->piece, sqlite3_column_text(stmt, 1));
-    
+    piece.sweater_id = sqlite3_column_int(stmt, 1);
+    piece.piece_type_id = sqlite_column_int(stmt, 2);
+    piece.original_weight = sqlite_column_int(stmt, 3);
+    piece.current_weight = sqlite_column_int(stmt, 4);
+    piece.continuous = sqlite_column_int(stmt, 5);
     sqlite3_finalize(stmt);
 
     return piece;
@@ -267,6 +352,26 @@ Brand db_read_brand_by_id(int id) {
     sqlite3_finalize(stmt);
 
     return brand;
+}
+
+ColorFamily db_read_color_family_by_id(int id) {
+    const char *sql = 
+        "SELECT id, color_family FROM ColorFamily WHERE id = ?";
+
+    sqlite3_stmt *stmt;
+
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, id);
+    sqlite3_step(stmt);
+
+    ColorFamily color_family;
+    color_family.id = sqlite3_column_int(stmt, 0);
+    const char *tmp = sqlite3_column_text(stmt, 1);
+    strcpy(color_family.color_family, tmp);
+    sqlite3_finalize(stmt);
+
+    return color_family;
+
 }
 
 Color db_read_color_by_id(int id) {
@@ -580,6 +685,10 @@ int db_update_brand(Brand *brand) {
 
 }
 
+int db_update_color_family(COlorFamily *color_family) {
+
+}
+
 int db_update_color(Color *color) {
 
 }
@@ -621,6 +730,10 @@ int db_delete_piece_type_by_id(int id) {
 }
 
 int db_delete_brand_by_id(int id) {
+
+}
+
+int db_delete_color_family_by_id(int id) {
 
 }
 

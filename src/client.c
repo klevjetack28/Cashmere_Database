@@ -13,6 +13,7 @@
 #include "constants.h"
 #include "db_tables.h"
 #include "misc.h"
+#include "query.h"
 
 void normalize_key(char* out, char* in) {
     int index = 0;
@@ -30,20 +31,23 @@ void normalize_key(char* out, char* in) {
     out[index] = '\0';
 }
 
-void get_input(char* input) {
+void get_input(char *input) {
     char buffer[KEY_LENGTH] = {0};
     fgets(buffer, sizeof(buffer), stdin);
     buffer[strcspn(buffer, "\n")] = 0;
     normalize_key(input, buffer);
+    return buffer;
 }
 
-int get_int_input(char* input) {
+int get_int_input() {
+    char input[KEY_LENGTH] = {0};
     get_input(input);
     return atoi(input);
 }
 
-char* get_string_input(char* input) {
+int get_string_input(char* input) {
     get_input(input);
+    return strlen(input);
 }
 
 void get_search_sweater_input(char* input, Sweater* sweater) {
@@ -59,128 +63,6 @@ void get_search_note_input(char* input, Note* note) {
 
 
 
-Sweater get_create_sweater_input() {
-    Sweater sweater;
-    char input[STR_LENGTH] = {0};
-    
-    printf("BrandID: ");
-    sweater.brand_id = get_int_input(input);
-    printf("ColorID: ");
-    sweater.color_id = get_int_input(input);
-    printf("NecklineID: ");
-    sweater.neckline_id = get_int_input(input);
-    printf("SleevesID: ");
-    sweater.sleeves_id = get_int_input(input);
-    printf("TypeID: ");
-    sweater.type_id = get_int_input(input);
-    printf("Weight(g): ");
-    sweater.weight = get_int_input(input);
-    printf("ConditionID: ");
-    sweater.condition_id = get_int_input(input);
-    printf("SizeID: ");
-    sweater.size_id = get_int_input(input);
-    
-    return sweater;
-}
-
-Note get_create_note_input() {
-    Note note;
-    char input[STR_LENGTH] = {0};
-
-    printf("SweaterID: ");
-    note.sweater_id = get_int_input(input);
-    printf("Enter Contents: ");
-    get_string_input(note.content);
-
-    return note;
-}
-
-Piece get_create_piece_input() {
-    Piece piece;
-    char input[STR_LENGTH] = {0};
-
-    printf("Sweater ID: ");
-    piece.sweater_id = get_int_input(input);
-    printf("Piece Type ID: ");
-    piece.piece_type_id = get_int_input(input);
-    printf("Original Weight: ");
-    piece.original_weight = get_int_input(input);
-    piece.current_weight = piece.original_weight;
-    printf("Continuos True(1)/False(0): ");
-    piece.continuous = get_int_input(input);
-
-    return piece;
-}
-
-PieceType get_create_piece_type_input() {
-    PieceType piece_type;
-    printf("PieceType: ");
-    get_string_input(piece_type.piece_type);
-    return piece_type;
-}
-
-Brand get_create_brand_input() {
-    Brand brand;
-    printf("Brand: ");
-    get_string_input(brand.brand);
-    return brand;   
-}
-
-ColorFamily get_create_color_family_input() {
-    ColorFamily color_family;
-    printf("Color Family: ");
-    get_string_input(color_family.color_family);   
-    return color_family;   
-}
-
-Color get_create_color_input() {
-    Color color;
-    char input[STR_LENGTH] = {0};
-    
-    printf("Color Family ID: ");
-    color.color_family_id = get_int_input(input);
-    printf("Color: ");
-    get_string_input(color.color);
-    
-    return color;   
-}
-
-Neckline get_create_neckline_input() {
-    Neckline neckline;
-    printf("Neckline: ");
-    get_string_input(neckline.neckline);
-    return neckline;   
-}
-
-Sleeves get_create_sleeves_input() {
-    Sleeves sleeves;
-    printf("Sleeves: ");
-    get_string_input(sleeves.sleeves);
-    return sleeves;
-}
-
-Type get_create_type_input() {
-    Type type;
-    printf("Type: ");
-    get_string_input(type.type);
-    return type;
-}
-
-Condition get_create_condition_input() {
-    Condition condition;
-    printf("Condition: ");
-    get_string_input(condition.condition);
-    return condition;
-}
-
-Size get_create_size_input() {
-    Size size;
-    printf("Size: ");
-    get_string_input(size.size);
-    return size;
-}
-
-// End Get Input Functions
 
 
 void system_status() {
@@ -191,120 +73,340 @@ void logs() {
 
 }
 
-void print_table_options() {
-    for (int i = 1; i < (int)NUM_TABLES; i++) {
-        printf("%d> %s\n", i, TABLE_NAMES[i]);
-    }
+Packet exit_database(void) {
+
 }
 
-void exit_db(char* token_str) {
+Packet export_database(void) {
+
 }
 
-// ----------------------------------------------------------------------------
-// Start Remove Item
 
-void remove_item(char* token_str) {
+
+
+
+Packet import_database(void) {
+
 }
-// End Remove Item
 
-// ----------------------------------------------------------------------------
-// Start Edit Item
 
-void edit_item(char* token_str) {
+
+
+
+int delete_sweater_by_id_input() {
+
 }
-// End Edit Item
 
-// ----------------------------------------------------------------------------
-// Start Add Item
+int delete_note_by_id_input() {
 
-Packet create_item() {
+}
+
+int delete_piece_by_id_input() {
+
+}
+
+int delete_piece_type_by_id_input() {
+
+}
+
+int delete_brand_by_id_input() {
+
+}
+
+int delete_color_family_by_id_input() {
+
+}
+
+int delete_color_by_id_input() {
+
+}
+
+int delete_neckline_by_id_input() {
+
+}
+
+int delete_sleeves_by_id_input() {
+
+}
+
+int delete_type_by_id_input() {
+
+}
+
+int delete_condition_by_id_input() {
+
+}
+
+int delete_size_by_id_input() {
+
+}
+
+Packet delete_record(void) {
+
+}
+
+
+
+
+
+Sweater update_sweater_input() {
+
+}
+
+Note update_note_input() {
+
+}
+
+Piece update_piece_input() {
+
+}
+
+PieceType update_piece_type_input() {
+
+}
+
+Brand update_brand_input() {
+
+}
+
+ColorFamily update_color_family_input() {
+
+}
+
+Color update_color_input() {
+
+}
+
+Neckline update_neckline_input() {
+
+}
+
+Sleeves update_sleeves_input() {
+
+}
+
+Type update_type_input() {
+
+}
+
+Condition update_condition_input() {
+
+}
+
+Size update_size_input() {
+
+}
+
+Packet update_record(void) {
+
+}
+
+
+
+
+
+Sweater create_sweater_input() {
+    Sweater sweater;
+    
+    printf("BrandID: ");
+    sweater.brand_id = get_int_input();
+    printf("ColorID: ");
+    sweater.color_id = get_int_input();
+    printf("NecklineID: ");
+    sweater.neckline_id = get_int_input();
+    printf("SleevesID: ");
+    sweater.sleeves_id = get_int_input();
+    printf("TypeID: ");
+    sweater.type_id = get_int_input();
+    printf("Weight(g): ");
+    sweater.weight = get_int_input();
+    printf("ConditionID: ");
+    sweater.condition_id = get_int_input();
+    printf("SizeID: ");
+    sweater.size_id = get_int_input();
+    
+    return sweater;
+}
+
+Note create_note_input() {
+    Note note;
+
+    printf("SweaterID: ");
+    note.sweater_id = get_int_input();
+    printf("Enter Contents: ");
+    get_string_input(note.content);
+
+    return note;
+}
+
+Piece create_piece_input() {
+    Piece piece;
+
+    printf("Sweater ID: ");
+    piece.sweater_id = get_int_input();
+    printf("Piece Type ID: ");
+    piece.piece_type_id = get_int_input();
+    printf("Original Weight: ");
+    piece.original_weight = get_int_input();
+    piece.current_weight = piece.original_weight;
+    printf("Continuos True(1)/False(0): ");
+    piece.continuous = get_int_input();
+
+    return piece;
+}
+
+PieceType create_piece_type_input() {
+    PieceType piece_type;
+    printf("PieceType: ");
+    get_string_input(piece_type.piece_type);
+    return piece_type;
+}
+
+Brand create_brand_input() {
+    Brand brand;
+    printf("Brand: ");
+    get_string_input(brand.brand);
+    return brand;   
+}
+
+ColorFamily create_color_family_input() {
+    ColorFamily color_family;
+    printf("Color Family: ");
+    get_string_input(color_family.color_family);   
+    return color_family;   
+}
+
+Color create_color_input() {
+    Color color;
+    char input[STR_LENGTH] = {0};
+    
+    printf("Color Family ID: ");
+    color.color_family_id = get_int_input();
+    printf("Color: ");
+    get_string_input(color.color);
+    
+    return color;   
+}
+
+Neckline create_neckline_input() {
+    Neckline neckline;
+    printf("Neckline: ");
+    get_string_input(neckline.neckline);
+    return neckline;   
+}
+
+Sleeves create_sleeves_input() {
+    Sleeves sleeves;
+    printf("Sleeves: ");
+    get_string_input(sleeves.sleeves);
+    return sleeves;
+}
+
+Type create_type_input() {
+    Type type;
+    printf("Type: ");
+    get_string_input(type.type);
+    return type;
+}
+
+Condition create_condition_input() {
+    Condition condition;
+    printf("Condition: ");
+    get_string_input(condition.condition);
+    return condition;
+}
+
+Size create_size_input() {
+    Size size;
+    printf("Size: ");
+    get_string_input(size.size);
+    return size;
+}
+
+Packet create_record(Table table) {
     Packet request;
 
     while (1) {
-        print_table_options();
-
-        char table_id[KEY_LENGTH];
-        Table table = (Table)get_int_input(table_id);
         switch(table) {
             case TABLE_SWEATER: {
-                Sweater sweater = get_create_sweater_input();
+                Sweater sweater = create_sweater_input();
                 char *payload = payload_encode_sweater(&sweater);
                 request = packet_create_request_init(table, payload);
                 free(payload);
                 return request;
             }
             case TABLE_NOTE: {
-                Note note = get_create_note_input();
+                Note note = create_note_input();
                 char *payload = payload_encode_note(&note);
                 request = packet_create_request_init(table, payload);
                 free(payload);
                 return request;
             }
             case TABLE_PIECE: {
-                Piece piece = get_create_piece_input();
+                Piece piece = create_piece_input();
                 char *payload = payload_encode_piece(&piece);
                 request = packet_create_request_init(table, payload);
                 free(payload);
                 return request;
             }
             case TABLE_PIECE_TYPE: { 
-                PieceType piece_type = get_create_piece_type_input();
+                PieceType piece_type = create_piece_type_input();
                 char *payload = payload_encode_piece_type(&piece_type);
                 request = packet_create_request_init(table, payload);
                 free(payload);
                 return request;
             }
             case TABLE_BRAND: {
-                Brand brand = get_create_brand_input();
+                Brand brand = create_brand_input();
                 char *payload = payload_encode_brand(&brand);
                 request = packet_create_request_init(table, payload);
                 free(payload);
                 return request;
             }
             case TABLE_COLOR_FAMILY: {
-                ColorFamily color_family = get_create_color_family_input();
+                ColorFamily color_family = create_color_family_input();
                 char *payload = payload_encode_color_family(&color_family);
                 request = packet_create_request_init(table, payload);
                 free(payload);
                 return request;
             }
             case TABLE_COLOR: {
-                Color color = get_create_color_input();
+                Color color = create_color_input();
                 char *payload = payload_encode_color(&color);
                 request = packet_create_request_init(table, payload);
                 free(payload);
                 return request;
             }
             case TABLE_NECKLINE: {
-                Neckline neckline = get_create_neckline_input();
+                Neckline neckline = create_neckline_input();
                 char *payload = payload_encode_neckline(&neckline);
                 request = packet_create_request_init(table, payload);
                 free(payload);
                 return request;
             }
             case TABLE_SLEEVES: {
-                Sleeves sleeves = get_create_sleeves_input();
+                Sleeves sleeves = create_sleeves_input();
                 char *payload = payload_encode_sleeves(&sleeves);
                 request = packet_create_request_init(table, payload);
                 free(payload);
                 return request;
             }
             case TABLE_TYPE: {
-                Type type = get_create_type_input();
+                Type type = create_type_input();
                 char *payload = payload_encode_type(&type);
                 request = packet_create_request_init(table, payload);
                 free(payload);
                 return request;
             }
             case TABLE_CONDITION: {
-                Condition condition = get_create_condition_input();
+                Condition condition = create_condition_input();
                 char *payload = payload_encode_condition(&condition);
                 request = packet_create_request_init(table, payload);
                 free(payload);
                 return request;
             }
             case TABLE_SIZE: {
-                Size size = get_create_size_input();
+                Size size = create_size_input();
                 char *payload = payload_encode_size(&size);
                 request = packet_create_request_init(table, payload);
                 free(payload);
@@ -318,205 +420,232 @@ Packet create_item() {
     }
     return request;
 }
-// End Add Item
 
 
-// ----------------------------------------------------------------------------
-// Start Info Item
 
-void info_item(char* token_str) {
-}
-// End Info Item
 
-// ----------------------------------------------------------------------------
-// Start Search Item
 
-void search_sweater(char* token_str) {
-    // TODO
+int read_sweater_by_id() {
+
 }
 
-void search_note(char* token_str) {
-    // TODO
+int read_note_by_id() {
+
 }
 
-void search_piece(char* token_str) {
-    // TODO
+int read_piece_by_id() {
+
 }
 
-void search_piece_type(char* token_str, int piece_type_id) {
-    char tokens[KEY_LENGTH];
-    if (piece_type_id == -1) {
-        sprintf(tokens, "ALL:PIECE_TYPE");
-    }
-    else {
-        sprintf(tokens, "ID:PIECE_TYPE:%d", piece_type_id);
-    }
+int read_piece_type_by_id() {
+
 }
 
-void search_brand(char* token_str, int brand_id) {
-    char tokens[KEY_LENGTH];
-    if (brand_id == -1) {
-        sprintf(tokens, "ALL:BRAND");
-    }
-    else {
-        sprintf(tokens, "ID:BRAND:%d", brand_id);
-    }
+int read_brand_by_id() {
+
 }
 
-void search_color(char* token_str, int color_id) {
-    char tokens[KEY_LENGTH];
-    if (color_id == -1) {
-        sprintf(tokens, "ALL:COLOR");
-    }
-    else {
-        sprintf(tokens, "ID:COLOR:%d", color_id);
-    }
+int read_color_family_by_id() {
+
 }
 
-void search_neckline(char* token_str, int neckline_id) {
-    char tokens[KEY_LENGTH];
-    if (neckline_id == -1) {
-        sprintf(tokens, "ALL:NECKLINE");
-    }
-    else {
-        sprintf(tokens, "ID:NECKLINE:%d", neckline_id);
-    }
+int read_color_by_id() {
+
 }
 
-void search_sleeves(char* token_str, int sleeves_id) {
-    char tokens[KEY_LENGTH];
-    if (sleeves_id == -1) {
-        sprintf(tokens, "ALL:SLEEVES");
-    }
-    else {
-        sprintf(tokens, "ID:SLEEVES:%d", sleeves_id);
-    }
+int read_neckline_by_id() {
+
 }
 
-void search_type(char* token_str, int type_id) {
-    char tokens[KEY_LENGTH];
-    if (type_id == -1) {
-        sprintf(tokens, "ALL:TYPE");
-    }
-    else {
-        sprintf(tokens, "ID:TYPE:%d", type_id);
-    }
+int read_sleeves_by_id() {
+
 }
 
-void search_condition(char* token_str, int condition_id) {
-    char tokens[KEY_LENGTH];
-    if (condition_id == -1) {
-        sprintf(tokens, "ALL:CONDITION");
-    }
-    else {
-        sprintf(tokens, "ID:CONDITION:%d", condition_id);
-    }
+int read_type_by_id() {
+
 }
 
-void search_size(char* token_str, int size_id) {
-    char tokens[KEY_LENGTH];
-    if (size_id == -1) {
-        printf(tokens, "ALL:SIZE");
-    }
-    else {
-        sprintf(tokens, "ID:SIZE:%d", size_id);
-    }
+int read_condition_by_id() {
+
 }
 
-void search_item(char* token_str) {
-    bool searching = true;
-    while (searching) {
-        print_table_options();
+int read_size_by_id() {
 
-        char table_id[KEY_LENGTH] = {0};
-        Table table = (Table)get_int_input(table_id);
-        char input[KEY_LENGTH * 2] = {0};
+}
+
+Packet info_reacord(Table table) {
+    Packet request;
+
+    while (1) {
         switch(table) {
-            case TABLE_SWEATER:
-                printf("Searching for sweater.");
-                search_sweater(token_str);
-                break;
+            case TABLE_SWEATER: {
+                int id = read_sweater_by_id();
+                char *payload = payload_encode_id(id);
+                request = request_read_packet_init(table, payload);
+                free(payload);
+                return request;
+            }
             case TABLE_NOTE:
-                printf("Searching for sweater.");
-                search_note(token_str);
                 break;
             case TABLE_PIECE:
-                search_piece(token_str);
                 break;
             case TABLE_PIECE_TYPE:
-                printf("Enter Piece Type ID: ");
-                search_piece_type(token_str, get_int_input(input));
                 break;
             case TABLE_BRAND:
-                printf("Enter Brand ID: ");
-                search_brand(token_str, get_int_input(input));
+                break;
+            case TABLE_COLOR_FAMILY:
                 break;
             case TABLE_COLOR:
-                printf("Enter Color ID: ");
-                search_color(token_str, get_int_input(input));
                 break;
             case TABLE_NECKLINE:
-                printf("Enter Neckline ID: ");
-                search_neckline(token_str, get_int_input(input));
                 break;
             case TABLE_SLEEVES:
-                printf("Enter Sleeves ID: ");
-                search_sleeves(token_str, get_int_input(input));
                 break;
             case TABLE_TYPE:
-                printf("Enter Type ID: ");
-                search_type(token_str, get_int_input(input));
                 break;
             case TABLE_CONDITION:
-                printf("Enter Condition ID: ");
-                search_condition(token_str, get_int_input(input));
                 break;
             case TABLE_SIZE:
-                printf("Enter Size ID: ");
-                search_size(token_str, get_int_input(input));
                 break;
             default:
                 printf("Something went wrong...\n");
                 continue;
         }
-        searching = false;
     }
 }
-// End Search Item
+
+
+
+
+
+int read_sweater() {
+
+}
+
+int read_note() {
+
+}
+
+int read_piece() {
+
+}
+
+int read_piece_type() {
+
+}
+
+int read_brand() {
+
+}
+
+int read_color_family() {
+
+}
+
+int read_color() {
+
+}
+
+int read_neckline() {
+
+}
+
+int read_sleeves() {
+
+}
+
+int read_type() {
+
+}
+
+int read_condition() {
+
+}
+
+int read_size() {
+
+}
+
+Packet read_records(Table table) {
+    Packet request;
+
+    while (1) {
+        switch(table) {
+            case TABLE_SWEATER:
+                break;
+            case TABLE_NOTE:
+                break;
+            case TABLE_PIECE:
+                break;
+            case TABLE_PIECE_TYPE:
+                break;
+            case TABLE_BRAND:
+                break;
+            case TABLE_COLOR_FAMILY:
+                break;
+            case TABLE_COLOR:
+                break;
+            case TABLE_NECKLINE:
+                break;
+            case TABLE_SLEEVES:
+                break;
+            case TABLE_TYPE:
+                break;
+            case TABLE_CONDITION:
+                break;
+            case TABLE_SIZE:
+                break;
+            default:
+                printf("Something went wrong...\n");
+                continue;
+        }
+    }
+}
+
+void print_table_options() {
+    for (int i = 1; i < (int)NUM_TABLES; i++) {
+        printf("%d> %s\n", i, TABLE_NAMES[i]);
+    }
+}
 
 void database_menu() {
-    printf("1> Search\n2> Info\n3> Add Item\n4> Edit\n5> Remove\n6> Exit\n");
+    printf("1> Read\n2> Info\n3> Create\n4> Update\n5> Delete\n6> Import\n7> Export\n8> Exit\n");
 }
 
 void cashmere_database(int server_fd) {
     char buffer[STR_LENGTH] = {0};
-    bool exit = false;
     Packet request, response;
-    while(!exit) {
+    while(1) {
         database_menu();
+        RequestType request_type = (RequestType)get_int_input();
 
-        char token_str[STR_LENGTH] = {0};
-        char c = getchar();
-        getchar();
-        switch (c) {
-            case '1':
-                search_item(token_str);
+        print_table_options();
+        Table table = (Table)get_int_input();
+
+        switch (options) {
+            case REQUEST_TYPE_READ:
+                request = read_records(table);
                 break;
-            case '2':
-                info_item(token_str);
+            case REQUEST_TYPE_INFO:
+                request = info_record(table);
                 break;
-            case '3':
-                request = create_item();
+            case REQUEST_TYPE_CREATE:
+                request = create_record(table);
                 break;
-            case '4':
-                edit_item(token_str);
+            case REQUEST_TYPE_UPDATE:
+                request = update_record(table);
                 break;
-            case '5':
-                remove_item(token_str);
+            case REQUEST_TYPE_DELETE:
+                request = delete_record(table);
                 break;
-            case '6':
-                exit_db(token_str);
-                exit = true;
+            case REQUEST_TYPE_IMPORT:
+                request = import_database();
+                break;
+            case REQUEST_TYPE_EXPORT:
+                request = export_database();
+                break;
+            case REQUEST_TYPE_EXIT:
+                request = exit_database();
                 break;
             default:
         }

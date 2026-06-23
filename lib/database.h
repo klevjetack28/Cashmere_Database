@@ -8,21 +8,22 @@
 
 #include "db_tables.h"
 #include "0xca75.h"
+#include "query.h"
 
 int db_init(const char *filename);
 int db_close();
 
-Sweater *db_read_sweaters(int limit, int offset);
-Note *db_read_notes(int limit, int offset);
-Piece *db_read_pieces(int limit, int offset);
-PieceType *db_read_piece_types(int limit, int offset);
-Brand *db_read_brands(int limit, int offset);
-Color *db_read_colors(int limit, int offset);
-Neckline *db_read_necklines(int limit, int offset);
-Sleeves *db_read_sleevess(int limit, int offset);
-Type *db_read_types(int limit, int offset);
-Condition *db_read_conditions(int limit, int offset);
-Size *db_read_sizes(int limit, int offset);
+db_read_sweater_rows(Sweater **sweater_rows, int limit, int offset);
+db_read_note_rows(Note **note_rows, int limit, int offset);
+db_read_piece_rows(Piece ** piece_rows, int limit, int offset);
+db_read_piece_type_rows(PieceType **piece_type_rows, int limit, int offset);
+db_read_brand_rows(Brand **brand_rows, int limit int offset);
+db_read_color_rows(Color **color_rows, int limit, int offset);
+db_read_neckline_rows(Neckline **neckline_rows, int limit, int offset);
+db_read_sleeves_rows(Sleeves **sleeves_rows, int limit, int offset);
+db_read_type_rows(Type **type_rows, int limit, int offset);
+db_read_condition_rows(Condition **condition_rows, int limit, int offset);
+db_read_size_rows(Size **size_rows, int limit, int offset);
 
 Sweater db_read_sweater_by_id(int id);
 Note db_read_note_by_id(int id);

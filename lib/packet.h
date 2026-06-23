@@ -8,6 +8,7 @@
 
 #include "constants.h"
 #include "db_tables.h"
+#include "query.h"
 
 typedef enum {
     PACKET_TYPE_CONNECT = 0,
@@ -18,12 +19,14 @@ typedef enum {
 
 typedef enum {
     REQUEST_TYPE_NONE = 0,
-    REQUEST_TYPE_CREATE,
     REQUEST_TYPE_READ,
+    REQUEST_TYPE_INFO,
+    REQUEST_TYPE_CREATE,
     REQUEST_TYPE_UPDATE,
     REQUEST_TYPE_DELETE,
     REQUEST_TYPE_IMPORT,
-    REQUEST_TYPE_EXPORT
+    REQUEST_TYPE_EXPORT,
+    REQUEST_TYPE_EXIT
 } RequestType;
 
 typedef enum {
@@ -58,6 +61,7 @@ Packet packet_disconnect_init(char *payload);
 Packet packet_request_init(RequestType request_type, Table table, char *payload);
 Packet packet_create_request_init(Table table, char *payload);
 Packet packet_read_request_init(Table table, char *payload);
+Packet packet_info_request_init(Table table, char *payload);
 Packet packet_update_request_init(Table table, char *payload);
 Packet packet_delete_request_init(Table table, char *payload);
 Packet packet_import_request_init(char *payload);
@@ -66,6 +70,7 @@ Packet packet_export_request_init(char *payload);
 Packet packet_response_init(RequestType request_type, Table table, PacketStatus status, char *payload);
 Packet packet_create_response_init(Table table, PacketStatus status, char *payload);
 Packet packet_read_response_init(Table table, PacketStatus status, char *payload);
+Packet packet_info_response_init(Table table, PacketStatus status, char *payload);
 Packet packet_update_response_init(Table table, PacketStatus status, char *payload);
 Packet packet_delete_response_init(Table table, PacketStatus status, char *payload);
 Packet packet_import_response_init(PacketStatus status, char *payload);
