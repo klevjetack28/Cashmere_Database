@@ -13,7 +13,7 @@
 int db_init(const char *filename);
 int db_close();
 
-db_read_sweater_rows(Sweater **sweater_rows, int limit, int offset);
+Sweater *db_read_sweater_rows(Sweater **sweater_rows, int limit, int offset);
 db_read_note_rows(Note **note_rows, int limit, int offset);
 db_read_piece_rows(Piece ** piece_rows, int limit, int offset);
 db_read_piece_type_rows(PieceType **piece_type_rows, int limit, int offset);

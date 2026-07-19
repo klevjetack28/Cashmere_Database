@@ -59,6 +59,7 @@ Packet packet_connect_init(char *payload);
 Packet packet_disconnect_init(char *payload);
 
 Packet packet_request_init(RequestType request_type, Table table, char *payload);
+
 Packet packet_create_request_init(Table table, char *payload);
 Packet packet_read_request_init(Table table, char *payload);
 Packet packet_info_request_init(Table table, char *payload);
@@ -68,6 +69,7 @@ Packet packet_import_request_init(char *payload);
 Packet packet_export_request_init(char *payload);
 
 Packet packet_response_init(RequestType request_type, Table table, PacketStatus status, char *payload);
+
 Packet packet_create_response_init(Table table, PacketStatus status, char *payload);
 Packet packet_read_response_init(Table table, PacketStatus status, char *payload);
 Packet packet_info_response_init(Table table, PacketStatus status, char *payload);

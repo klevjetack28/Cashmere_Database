@@ -9,6 +9,8 @@
 int payload_encode_sweater_filter(char *payload, int payload_size, SweaterFilter *sweater_filter);
 SweaterFilter payload_decode_sweater_filter(char *payload);
 
+
+// WHERE IS BY ID
 int payload_encode_sweater_search(char *payload, int payload_size, SweaterSearch *sweater_search);
 SweaterSearch payload_decode_sweater_search(char *payload);
 int payload_encode_sweater_rows(char *payload, Sweater *sweater, int count);
