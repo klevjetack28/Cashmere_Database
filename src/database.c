@@ -26,22 +26,22 @@ int db_close() {
 
 
 
-int db_read_sweater_rows(Sweater **sweater_rows, Pagination *pagination) {
+int db_read_sweater(Sweater **sweater_rows, Pagination *pagination) {
 
     int count = 0;
 }
 
-int db_read_note_rows(Note **note_rows, Pagination *pagination) {
+int db_read_note(Note **note_rows, Pagination *pagination) {
 
     int count = 0;
 }
 
-int db_read_piece_rows(Piece **piece_rows, Pagination *pagination) {
+int db_read_piece(Piece **piece_rows, Pagination *pagination) {
 
     int count = 0;
 }
 
-int db_read_piece_type_rows(PieceType **piece_type_rows, Pagination *pagination) {
+int db_read_piece_type(PieceType **piece_type_rows, Pagination *pagination) {
      const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM PieceType";
 
@@ -66,7 +66,7 @@ int db_read_piece_type_rows(PieceType **piece_type_rows, Pagination *pagination)
     return count;
 }
 
-int db_read_brand_rows(Brand **brand_rows, Pagination *pagination) {
+int db_read_brand(Brand **brand_rows, Pagination *pagination) {
     const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM Brand";
     sqlite3_stmt *stmt;
@@ -112,7 +112,7 @@ int db_read_color_family(ColorFamily **color_family_rows, Pagination *pagintion)
     return count;
 }
 
-int db_read_color_rows(Color **color_rows, Pagination *pagination) {
+int db_read_color(Color **color_rows, Pagination *pagination) {
     const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM Color";
     sqlite3_stmt *stmt;
@@ -135,7 +135,7 @@ int db_read_color_rows(Color **color_rows, Pagination *pagination) {
     return count;
 }
 
-int db_read_neckline_rows(Neckline **neckline_rows, Pagination *pagination) {
+int db_read_neckline(Neckline **neckline_rows, Pagination *pagination) {
     const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM Neckline";
     sqlite3_stmt *stmt;
@@ -158,7 +158,7 @@ int db_read_neckline_rows(Neckline **neckline_rows, Pagination *pagination) {
     return count;
 }
 
-int db_read_sleeves_rows(Sleeves **sleeves_rows, Pagination *pagination) {
+int db_read_sleeves(Sleeves **sleeves_rows, Pagination *pagination) {
     const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM Sleeves";
     sqlite3_stmt *stmt;
@@ -181,7 +181,7 @@ int db_read_sleeves_rows(Sleeves **sleeves_rows, Pagination *pagination) {
     return count;
 }
 
-int db_read_type_rows(Type **type_rows, Pagination *pagination) {
+int db_read_type(Type **type_rows, Pagination *pagination) {
     const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM Type";
     sqlite3_stmt *stmt;
@@ -204,7 +204,7 @@ int db_read_type_rows(Type **type_rows, Pagination *pagination) {
     return count;
 }
 
-int db_read_condition_rows(Condition **condition_rows, Pagination *pagination) {
+int db_read_condition(Condition **condition_rows, Pagination *pagination) {
     const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM Condition";
     sqlite3_stmt *stmt;
@@ -227,7 +227,7 @@ int db_read_condition_rows(Condition **condition_rows, Pagination *pagination) {
     return count;
 }
 
-int db_read_size_rows(Size **size_rows, Pagination *pagination) {
+int db_read_size(Size **size_rows, Pagination *pagination) {
     const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM Size";
     sqlite3_stmt *stmt;
@@ -250,7 +250,7 @@ int db_read_size_rows(Size **size_rows, Pagination *pagination) {
     return count;
 }
 
-Sweater db_read_sweater_by_id(int id) {
+Sweater db_info_sweater(int id) {
     const char *sql = 
         "SELECT id, brand_id, color_id, neckline_id, sleeves_id, type_id, condition_id, size_id, weight FROM sweater WHERE id = ?";
 
@@ -275,7 +275,7 @@ Sweater db_read_sweater_by_id(int id) {
     return sweater;
 }
 
-Note db_read_note_by_id(int id) {
+Note db_info_note(int id) {
     const char *sql = 
         "SELECT id, sweater_id, content FROM Note WHERE id = ?";
 
@@ -294,7 +294,7 @@ Note db_read_note_by_id(int id) {
     return note;
 }
 
-Piece db_read_piece_by_id(int id) {
+Piece db_info_piece(int id) {
     const char *sql = 
         "SELECT id, sweater_id, piece_type_id, original_weight, current_weight, continuous FROM Piece WHERE id = ?";
 
@@ -316,7 +316,7 @@ Piece db_read_piece_by_id(int id) {
     return piece;
 }
 
-PieceType db_read_piece_type_by_id(int id) {
+PieceType db_info_piece_type(int id) {
     const char *sql = 
         "SELECT id, piece_type FROM PieceType WHERE id = ?";
 
@@ -335,7 +335,7 @@ PieceType db_read_piece_type_by_id(int id) {
     return piece_type;
 }
 
-Brand db_read_brand_by_id(int id) {
+Brand db_info_brand(int id) {
     const char *sql = 
         "SELECT id, brand FROM Brand WHERE id = ?";
 
@@ -354,7 +354,7 @@ Brand db_read_brand_by_id(int id) {
     return brand;
 }
 
-ColorFamily db_read_color_family_by_id(int id) {
+ColorFamily db_info_color_family(int id) {
     const char *sql = 
         "SELECT id, color_family FROM ColorFamily WHERE id = ?";
 
@@ -374,7 +374,7 @@ ColorFamily db_read_color_family_by_id(int id) {
 
 }
 
-Color db_read_color_by_id(int id) {
+Color db_info_color(int id) {
     const char *sql = 
         "SELECT id, color FROM Color WHERE id = ?";
 
@@ -393,7 +393,7 @@ Color db_read_color_by_id(int id) {
     return color;
 }
 
-Neckline db_read_neckline_by_id(int id) {
+Neckline db_info_neckline(int id) {
     const char *sql = 
         "SELECT id, neckline FROM Neckline WHERE id = ?";
 
@@ -412,7 +412,7 @@ Neckline db_read_neckline_by_id(int id) {
     return neckline;
 }
 
-Sleeves db_read_sleeves_by_id(int id) {
+Sleeves db_info_sleeves(int id) {
     const char *sql = 
         "SELECT id, sleeves FROM Sleeves WHERE id = ?";
 
@@ -431,7 +431,7 @@ Sleeves db_read_sleeves_by_id(int id) {
     return sleeves;
 }
 
-Type db_read_type_by_id(int id) {
+Type db_info_type(int id) {
     const char *sql = 
         "SELECT id, type FROM Type WHERE id = ?";
 
@@ -450,7 +450,7 @@ Type db_read_type_by_id(int id) {
     return type;
 }
 
-Condition db_read_condition_by_id(int id) {
+Condition db_info_condition(int id) {
     const char *sql = 
         "SELECT id, condition FROM Condition WHERE id = ?";
 
@@ -469,7 +469,7 @@ Condition db_read_condition_by_id(int id) {
     return condition;
 }
 
-Size db_read_size_by_id(int id) {
+Size db_info_size(int id) {
     const char *sql = 
         "SELECT id, size FROM Size WHERE id = ?";
 

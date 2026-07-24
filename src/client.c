@@ -23,31 +23,18 @@ void get_input(char *input) {
     return buffer;
 }
 
-int get_int_input() {
+int get_int_input(char *prompt) {
+    printf("%s", prompt);
     char input[KEY_LENGTH] = {0};
     get_input(input);
     return atoi(input);
 }
 
-int get_string_input(char* input) {
+int get_string_input(char *prompt, char* input) {
+    printf("%s", prompt);
     get_input(input);
     return strlen(input);
 }
-
-void get_search_sweater_input(char* input, Sweater* sweater) {
-    
-}
-
-void get_search_piece_input(char* input, Piece* piece) {
-
-}
-void get_search_note_input(char* input, Note* note) {
-
-}
-
-
-
-
 
 void system_status() {
 
@@ -65,123 +52,230 @@ Packet export_database(void) {
 
 }
 
-
-
-
-
 Packet import_database(void) {
 
 }
 
-
-
-
-
-int delete_sweater_by_id_input() {
-
+int delete_sweater_input() {
+    return get_int_input("Enter Sweater ID to delete: ");
 }
 
-int delete_note_by_id_input() {
-
+int delete_note_input() {
+    return get_int_input("Enter Note ID to delete: ");
 }
 
-int delete_piece_by_id_input() {
-
+int delete_piece_input() {
+    return get_int_input("Enter Piece ID to delete: ");
 }
 
-int delete_piece_type_by_id_input() {
-
+int delete_piece_type_input() {
+    return get_int_input("Enter Piece Type ID to delete: ");
 }
 
-int delete_brand_by_id_input() {
-
+int delete_brand_input() {
+    return get_int_input("Enter Brand ID to delete: ");
 }
 
-int delete_color_family_by_id_input() {
-
+int delete_color_family_input() {
+    return get_int_input("Enter Color Family ID to delete: ");
 }
 
-int delete_color_by_id_input() {
-
+int delete_color_input() {
+    return get_int_input("Enter Color ID to delete: ");
 }
 
-int delete_neckline_by_id_input() {
-
+int delete_neckline_input() {
+    return get_int_input("Enter Neckline ID to delete: ");
 }
 
-int delete_sleeves_by_id_input() {
-
+int delete_sleeves_input() {
+    return get_int_input("Enter Sleeves ID to delete: ");
 }
 
-int delete_type_by_id_input() {
-
+int delete_type_input() {
+    return get_int_input("Enter Type ID to delete: ");
 }
 
-int delete_condition_by_id_input() {
-
+int delete_condition_input() {
+    return get_int_input("Enter Condition ID to delete: ");
 }
 
-int delete_size_by_id_input() {
-
+int delete_size_input() {
+    return get_int_input("Enter Size ID to delete: ");
 }
 
-Packet delete_record(void) {
+Packet delete_record(Table table) {
+    Packet request;
 
+    while (1) {
+        switch(table) {
+            case TABLE_SWEATER:
+                int id = delete_sweater_input();
+                char payload[MAX_PAYLOAD_LENGTH];
+                payload_encode_id(payload, MAX_PAYLOAD_LENGTH, id);
+                request = request_delete_packet_init(table, payload);
+                return request;
+            case TABLE_NOTE:
+                break;
+            case TABLE_PIECE:
+                break;
+            case TABLE_PIECE_TYPE:
+                break;
+            case TABLE_BRAND:
+                break;
+            case TABLE_COLOR_FAMILY:
+                break;
+            case TABLE_COLOR:
+                break;
+            case TABLE_NECKLINE:
+                break;
+            case TABLE_SLEEVES:
+                break;
+            case TABLE_TYPE:
+                break;
+            case TABLE_CONDITION:
+                break;
+            case TABLE_SIZE:
+                break;
+            default:
+                printf("Something went wrong...\n");
+                continue;
+        }
+    }
 }
-
-
-
-
 
 Sweater update_sweater_input() {
-
+    Sweater sweater;
+    
+    sweater.brand_id = get_int_input("BrandID: ");
+    sweater.color_id = get_int_input("ColorID: ");
+    sweater.neckline_id = get_int_input("NecklineID: ");
+    sweater.sleeves_id = get_int_input("SleevesID: ");
+    sweater.type_id = get_int_input("TypeID: ");
+    sweater.weight = get_int_input("Weight(g): ");
+    sweater.condition_id = get_int_input("ConditionID: ");
+    sweater.size_id = get_int_input("SizeID: ");
+    
+    return sweater;
 }
 
 Note update_note_input() {
+    Note note;
 
+    note.sweater_id = get_int_input("SweaterID: ");
+    get_string_input("Enter Contents: ", note.content);
+
+    return note;
 }
 
 Piece update_piece_input() {
+    Piece piece;
 
+    piece.sweater_id = get_int_input("Sweater ID: ");
+    piece.piece_type_id = get_int_input("Piece Type ID: ");
+    piece.original_weight = get_int_input("Original Weight: ");
+    piece.current_weight = piece.original_weight;
+    piece.continuous = get_int_input("Continuos True(1)/False(0): ");
+
+    return piece;
 }
 
 PieceType update_piece_type_input() {
-
+    PieceType piece_type;
+    get_string_input("PieceType: ", piece_type.piece_type);
+    return piece_type;
 }
 
 Brand update_brand_input() {
-
+    Brand brand;
+    get_string_input("Brand: ", brand.brand);
+    return brand;   
 }
 
 ColorFamily update_color_family_input() {
-
+    ColorFamily color_family;
+    get_string_input("Color Family: ", color_family.color_family);   
+    return color_family;   
 }
 
 Color update_color_input() {
-
+    Color color;
+    
+    color.color_family_id = get_int_input("Color Family ID: ");
+    get_string_input("Color: ", color.color);
+    
+    return color;   
 }
 
 Neckline update_neckline_input() {
-
+    Neckline neckline;
+    get_string_input("Neckline: ", neckline.neckline);
+    return neckline;   
 }
 
 Sleeves update_sleeves_input() {
-
+    Sleeves sleeves;
+    get_string_input("Sleeves: ", sleeves.sleeves);
+    return sleeves;
 }
 
 Type update_type_input() {
-
+    Type type;
+    get_string_input("Type: ", type.type);
+    return type;
 }
 
 Condition update_condition_input() {
-
+    Condition condition;
+    get_string_input("Condition: ", condition.condition);
+    return condition;
 }
 
 Size update_size_input() {
-
+    Size size;
+    get_string_input("Size: ", size.size);
+    return size;
 }
 
-Packet update_record(void) {
+Packet update_record(Table table) {
+    Packet request;
+
+    while (1) {
+        switch(table) {
+            case TABLE_SWEATER: {
+                Sweater sweater = update_sweater_input();
+                char payload[MAX_PAYLOAD_LENGTH];
+                payload_encode_id(payload, MAX_PAYLOAD_LENGTH, sweater);
+                request = request_update_packet_init(table, payload);
+                return request;
+            }
+            case TABLE_NOTE:
+                break;
+            case TABLE_PIECE:
+                break;
+            case TABLE_PIECE_TYPE:
+                break;
+            case TABLE_BRAND:
+                break;
+            case TABLE_COLOR_FAMILY:
+                break;
+            case TABLE_COLOR:
+                break;
+            case TABLE_NECKLINE:
+                break;
+            case TABLE_SLEEVES:
+                break;
+            case TABLE_TYPE:
+                break;
+            case TABLE_CONDITION:
+                break;
+            case TABLE_SIZE:
+                break;
+            default:
+                printf("Something went wrong...\n");
+                continue;
+        }
+    }
 
 }
 
@@ -192,22 +286,14 @@ Packet update_record(void) {
 Sweater create_sweater_input() {
     Sweater sweater;
     
-    printf("BrandID: ");
-    sweater.brand_id = get_int_input();
-    printf("ColorID: ");
-    sweater.color_id = get_int_input();
-    printf("NecklineID: ");
-    sweater.neckline_id = get_int_input();
-    printf("SleevesID: ");
-    sweater.sleeves_id = get_int_input();
-    printf("TypeID: ");
-    sweater.type_id = get_int_input();
-    printf("Weight(g): ");
-    sweater.weight = get_int_input();
-    printf("ConditionID: ");
-    sweater.condition_id = get_int_input();
-    printf("SizeID: ");
-    sweater.size_id = get_int_input();
+    sweater.brand_id = get_int_input("BrandID: ");
+    sweater.color_id = get_int_input("ColorID: ");
+    sweater.neckline_id = get_int_input("NecklineID: ");
+    sweater.sleeves_id = get_int_input("SleevesID: ");
+    sweater.type_id = get_int_input("TypeID: ");
+    sweater.weight = get_int_input("Weight(g): ");
+    sweater.condition_id = get_int_input("ConditionID: ");
+    sweater.size_id = get_int_input("SizeID: ");
     
     return sweater;
 }
@@ -215,10 +301,8 @@ Sweater create_sweater_input() {
 Note create_note_input() {
     Note note;
 
-    printf("SweaterID: ");
-    note.sweater_id = get_int_input();
-    printf("Enter Contents: ");
-    get_string_input(note.content);
+    note.sweater_id = get_int_input("SweaterID: ");
+    get_string_input("Enter Contents: ", note.content);
 
     return note;
 }
@@ -226,84 +310,69 @@ Note create_note_input() {
 Piece create_piece_input() {
     Piece piece;
 
-    printf("Sweater ID: ");
-    piece.sweater_id = get_int_input();
-    printf("Piece Type ID: ");
-    piece.piece_type_id = get_int_input();
-    printf("Original Weight: ");
-    piece.original_weight = get_int_input();
+    piece.sweater_id = get_int_input("Sweater ID: ");
+    piece.piece_type_id = get_int_input("Piece Type ID: ");
+    piece.original_weight = get_int_input("Original Weight: ");
     piece.current_weight = piece.original_weight;
-    printf("Continuos True(1)/False(0): ");
-    piece.continuous = get_int_input();
+    piece.continuous = get_int_input("Continuos True(1)/False(0): ");
 
     return piece;
 }
 
 PieceType create_piece_type_input() {
     PieceType piece_type;
-    printf("PieceType: ");
-    get_string_input(piece_type.piece_type);
+    get_string_input("PieceType: ", piece_type.piece_type);
     return piece_type;
 }
 
 Brand create_brand_input() {
     Brand brand;
-    printf("Brand: ");
-    get_string_input(brand.brand);
+    get_string_input("Brand: ", brand.brand);
     return brand;   
 }
 
 ColorFamily create_color_family_input() {
     ColorFamily color_family;
-    printf("Color Family: ");
-    get_string_input(color_family.color_family);   
+    get_string_input("Color Family: ", color_family.color_family);   
     return color_family;   
 }
 
 Color create_color_input() {
     Color color;
-    char input[STR_LENGTH] = {0};
     
-    printf("Color Family ID: ");
-    color.color_family_id = get_int_input();
-    printf("Color: ");
-    get_string_input(color.color);
+    color.color_family_id = get_int_input("Color Family ID: ");
+    get_string_input("Color: ", color.color);
     
     return color;   
 }
 
 Neckline create_neckline_input() {
     Neckline neckline;
-    printf("Neckline: ");
-    get_string_input(neckline.neckline);
+    get_string_input("Neckline: ", neckline.neckline);
     return neckline;   
 }
 
 Sleeves create_sleeves_input() {
     Sleeves sleeves;
-    printf("Sleeves: ");
-    get_string_input(sleeves.sleeves);
+    get_string_input("Sleeves: ", sleeves.sleeves);
     return sleeves;
 }
 
 Type create_type_input() {
     Type type;
-    printf("Type: ");
-    get_string_input(type.type);
+    get_string_input("Type: ", type.type);
     return type;
 }
 
 Condition create_condition_input() {
     Condition condition;
-    printf("Condition: ");
-    get_string_input(condition.condition);
+    get_string_input("Condition: ", condition.condition);
     return condition;
 }
 
 Size create_size_input() {
     Size size;
-    printf("Size: ");
-    get_string_input(size.size);
+    get_string_input("Size: ", size.size);
     return size;
 }
 
@@ -314,12 +383,13 @@ Packet create_record(Table table) {
         switch(table) {
             case TABLE_SWEATER: {
                 Sweater sweater = create_sweater_input();
-                char *payload = payload_encode_sweater(&sweater);
+                char payload[MAX_PAYLOAD_LENGTH];
+                payload_encode_sweater(payload, MAX_PAYLOAD_LENGTH, sweater);
                 request = packet_create_request_init(table, payload);
-                free(payload);
                 return request;
             }
             case TABLE_NOTE: {
+                // Update all tabled under to new payload encode functions
                 Note note = create_note_input();
                 char *payload = payload_encode_note(&note);
                 request = packet_create_request_init(table, payload);
@@ -405,56 +475,52 @@ Packet create_record(Table table) {
     return request;
 }
 
-
-
-
-
-int read_sweater_by_id() {
-
+int info_sweater_input() {
+    return get_int_input("Info Sweater ID: ");
 }
 
-int read_note_by_id() {
-
+int info_note_input() {
+    return get_int_input("Info Note ID: ");
 }
 
-int read_piece_by_id() {
-
+int info_piece_input() {
+    return get_int_input("Info Piece ID: ");
 }
 
-int read_piece_type_by_id() {
-
+int info_piece_type_input() {
+    return get_int_input("Info Piece Type ID: ");
 }
 
-int read_brand_by_id() {
-
+int info_brand_input() {
+    return get_int_input("Info Brand ID: ");
 }
 
-int read_color_family_by_id() {
-
+int info_color_family_input() {
+    return get_int_input("Info Color Family ID: ");
 }
 
-int read_color_by_id() {
-
+int info_color_input() {
+    return get_int_input("Info Color ID: ");
 }
 
-int read_neckline_by_id() {
-
+int info_neckline_input() {
+    return get_int_input("Info Neckline ID: ");
 }
 
-int read_sleeves_by_id() {
-
+int info_sleeves_input() {
+    return get_int_input("Info Sleeves ID: ");
 }
 
-int read_type_by_id() {
-
+int info_type_input() {
+    return get_int_input("Info Type ID: ");
 }
 
-int read_condition_by_id() {
-
+int info_condition_input() {
+    return get_int_input("Info Condition ID: ");
 }
 
-int read_size_by_id() {
-
+int info_size_input() {
+    return get_int_input("Info Size ID: ");
 }
 
 Packet info_reacord(Table table) {
@@ -463,10 +529,10 @@ Packet info_reacord(Table table) {
     while (1) {
         switch(table) {
             case TABLE_SWEATER: {
-                int id = read_sweater_by_id();
-                char *payload = payload_encode_id(id);
-                request = request_read_packet_init(table, payload);
-                free(payload);
+                int id = info_sweater_input();
+                char payload[MAX_PAYLOAD_LENGTH];
+                payload_encode_id(payload, MAX_PAYLOAD_LENGTH, id);
+                request = request_info_packet_init(table, payload);
                 return request;
             }
             case TABLE_NOTE:
@@ -498,58 +564,49 @@ Packet info_reacord(Table table) {
     }
 }
 
+SearchSweater read_sweater_input() {
+    
+}
 
-
-
-
-int read_sweater() {
+SearchPiece read_piece_input() {
 
 }
 
-int read_note() {
+SearchNote read_note_input() {
 
 }
 
-int read_piece() {
+Pagination read_piece_type_input() {
 
 }
 
-int read_piece_type() {
+Pagination read_brand_input() {
 
 }
 
-int read_brand() {
+Pagination read_color_family_input() {
 
 }
 
-int read_color_family() {
+Pagination read_color_input() {
 
 }
 
-int read_color() {
+Pagination read_neckline_input() {
 
 }
 
-int read_neckline() {
+Pagination read_sleeves_input() {
 
 }
 
-int read_sleeves() {
+Pagination read_condition_input() {
 
 }
 
-int read_type() {
+Pagination read_size_input() {
 
 }
-
-int read_condition() {
-
-}
-
-int read_size() {
-
-}
-
 Packet read_records(Table table) {
     Packet request;
 
