@@ -6,5 +6,5 @@
 #define STR_LENGTH 256
 #define BUFFER_LENGTH 8192
 #define PORT 5000
-
+#define UPPERCASE_OFFSET 32
 #endif // CONSTANTS_H

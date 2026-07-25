@@ -111,9 +111,9 @@ Packet delete_record(Table table) {
         switch(table) {
             case TABLE_SWEATER:
                 int id = delete_sweater_input();
-                char payload[MAX_PAYLOAD_LENGTH];
-                payload_encode_id(payload, MAX_PAYLOAD_LENGTH, id);
-                request = request_delete_packet_init(table, payload);
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_delete_request_init(table, payload);
                 return request;
             case TABLE_NOTE:
                 break;
@@ -244,9 +244,9 @@ Packet update_record(Table table) {
         switch(table) {
             case TABLE_SWEATER: {
                 Sweater sweater = update_sweater_input();
-                char payload[MAX_PAYLOAD_LENGTH];
-                payload_encode_id(payload, MAX_PAYLOAD_LENGTH, sweater);
-                request = request_update_packet_init(table, payload);
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_sweater(payload, PAYLOAD_MAX_LENGTH, &sweater);
+                request = packet_update_request_init(table, payload);
                 return request;
             }
             case TABLE_NOTE:
@@ -383,87 +383,86 @@ Packet create_record(Table table) {
         switch(table) {
             case TABLE_SWEATER: {
                 Sweater sweater = create_sweater_input();
-                char payload[MAX_PAYLOAD_LENGTH];
-                payload_encode_sweater(payload, MAX_PAYLOAD_LENGTH, sweater);
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_sweater(payload, PAYLOAD_MAX_LENGTH, &sweater);
                 request = packet_create_request_init(table, payload);
                 return request;
             }
             case TABLE_NOTE: {
-                // Update all tabled under to new payload encode functions
                 Note note = create_note_input();
-                char *payload = payload_encode_note(&note);
+                char *payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_note(payload, PAYLOAD_MAX_LENGTH, &note);
                 request = packet_create_request_init(table, payload);
-                free(payload);
                 return request;
             }
             case TABLE_PIECE: {
                 Piece piece = create_piece_input();
-                char *payload = payload_encode_piece(&piece);
+                char *payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_piece(payload, PAYLOAD_MAX_LENGTH, &piece);
                 request = packet_create_request_init(table, payload);
-                free(payload);
                 return request;
             }
             case TABLE_PIECE_TYPE: { 
                 PieceType piece_type = create_piece_type_input();
-                char *payload = payload_encode_piece_type(&piece_type);
+                char *payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_piece_type(payload, PAYLOAD_MAX_LENGTH, &piece_type);
                 request = packet_create_request_init(table, payload);
-                free(payload);
                 return request;
             }
             case TABLE_BRAND: {
                 Brand brand = create_brand_input();
-                char *payload = payload_encode_brand(&brand);
+                char *payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &brand);
                 request = packet_create_request_init(table, payload);
-                free(payload);
                 return request;
             }
             case TABLE_COLOR_FAMILY: {
                 ColorFamily color_family = create_color_family_input();
-                char *payload = payload_encode_color_family(&color_family);
+                char *payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_color_family(payload, PAYLOAD_MAX_LENGTH, &color_family);
                 request = packet_create_request_init(table, payload);
-                free(payload);
                 return request;
             }
             case TABLE_COLOR: {
                 Color color = create_color_input();
-                char *payload = payload_encode_color(&color);
+                char *payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_color(payload, PAYLOAD_MAX_LENGTH, &color);
                 request = packet_create_request_init(table, payload);
-                free(payload);
                 return request;
             }
             case TABLE_NECKLINE: {
                 Neckline neckline = create_neckline_input();
-                char *payload = payload_encode_neckline(&neckline);
+                char *payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_neckline(payload, PAYLOAD_MAX_LENGTH, &neckline);
                 request = packet_create_request_init(table, payload);
-                free(payload);
                 return request;
             }
             case TABLE_SLEEVES: {
                 Sleeves sleeves = create_sleeves_input();
-                char *payload = payload_encode_sleeves(&sleeves);
+                char *payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_sleeves(payload, PAYLOAD_MAX_LENGTH, &sleeves);
                 request = packet_create_request_init(table, payload);
-                free(payload);
                 return request;
             }
             case TABLE_TYPE: {
                 Type type = create_type_input();
-                char *payload = payload_encode_type(&type);
+                char *payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_type(payload, PAYLOAD_MAX_LENGTH, &type);
                 request = packet_create_request_init(table, payload);
-                free(payload);
                 return request;
             }
             case TABLE_CONDITION: {
                 Condition condition = create_condition_input();
-                char *payload = payload_encode_condition(&condition);
+                char *payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_condition(payload, PAYLOAD_MAX_LENGTH, &condition);
                 request = packet_create_request_init(table, payload);
-                free(payload);
                 return request;
             }
             case TABLE_SIZE: {
                 Size size = create_size_input();
-                char *payload = payload_encode_size(&size);
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_size(payload, PAYLOAD_MAX_LENGTH, &size);
                 request = packet_create_request_init(table, payload);
-                free(payload);
                 return request;
             }
             default:
@@ -523,16 +522,16 @@ int info_size_input() {
     return get_int_input("Info Size ID: ");
 }
 
-Packet info_reacord(Table table) {
+Packet info_record(Table table) {
     Packet request;
 
     while (1) {
         switch(table) {
             case TABLE_SWEATER: {
                 int id = info_sweater_input();
-                char payload[MAX_PAYLOAD_LENGTH];
-                payload_encode_id(payload, MAX_PAYLOAD_LENGTH, id);
-                request = request_info_packet_init(table, payload);
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_info_request_init(table, payload);
                 return request;
             }
             case TABLE_NOTE:
@@ -564,15 +563,15 @@ Packet info_reacord(Table table) {
     }
 }
 
-SearchSweater read_sweater_input() {
+SweaterSearch read_sweater_input() {
     
 }
 
-SearchPiece read_piece_input() {
+NoteSearch read_note_input() {
 
 }
 
-SearchNote read_note_input() {
+PieceSearch read_piece_input() {
 
 }
 
@@ -607,6 +606,7 @@ Pagination read_condition_input() {
 Pagination read_size_input() {
 
 }
+
 Packet read_records(Table table) {
     Packet request;
 
@@ -658,12 +658,12 @@ void cashmere_database(int server_fd) {
     Packet request, response;
     while(1) {
         database_menu();
-        RequestType request_type = (RequestType)get_int_input();
+        RequestType request_type = (RequestType)get_int_input("");
 
         print_table_options();
-        Table table = (Table)get_int_input();
+        Table table = (Table)get_int_input("");
 
-        switch (options) {
+        switch (request_type) {
             case REQUEST_TYPE_READ:
                 request = read_records(table);
                 break;

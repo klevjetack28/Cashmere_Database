@@ -63,6 +63,10 @@ Packet packet_read_request_init(Table table, char *payload) {
     return packet_request_init(REQUEST_TYPE_READ, table, payload);
 }
 
+Packet packet_info_request_init(Table table, char *payload) {
+    return packet_request_init(REQUEST_TYPE_INFO, table, payload);
+}
+
 Packet packet_update_request_init(Table table, char *payload) {
     return packet_request_init(REQUEST_TYPE_UPDATE, table, payload);
 }
@@ -90,6 +94,10 @@ Packet packet_create_response_init(Table table, PacketStatus status, char *paylo
 
 Packet packet_read_response_init(Table table, PacketStatus status, char *payload) {
     return packet_response_init(REQUEST_TYPE_READ, table, status, payload);
+}
+
+Packet packet_info_response_init(Table table, PacketStatus status, char *payload) {
+    return packet_response_init(REQUEST_TYPE_INFO, table, status, payload);
 }
 
 Packet packet_update_response_init(Table table, PacketStatus status, char *payload) {

@@ -13,18 +13,18 @@
 int db_init(const char *filename);
 int db_close();
 
-void db_read_sweater(Sweater **sweater_rows, int limit, int offset);
-void db_read_note(Note **note_rows, int limit, int offset);
-void db_read_piece(Piece ** piece_rows, int limit, int offset);
-void db_read_piece_type(PieceType **piece_type_rows, int limit, int offset);
-void db_read_brand(Brand **brand_rows, int limit, int offset);
-void db_read_color_faimily(ColorFamily **color_family_rows, int limit, int offset);
-void db_read_color(Color **color_rows, int limit, int offset);
-void db_read_neckline(Neckline **neckline_rows, int limit, int offset);
-void db_read_sleeves(Sleeves **sleeves_rows, int limit, int offset);
-void db_read_type(Type **type_rows, int limit, int offset);
-void db_read_condition(Condition **condition_rows, int limit, int offset);
-void db_read_size(Size **size_rows, int limit, int offset);
+int db_read_sweater(Sweater *sweater_rows[], Pagination *pagination);
+int db_read_note(Note *note_rows[], Pagination *pagination);
+int db_read_piece(Piece * piece_rows[], Pagination *pagination);
+int db_read_piece_type(PieceType *piece_type_rows[], Pagination *pagination);
+int db_read_brand(Brand *brand_rows[], Pagination *pagination);
+int db_read_color_faimily(ColorFamily *color_family_rows[], Pagination *pagination);
+int db_read_color(Color *color_rows[], Pagination *pagination);
+int db_read_neckline(Neckline *neckline_rows[], Pagination *pagination);
+int db_read_sleeves(Sleeves *sleeves_rows[], Pagination *pagination);
+int db_read_type(Type *type_rows[], Pagination *pagination);
+int db_read_condition(Condition *condition_rows[], Pagination *pagination);
+int db_read_size(Size *size_rows[], Pagination *pagination);
 
 Sweater db_info_sweater(int id);
 Note db_info_note(int id);

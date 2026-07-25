@@ -26,22 +26,22 @@ int db_close() {
 
 
 
-int db_read_sweater(Sweater **sweater_rows, Pagination *pagination) {
+int db_read_sweater(Sweater *sweater_rows[], Pagination *pagination) {
 
     int count = 0;
 }
 
-int db_read_note(Note **note_rows, Pagination *pagination) {
+int db_read_note(Note *note_rows[], Pagination *pagination) {
 
     int count = 0;
 }
 
-int db_read_piece(Piece **piece_rows, Pagination *pagination) {
+int db_read_piece(Piece *piece_rows[], Pagination *pagination) {
 
     int count = 0;
 }
 
-int db_read_piece_type(PieceType **piece_type_rows, Pagination *pagination) {
+int db_read_piece_type(PieceType *piece_type_rows[], Pagination *pagination) {
      const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM PieceType";
 
@@ -65,7 +65,7 @@ int db_read_piece_type(PieceType **piece_type_rows, Pagination *pagination) {
     return count;
 }
 
-int db_read_brand(Brand **brand_rows, Pagination *pagination) {
+int db_read_brand(Brand *brand_rows[], Pagination *pagination) {
     const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM Brand";
     sqlite3_stmt *stmt;
@@ -87,7 +87,7 @@ int db_read_brand(Brand **brand_rows, Pagination *pagination) {
     return count;
 }
 
-int db_read_color_family(ColorFamily **color_family_rows, Pagination *pagintion) {
+int db_read_color_family(ColorFamily *color_family_rows[], Pagination *pagination) {
     const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM ColorFamily";
     sqlite3_stmt *stmt;
@@ -100,7 +100,7 @@ int db_read_color_family(ColorFamily **color_family_rows, Pagination *pagintion)
         if (sqlite3_step(stmt) == SQLITE_ROW) {
             memset(&color_family_rows[i], 0, sizeof(color_family_rows[0]));
             color_family_rows[i]->id = sqlite3_column_int(stmt, 0);
-            strcpy(color_fmaily_rows[i]->color_family, sqlite3_column_text(stmt, 1));
+            strcpy(color_family_rows[i]->color_family, sqlite3_column_text(stmt, 1));
         }
         count++;
     }
@@ -109,7 +109,7 @@ int db_read_color_family(ColorFamily **color_family_rows, Pagination *pagintion)
     return count;
 }
 
-int db_read_color(Color **color_rows, Pagination *pagination) {
+int db_read_color(Color *color_rows[], Pagination *pagination) {
     const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM Color";
     sqlite3_stmt *stmt;
@@ -131,7 +131,7 @@ int db_read_color(Color **color_rows, Pagination *pagination) {
     return count;
 }
 
-int db_read_neckline(Neckline **neckline_rows, Pagination *pagination) {
+int db_read_neckline(Neckline *neckline_rows[], Pagination *pagination) {
     const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM Neckline";
     sqlite3_stmt *stmt;
@@ -153,7 +153,7 @@ int db_read_neckline(Neckline **neckline_rows, Pagination *pagination) {
     return count;
 }
 
-int db_read_sleeves(Sleeves **sleeves_rows, Pagination *pagination) {
+int db_read_sleeves(Sleeves *sleeves_rows[], Pagination *pagination) {
     const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM Sleeves";
     sqlite3_stmt *stmt;
@@ -175,7 +175,7 @@ int db_read_sleeves(Sleeves **sleeves_rows, Pagination *pagination) {
     return count;
 }
 
-int db_read_type(Type **type_rows, Pagination *pagination) {
+int db_read_type(Type *type_rows[], Pagination *pagination) {
     const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM Type";
     sqlite3_stmt *stmt;
@@ -197,7 +197,7 @@ int db_read_type(Type **type_rows, Pagination *pagination) {
     return count;
 }
 
-int db_read_condition(Condition **condition_rows, Pagination *pagination) {
+int db_read_condition(Condition *condition_rows[], Pagination *pagination) {
     const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM Condition";
     sqlite3_stmt *stmt;
