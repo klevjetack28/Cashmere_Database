@@ -48,16 +48,15 @@ int db_read_piece_type(PieceType **piece_type_rows, Pagination *pagination) {
     sqlite3_stmt *stmt;
 
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, pagination.limit);
-    sqlite3_bind_int(stmt, 2, pagination.offset);
+    sqlite3_bind_int(stmt, 1, pagination->limit);
+    sqlite3_bind_int(stmt, 2, pagination->offset);
 
     int count = 0;
-    PieceType *piece_type_rows;
-    for (int i = 0; i < pagination.limit; i++) {
+    for (int i = 0; i < pagination->limit; i++) {
         if (sqlite3_step(stmt) == SQLITE_ROW) {
             memset(&piece_type_rows[i], 0, sizeof(piece_type_rows[0]));
-            piece_type_rows[i].id = sqlite3_column_int(stmt, 0);
-            strcpy(piece_type_rows[i].piece_type, sqlite3_column_text(stmt, 1));
+            piece_type_rows[i]->id = sqlite3_column_int(stmt, 0);
+            strcpy(piece_type_rows[i]->piece_type, sqlite3_column_text(stmt, 1));
         }
         count++;
     }
@@ -71,16 +70,15 @@ int db_read_brand(Brand **brand_rows, Pagination *pagination) {
         "SELECT * LIMIT ? OFFSET ? FROM Brand";
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, pagination.limit);
-    sqlite3_bind_int(stmt, 2, pagination.offset);
+    sqlite3_bind_int(stmt, 1, pagination->limit);
+    sqlite3_bind_int(stmt, 2, pagination->offset);
    
     int count = 0;
-    Brand *brand_rows;
-    for (int i = 0; i < pagination.limit; i++) {
+    for (int i = 0; i < pagination->limit; i++) {
         if (sqlite3_step(stmt) == SQLITE_ROW) {
             memset(&brand_rows[i], 0, sizeof(brand_rows[0]));
-            brand_rows[i].id = sqlite3_column_int(stmt, 0);
-            strcpy(brand_rows[i].brand, sqlite3_column_text(stmt, 1));
+            brand_rows[i]->id = sqlite3_column_int(stmt, 0);
+            strcpy(brand_rows[i]->brand, sqlite3_column_text(stmt, 1));
         }
         count++;
     }
@@ -94,16 +92,15 @@ int db_read_color_family(ColorFamily **color_family_rows, Pagination *pagintion)
         "SELECT * LIMIT ? OFFSET ? FROM ColorFamily";
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, pagination.limit);
-    sqlite3_bind_int(stmt, 2, pagination.offset);
+    sqlite3_bind_int(stmt, 1, pagination->limit);
+    sqlite3_bind_int(stmt, 2, pagination->offset);
 
     int count = 0;
-    ColorFamily *color_family_rows;
-    for (int i = 0; i < pagination.limit; i++) {
+    for (int i = 0; i < pagination->limit; i++) {
         if (sqlite3_step(stmt) == SQLITE_ROW) {
             memset(&color_family_rows[i], 0, sizeof(color_family_rows[0]));
-            color_family_rows[i].id = sqlite3_column_int(stmt, 0);
-            strcpy(color_fmaily_rows[i].color_family, sqlite3_column_text(stmt, 1));
+            color_family_rows[i]->id = sqlite3_column_int(stmt, 0);
+            strcpy(color_fmaily_rows[i]->color_family, sqlite3_column_text(stmt, 1));
         }
         count++;
     }
@@ -117,16 +114,15 @@ int db_read_color(Color **color_rows, Pagination *pagination) {
         "SELECT * LIMIT ? OFFSET ? FROM Color";
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, pagination.limit);
-    sqlite3_bind_int(stmt, 2, pagination.offset);
+    sqlite3_bind_int(stmt, 1, pagination->limit);
+    sqlite3_bind_int(stmt, 2, pagination->offset);
 
     int count = 0;
-    Color *color_rows;
-    for (int i = 0; i < pagination.limit; i++) {
+    for (int i = 0; i < pagination->limit; i++) {
         if (sqlite3_step(stmt) == SQLITE_ROW) {
             memset(&color_rows[i], 0, sizeof(color_rows[0]));
-            color_rows[i].id = sqlite3_column_int(stmt, 0);
-            strcpy(color_rows[i].color, sqlite3_column_text(stmt, 1));
+            color_rows[i]->id = sqlite3_column_int(stmt, 0);
+            strcpy(color_rows[i]->color, sqlite3_column_text(stmt, 1));
         }
         count++;
     }
@@ -140,16 +136,15 @@ int db_read_neckline(Neckline **neckline_rows, Pagination *pagination) {
         "SELECT * LIMIT ? OFFSET ? FROM Neckline";
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, pagination.limit);
-    sqlite3_bind_int(stmt, 2, pagination.offset);
+    sqlite3_bind_int(stmt, 1, pagination->limit);
+    sqlite3_bind_int(stmt, 2, pagination->offset);
 
     int count = 0;
-    Neckline *neckline_rows;
-    for (int i = 0; i < pagination.limit; i++) {
+    for (int i = 0; i < pagination->limit; i++) {
         if (sqlite3_step(stmt) == SQLITE_ROW) {
             memset(&neckline_rows[i], 0, sizeof(neckline_rows[0]));
-            neckline_rows[i].id = sqlite3_column_int(stmt, 0);
-            strcpy(neckline_rows[i].neckline, sqlite3_column_text(stmt, 1));
+            neckline_rows[i]->id = sqlite3_column_int(stmt, 0);
+            strcpy(neckline_rows[i]->neckline, sqlite3_column_text(stmt, 1));
         }
         count++;
     }
@@ -163,16 +158,15 @@ int db_read_sleeves(Sleeves **sleeves_rows, Pagination *pagination) {
         "SELECT * LIMIT ? OFFSET ? FROM Sleeves";
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, pagination.limit);
-    sqlite3_bind_int(stmt, 2, pagination.offset);
+    sqlite3_bind_int(stmt, 1, pagination->limit);
+    sqlite3_bind_int(stmt, 2, pagination->offset);
    
     int count = 0;
-    Sleeves *sleeves_rows;
-    for (int i = 0; i < pagination.limit; i++) {
+    for (int i = 0; i < pagination->limit; i++) {
         if (sqlite3_step(stmt) == SQLITE_ROW) {
             memset(&sleeves_rows[i], 0, sizeof(sleeves_rows[0]));
-            sleeves_rows[i].id = sqlite3_column_int(stmt, 0);
-            strcpy(sleeves_rows[i].sleeves, sqlite3_column_text(stmt, 1));
+            sleeves_rows[i]->id = sqlite3_column_int(stmt, 0);
+            strcpy(sleeves_rows[i]->sleeves, sqlite3_column_text(stmt, 1));
         }
         count++;
     }
@@ -186,16 +180,15 @@ int db_read_type(Type **type_rows, Pagination *pagination) {
         "SELECT * LIMIT ? OFFSET ? FROM Type";
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, pagination.limit);
-    sqlite3_bind_int(stmt, 2, pagination.offset);
+    sqlite3_bind_int(stmt, 1, pagination->limit);
+    sqlite3_bind_int(stmt, 2, pagination->offset);
 
     int count = 0;
-    Type *type_rows;
-    for (int i = 0; i < pagination.limit; i++) {
+    for (int i = 0; i < pagination->limit; i++) {
         if (sqlite3_step(stmt) == SQLITE_ROW) {
             memset(&type_rows[i], 0, sizeof(type_rows[0]));
-            type_rows[i].id = sqlite3_column_int(stmt, 0);
-            strcpy(type_rows[i].type, sqlite3_column_text(stmt, 1));
+            type_rows[i]->id = sqlite3_column_int(stmt, 0);
+            strcpy(type_rows[i]->type, sqlite3_column_text(stmt, 1));
         }
         count++;
     }
@@ -209,16 +202,14 @@ int db_read_condition(Condition **condition_rows, Pagination *pagination) {
         "SELECT * LIMIT ? OFFSET ? FROM Condition";
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, pagination.limit);
-    sqlite3_bind_int(stmt, 2, pagination.offset);
+    sqlite3_bind_int(stmt, 1, pagination->limit);
+    sqlite3_bind_int(stmt, 2, pagination->offset);
 
     int count = 0;
-    Condition *condition_rows;
-    for (int i = 0; i < pagination.limit; i++) {
+    for (int i = 0; i < pagination->limit; i++) {
         if (sqlite3_step(stmt) == SQLITE_ROW) {
-            memset(&condition_rows[i], 0, sizeof(condition_rows[0]));
-            condition_rows[i].id = sqlite3_column_int(stmt, 0);
-            strcpy(condition_rows[i].condition, sqlite3_column_text(stmt, 1));
+            condition_rows[i]->id = sqlite3_column_int(stmt, 0);
+            strcpy(condition_rows[i]->condition, sqlite3_column_text(stmt, 1));
         }
         count++;
     }
@@ -227,21 +218,19 @@ int db_read_condition(Condition **condition_rows, Pagination *pagination) {
     return count;
 }
 
-int db_read_size(Size **size_rows, Pagination *pagination) {
+int db_read_size(Size *size_rows[], Pagination *pagination) {
     const char *sql = 
         "SELECT * LIMIT ? OFFSET ? FROM Size";
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, pagination.limit);
-    sqlite3_bind_int(stmt, 2, pagination.offset);
+    sqlite3_bind_int(stmt, 1, pagination->limit);
+    sqlite3_bind_int(stmt, 2, pagination->offset);
     
     int count = 0;
-    Size *size_rows;
-    for (int i = 0; i < pagination.limit; i++) {
+    for (int i = 0; i < pagination->limit; i++) {
         if (sqlite3_step(stmt) == SQLITE_ROW) {
-            memset(&size_rows[i], 0, size_rowsof(size_rows[0]));
-            size_rows[i].id = sqlite3_column_int(stmt, 0);
-            strcpy(size_rows[i].size, sqlite3_column_text(stmt, 1));
+            size_rows[i]->id = sqlite3_column_int(stmt, 0);
+            strcpy(size_rows[i]->size, sqlite3_column_text(stmt, 1));
         }
         count++; 
     }
@@ -307,10 +296,10 @@ Piece db_info_piece(int id) {
     Piece piece;
     piece.id = sqlite3_column_int(stmt, 0);
     piece.sweater_id = sqlite3_column_int(stmt, 1);
-    piece.piece_type_id = sqlite_column_int(stmt, 2);
-    piece.original_weight = sqlite_column_int(stmt, 3);
-    piece.current_weight = sqlite_column_int(stmt, 4);
-    piece.continuous = sqlite_column_int(stmt, 5);
+    piece.piece_type_id = sqlite3_column_int(stmt, 2);
+    piece.original_weight = sqlite3_column_int(stmt, 3);
+    piece.current_weight = sqlite3_column_int(stmt, 4);
+    piece.continuous = sqlite3_column_int(stmt, 5);
     sqlite3_finalize(stmt);
 
     return piece;
@@ -685,7 +674,7 @@ int db_update_brand(Brand *brand) {
 
 }
 
-int db_update_color_family(COlorFamily *color_family) {
+int db_update_color_family(ColorFamily *color_family) {
 
 }
 

@@ -5,50 +5,50 @@ int payload_encode_sweater_filter(char *payload, int payload_size, SweaterFilter
  
     char brand_ids[STR_LENGTH] = {0};
     snprintf(brand_ids, STR_LENGTH, "SWEATER_IDS=%d", sweater_filter->brand_ids[0]);
-    for (int i = 1; i < sweater_filter->sweater_count; i++) {
+    for (int i = 1; i < sweater_filter->brand_count; i++) {
         char tmp[STR_LENGTH] = {0};
         snprintf(tmp, STR_LENGTH, ",%d", i, sweater_filter->brand_ids[i]);
-        strcat(brand_ids, tmp)
+        strcat(brand_ids, tmp);
     }
    
-    char color_ids[STR_LENGTH] = {0};
-    snprintf(color_ids, STR_LENGTH, "SWEATER_IDS=%d", sweater_filter->color_ids[0]);
-    for (int i = 1; i < sweater_filter->sweater_count; i++) {
+    char color_family_ids[STR_LENGTH] = {0};
+    snprintf(color_family_ids, STR_LENGTH, "SWEATER_IDS=%d", sweater_filter->color_family_ids[0]);
+    for (int i = 1; i < sweater_filter->color_family_count; i++) {
         char tmp[STR_LENGTH] = {0};
-        snprintf(tmp, STR_LENGTH, ",%d", i, sweater_filter->color_ids[i]);
-        strcat(color_ids, tmp)
+        snprintf(tmp, STR_LENGTH, ",%d", i, sweater_filter->color_family_ids[i]);
+        strcat(color_family_ids, tmp);
     }
 
     char neckline_ids[STR_LENGTH] = {0};
     snprintf(neckline_ids, STR_LENGTH, "SWEATER_IDS=%d", sweater_filter->neckline_ids[0]);
-    for (int i = 1; i < sweater_filter->sweater_count; i++) {
+    for (int i = 1; i < sweater_filter->neckline_count; i++) {
         char tmp[STR_LENGTH] = {0};
         snprintf(tmp, STR_LENGTH, ",%d", i, sweater_filter->neckline_ids[i]);
-        strcat(neckline_ids, tmp)
+        strcat(neckline_ids, tmp);
     }
 
     char sleeves_ids[STR_LENGTH] = {0};
     snprintf(sleeves_ids, STR_LENGTH, "SWEATER_IDS=%d", sweater_filter->sleeves_ids[0]);
-    for (int i = 1; i < sweater_filter->sweater_count; i++) {
+    for (int i = 1; i < sweater_filter->sleeves_count; i++) {
         char tmp[STR_LENGTH] = {0};
         snprintf(tmp, STR_LENGTH, ",%d", i, sweater_filter->sleeves_ids[i]);
-        strcat(sleeves_ids, tmp)
+        strcat(sleeves_ids, tmp);
     }
 
     char type_ids[STR_LENGTH] = {0};
     snprintf(type_ids, STR_LENGTH, "TYPE_IDS=%d", sweater_filter->type_ids[0]);
-    for (int i = 1; i < sweater_filter->sweater_count; i++) {
+    for (int i = 1; i < sweater_filter->type_count; i++) {
         char tmp[STR_LENGTH] = {0};
         snprintf(tmp, STR_LENGTH, ",%d", i, sweater_filter->type_ids[i]);
-        strcat(type_ids, tmp)
+        strcat(type_ids, tmp);
     }
 
     char condition_ids[STR_LENGTH] = {0};
     snprintf(condition_ids, STR_LENGTH, "CONDITION_IDS=%d", sweater_filter->condition_ids[0]);
     for (int i = 1; i < sweater_filter->condition_count; i++) {
         char tmp[STR_LENGTH] = {0};
-        snprintf(tmp, STR_LENGTH, ",%d", i, sweatr_filter->condition_ids[i]);
-        strcat(condition_ids, tmp)
+        snprintf(tmp, STR_LENGTH, ",%d", i, sweater_filter->condition_ids[i]);
+        strcat(condition_ids, tmp);
     }
 
     char size_ids[STR_LENGTH] = {0};
@@ -59,7 +59,7 @@ int payload_encode_sweater_filter(char *payload, int payload_size, SweaterFilter
         strcat(size_ids, tmp);
     }
 
-    snprintf(payload, payload_size, "MIN_WEIGHT=%d MAX_WEIGHT=%d, SECTION=BRAND_IDS %s, SECTION=COLOR_IDS %s, SECTION=NECKLINE_IDS %s, SECTION=SLEEVES_IDS %s, SECTION=TYPE_IDS %s, SECTION=CONDITION_IDS %s, SECTION=SIZE_IDS %s", min_weight, max_weight, brand_ids, color_ids, neckline_ids, sleeves_ids, type_ids, condition_ids, size_ids);
+    snprintf(payload, payload_size, "MIN_WEIGHT=%d MAX_WEIGHT=%d, SECTION=BRAND_IDS %s, SECTION=COLOR_FAMILY_IDS %s, SECTION=NECKLINE_IDS %s, SECTION=SLEEVES_IDS %s, SECTION=TYPE_IDS %s, SECTION=CONDITION_IDS %s, SECTION=SIZE_IDS %s", sweater_filter->min_weight, sweater_filter->max_weight, brand_ids, color_family_ids, neckline_ids, sleeves_ids, type_ids, condition_ids, size_ids);
     return strlen(payload);
 }
 
@@ -70,11 +70,12 @@ SweaterFilter payload_decode_sweater_filter(char *payload) {
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS);
     
     for (int i = 0; i < num_tokens; i++) {   
-        char *token[TOKEN_PAIR] = str_split(tokens[i], "=", token, TOKEN_PAIR);
+        char *token[TOKEN_PAIR];
+        str_split(tokens[i], "=", token, TOKEN_PAIR);
         char *field = token[0];
         char *value = token[1];
 
-        } if (strcmp(field, "BRAND_IDS") == 0) {
+        if (strcmp(field, "BRAND_IDS") == 0) {
             char *ids[MAX_TOKENS];
             int num_ids = str_split(value, ",", ids, MAX_TOKENS);
 
@@ -82,14 +83,14 @@ SweaterFilter payload_decode_sweater_filter(char *payload) {
                 sweater_filter.brand_ids[j] = atoi(value);
             }
             sweater_filter.brand_count = num_ids;
-        } else if (strcmp(field, "COLOR_IDS") == 0) {
+        } else if (strcmp(field, "COLOR_FAMILY_IDS") == 0) {
             char *ids[MAX_TOKENS];
             int num_ids = str_split(value, ",", ids, MAX_TOKENS);
 
             for (int j = 0; j < num_ids; j++) {
-                sweater_filter.color_ids[j] = atoi(value);
+                sweater_filter.color_family_ids[j] = atoi(value);
             }
-            sweater_filter.color_count = num_ids;
+            sweater_filter.color_family_count = num_ids;
         } else if (strcmp(field, "NECKLINE_IDS") == 0) {
             char *ids[MAX_TOKENS];
             int num_ids = str_split(value, ",", ids, MAX_TOKENS);
@@ -142,12 +143,12 @@ SweaterFilter payload_decode_sweater_filter(char *payload) {
     return sweater_filter;
 }
 
-int payload_encode_sweater_search(char *payload, SweaterSearch *sweater_search) {
+int payload_encode_sweater_search(char *payload, int payload_size, SweaterSearch *sweater_search) {
     char sweater_filter[STR_LENGTH] = {0};
-    payload_encode_sweater_filter(sweater_filter, STR_LENGTH, note_search->sweater_filter);
+    payload_encode_sweater_filter(sweater_filter, STR_LENGTH, &sweater_search->sweater_filter);
 
     char pagination[STR_LENGTH] = {0};
-    payload_encode_pagination(pagination, STR_LENGTH, note_search->pagination);
+    payload_encode_pagination(pagination, STR_LENGTH, &sweater_search->pagination);
 
     snprintf(payload, payload_size, "SECTION=SWEATER_FILTER %s, SECTION=PAGINATION %s", sweater_filter, pagination);
     return strlen(payload);
@@ -165,7 +166,8 @@ SweaterSearch payload_decode_sweater_search(char *payload) {
         char *section_payload = join(tokens[1], " ");
         int index = 0;
         for (; index < num_tokens; index++) {
-            char *token[TOKEN_PAIR] = str_split(tokens[i], "=", token, TOKEN_PAIR);
+            char *token[TOKEN_PAIR];
+            str_split(tokens[i], "=", token, TOKEN_PAIR);
             char *field = token[0];
             char *value = token[1];
 
@@ -179,14 +181,14 @@ SweaterSearch payload_decode_sweater_search(char *payload) {
         }
     }
 
-    return note_search;
+    return sweater_search;
 }
 
-int payload_encode_sweater_rows(char *payload, int payload_size, Sweater *sweater, int row_count) {
+int payload_encode_sweater_rows(char *payload, Sweater *sweater_rows, int row_count) {
     for (int i = 0; i < row_count; i++) {
         char tmp[STR_LENGTH] = {0};
         strcat(payload, "\n");
-        payload_encode_sweater(tmp, sizeof(tmp), sweater[i]);
+        payload_encode_sweater(tmp, sizeof(tmp), &sweater_rows[i]);
         strcat(payload, tmp);
     }
 
@@ -228,7 +230,8 @@ Sweater payload_decode_sweater(char *payload) {
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS);
     
     for (int i = 0; i < num_tokens; i++) {   
-        char *token[TOKEN_PAIR] = str_split(tokens[i], "=", token, TOKEN_PAIR);
+        char *token[TOKEN_PAIR];
+        str_split(tokens[i], "=", token, TOKEN_PAIR);
         char *field = token[0];
         char *value = token[1];
 
@@ -260,17 +263,17 @@ Sweater payload_decode_sweater(char *payload) {
 
 int payload_encode_note_search(char *payload, int payload_size, NoteSearch *note_search) {
     char sweater_filter[STR_LENGTH] = {0};
-    payload_encode_sweater_filter(sweater_filter, STR_LENGTH, note_search->sweater_filter);
+    payload_encode_sweater_filter(sweater_filter, STR_LENGTH, &note_search->sweater_filter);
 
     char pagination[STR_LENGTH] = {0};
-    payload_encode_pagination(pagination, STR_LENGTH, note_search->pagination);
+    payload_encode_pagination(pagination, STR_LENGTH, &note_search->pagination);
 
     char sweater_ids[STR_LENGTH] = {0};
     snprintf(sweater_ids, STR_LENGTH, "SWEATER_IDS=%d", note_search->sweater_ids[0]);
     for (int i = 1; i < note_search->sweater_count; i++) {
         char tmp[STR_LENGTH] = {0};
         snprintf(tmp, STR_LENGTH, ",%d", i, note_search->sweater_ids[i]);
-        strcat(sweater_ids, tmp)
+        strcat(sweater_ids, tmp);
     }
     
     snprintf(payload, payload_size, "CONTENT=%s, SECTION=SWEATER_IDS %s, SECTION=SWEATER_FILTER %s, SECTION=PAGINATION %s", note_search->content, sweater_ids, sweater_filter, pagination);
@@ -289,7 +292,8 @@ NoteSearch payload_decode_note_search(char *payload) {
         char *section_payload = join(tokens[1], " ");
         int index = 0;
         for (; index < num_tokens; index++) {
-            char *token[TOKEN_PAIR] = str_split(tokens[i], "=", token, TOKEN_PAIR);
+            char *token[TOKEN_PAIR];
+            str_split(tokens[i], "=", token, TOKEN_PAIR);
             char *field = token[0];
             char *value = token[1];
 
@@ -315,12 +319,11 @@ NoteSearch payload_decode_note_search(char *payload) {
     return note_search;
 }
 
-int payload_encode_note_rows(char *payload, Note *note, int row_count) {
-    payload_encode_row_count(payload, payload_size, count);
+int payload_encode_note_rows(char *payload, Note *note_rows, int row_count) {
     for (int i = 0; i < row_count; i++) {
         char tmp[STR_LENGTH] = {0};
         strcat(payload, "\n");
-        payload_encode_note(tmp, sizeof(tmp), note[i + 1]);
+        payload_encode_note(tmp, sizeof(tmp), &note_rows[i + 1]);
         strcat(payload, tmp);
     }
 
@@ -357,7 +360,8 @@ Note payload_decode_note(char *payload) {
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS);
     
     for (int i = 0; i < num_tokens; i++) {
-        char **token = str_split(tokens[i], "=");
+        char *token[TOKEN_PAIR];
+        str_split(tokens[i], "=", token, TOKEN_PAIR);       
         char *field = token[0];
         char *value = token[1];
 
@@ -377,28 +381,28 @@ Note payload_decode_note(char *payload) {
 
 int payload_encode_piece_search(char *payload, int payload_size, PieceSearch *piece_search) {
     char sweater_filter[STR_LENGTH] = {0};
-    payload_encode_sweater_filter(sweater_filter, STR_LENGTH, note_search->sweater_filter);
+    payload_encode_sweater_filter(sweater_filter, STR_LENGTH, &piece_search->sweater_filter);
 
     char pagination[STR_LENGTH] = {0};
-    payload_encode_pagination(pagination, STR_LENGTH, note_search->pagination);
+    payload_encode_pagination(pagination, STR_LENGTH, &piece_search->pagination);
 
     char sweater_ids[STR_LENGTH] = {0};
-    snprintf(sweater_ids, STR_LENGTH, "SWEATER_IDS=%d", note_search->sweater_ids[0]);
+    snprintf(sweater_ids, STR_LENGTH, "SWEATER_IDS=%d", piece_search->sweater_ids[0]);
     for (int i = 1; i < piece_search->sweater_count; i++) {
         char tmp[STR_LENGTH] = {0};
-        snprintf(tmp, STR_LENGTH, ",%d", i, note_search->sweater_ids[i]);
-        strcat(sweater_ids, tmp)
+        snprintf(tmp, STR_LENGTH, ",%d", i, piece_search->sweater_ids[i]);
+        strcat(sweater_ids, tmp);
     }
     
     char piece_type_ids[STR_LENGTH] = {0};
-    snprintf(piece_type_ids, STR_LENGTH, "PIECE_TYPE_IDS=%d", note_search->piece_type_ids[0]);
+    snprintf(piece_type_ids, STR_LENGTH, "PIECE_TYPE_IDS=%d", piece_search->piece_type_ids[0]);
     for (int i = 1; i < piece_search->piece_type_count; i++) {
         char tmp[STR_LENGTH] = {0};
-        snprintf(tmp, STR_LENGTH, ",%d", i, note_search->piece_type_ids[i]);
-        strcat(sweater_ids, tmp)
+        snprintf(tmp, STR_LENGTH, ",%d", i, piece_search->piece_type_ids[i]);
+        strcat(sweater_ids, tmp);
     }
     
-    snprintf(payload, payload_size, "MIN_ORIGINAL_WEIGHT=%d MAX_ORIGINAL_WEIGHT=%d MIN_CURRENT_WEIGHT=%D MAX_CURRENT_WEIGHT=%d, SECTION=SWEATER_IDS %s, SECTION=PIECE_TYPE_IDS %s, SECTION=SWEATER_FILTER %s, SECTION=PAGINATION %s", piece_search->min_original_weight, piece_search->max_original_weight, piece_search->min_current_weight, piece_search->max_current_weight, sweater_ids, piece_type_ids, sweater_filter, pagination);
+    snprintf(payload, payload_size, "MIN_ORIGINAL_WEIGHT=%d MAX_ORIGINAL_WEIGHT=%d MIN_CURRENT_WEIGHT=%d MAX_CURRENT_WEIGHT=%d, SECTION=SWEATER_IDS %s, SECTION=PIECE_TYPE_IDS %s, SECTION=SWEATER_FILTER %s, SECTION=PAGINATION %s", piece_search->min_original_weight, piece_search->max_original_weight, piece_search->min_current_weight, piece_search->max_current_weight, sweater_ids, piece_type_ids, sweater_filter, pagination);
     return strlen(payload);
 
 }
@@ -415,7 +419,8 @@ PieceSearch payload_decode_piece_search(char *payload) {
         char *section_payload = join(tokens[1], " ");
         int index = 0;
         for (; index < num_tokens; index++) {
-            char *token[TOKEN_PAIR] = str_split(tokens[i], "=", token, TOKEN_PAIR);
+            char *token[TOKEN_PAIR];
+            str_split(tokens[i], "=", token, TOKEN_PAIR);
             char *field = token[0];
             char *value = token[1];
 
@@ -455,12 +460,11 @@ PieceSearch payload_decode_piece_search(char *payload) {
 
 }
 
-int payload_encode_piece_rows(char *payload, Piece *piece, int row_count) {
-    payload_encode_row_count(payload, payload_size, count);
+int payload_encode_piece_rows(char *payload, Piece *piece_rows, int row_count) {
     for (int i = 0; i < row_count; i++) {
         char tmp[STR_LENGTH] = {0};
         strcat(payload, "\n");
-        payload_encode_piece(tmp, sizeof(tmp), piece[i + 1]);
+        payload_encode_piece(tmp, sizeof(tmp), &piece_rows[i + 1]);
         strcat(payload, tmp);
     }
 
@@ -500,7 +504,8 @@ Piece payload_decode_piece(char *payload) {
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS);
     
     for (int i = 0; i < num_tokens; i++) {
-        char **token = str_split(tokens[i], "=");
+        char *token[TOKEN_PAIR];
+        str_split(tokens[i], "=", token, TOKEN_PAIR);
         char *field = token[0];
         char *value = token[1];
         if (strcmp(field, "ID") == 0) {
@@ -523,12 +528,11 @@ Piece payload_decode_piece(char *payload) {
     return piece;
 }
 
-int payload_encode_piece_type_rows(char *payload, PieceType *piece_type, int row_count) {
-    payload_encode_row_count(payload, payload_size, count);
+int payload_encode_piece_type_rows(char *payload, PieceType *piece_type_rows, int row_count) {
     for (int i = 0; i < row_count; i++) {
         char tmp[STR_LENGTH] = {0};
         strcat(payload, "\n");
-        payload_encode_piece_type(tmp, sizeof(tmp), piece_type[i + 1]);
+        payload_encode_piece_type(tmp, sizeof(tmp), &piece_type_rows[i + 1]);
         strcat(payload, tmp);
     }
 
@@ -564,7 +568,8 @@ PieceType payload_decode_piece_type(char *payload) {
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS);
     
     for (int i = 0; i < num_tokens; i++) {
-        char **token = str_split(tokens[i], "=");
+        char *token[TOKEN_PAIR];
+        str_split(tokens[i], "=", token, TOKEN_PAIR);
         char *field = token[0];
         char *value = token[1];
 
@@ -580,12 +585,11 @@ PieceType payload_decode_piece_type(char *payload) {
     return piece_type;
 }
 
-int payload_encode_brand_rows(char *payload, Brand *brand, int row_count) {
-    payload_encode_row_count(payload, payload_size, count);
+int payload_encode_brand_rows(char *payload, Brand *brand_rows, int row_count) {
     for (int i = 0; i < row_count; i++) {
         char tmp[STR_LENGTH] = {0};
         strcat(payload, "\n");
-        payload_encode_brand(tmp, sizeof(tmp), brand[i + 1]);
+        payload_encode_brand(tmp, sizeof(tmp), &brand_rows[i + 1]);
         strcat(payload, tmp);
     }
 
@@ -621,7 +625,8 @@ Brand payload_decode_brand(char *payload) {
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS);
     
     for (int i = 0; i < num_tokens; i++) {
-        char **token = str_split(tokens[i], "=");
+        char *token[TOKEN_PAIR];
+        str_split(tokens[i], "=", token, TOKEN_PAIR);
         char *field = token[0];
         char *value = token[1];
 
@@ -637,12 +642,11 @@ Brand payload_decode_brand(char *payload) {
     return brand;
 }
 
-int payload_encode_color_family_rows(char *payload, ColorFamily *color_family, int row_count) {
-    payload_encode_row_count(payload, payload_size, count);
+int payload_encode_color_family_rows(char *payload, ColorFamily *color_family_rows, int row_count) {
     for (int i = 0; i < row_count; i++) {
         char tmp[STR_LENGTH] = {0};
         strcat(payload, "\n");
-        payload_encode_color_family(tmp, sizeof(tmp), color_family[i + 1]);
+        payload_encode_color_family(tmp, sizeof(tmp), &color_family_rows[i + 1]);
         strcat(payload, tmp);
     }
 
@@ -678,7 +682,8 @@ ColorFamily payload_decode_color_family(char *payload) {
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS);
     
     for (int i = 0; i < num_tokens; i++) {
-        char **token = str_split(tokens[i], "=");
+        char *token[TOKEN_PAIR];
+        str_split(tokens[i], "=", token, TOKEN_PAIR);
         char *field = token[0];
         char *value = token[1];
 
@@ -694,12 +699,11 @@ ColorFamily payload_decode_color_family(char *payload) {
     return color_family;
 }
 
-int payload_encode_color_rows(char *payload, Color *color, int row_count) {
-    payload_encode_row_count(payload, payload_size, count);
+int payload_encode_color_rows(char *payload, Color *color_rows, int row_count) {
     for (int i = 0; i < row_count; i++) {
         char tmp[STR_LENGTH] = {0};
         strcat(payload, "\n");
-        payload_encode_color(tmp, sizeof(tmp), color[i + 1]);
+        payload_encode_color(tmp, sizeof(tmp), &color_rows[i + 1]);
         strcat(payload, tmp);
     }
 
@@ -735,7 +739,8 @@ Color payload_decode_color(char *payload) {
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS);
     
     for (int i = 0; i < num_tokens; i++) {
-        char **token = str_split(tokens[i], "=");
+        char *token[TOKEN_PAIR];
+        str_split(tokens[i], "=", token, TOKEN_PAIR);
         char *field = token[0];
         char *value = token[1];
 
@@ -751,12 +756,11 @@ Color payload_decode_color(char *payload) {
     return color;
 }
 
-int payload_encode_neckline_rows(char *payload, Neckline *neckline, int row_count) {
-    payload_encode_row_count(payload, payload_size, count);
+int payload_encode_neckline_rows(char *payload, Neckline *neckline_rows, int row_count) {
     for (int i = 0; i < row_count; i++) {
         char tmp[STR_LENGTH] = {0};
         strcat(payload, "\n");
-        payload_encode_neckline(tmp, sizeof(tmp), neckline[i + 1]);
+        payload_encode_neckline(tmp, sizeof(tmp), &neckline_rows[i + 1]);
         strcat(payload, tmp);
     }
 
@@ -793,7 +797,8 @@ Neckline payload_decode_neckline(char *payload) {
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS);
     
     for (int i = 0; i < num_tokens; i++) {
-        char **token = str_split(tokens[i], "=");
+        char *token[TOKEN_PAIR];
+        str_split(tokens[i], "=", token, TOKEN_PAIR);
         char *field = token[0];
         char *value = token[1];
 
@@ -809,12 +814,11 @@ Neckline payload_decode_neckline(char *payload) {
     return neckline;
 }
 
-int payload_encode_sleeves_rows(char *payload, Sleeves *sleeves, int row_count) {
-    payload_encode_row_count(payload, payload_size, count);
+int payload_encode_sleeves_rows(char *payload, Sleeves *sleeves_rows, int row_count) {
     for (int i = 0; i < row_count; i++) {
         char tmp[STR_LENGTH] = {0};
         strcat(payload, "\n");
-        payload_encode_sleeves(tmp, sizeof(tmp), sleeves[i + 1]);
+        payload_encode_sleeves(tmp, sizeof(tmp), &sleeves_rows[i + 1]);
         strcat(payload, tmp);
     }
 
@@ -827,7 +831,7 @@ int payload_decode_sleeves_rows(char *payload, Sleeves *sleeves_rows) {
     
 
     for (int i = 0; i < num_tokens; i++) {
-        sleeves_rows[i] = payload_decode_sleeves_rows(tokens[i]);
+        sleeves_rows[i] = payload_decode_sleeves(tokens[i]);
     }
 
     return num_tokens;
@@ -850,7 +854,8 @@ Sleeves payload_decode_sleeves(char *payload) {
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS);
     
     for (int i = 0; i < num_tokens; i++) {
-        char **token = str_split(tokens[i], "=");
+        char *token[TOKEN_PAIR];
+        str_split(tokens[i], "=", token, TOKEN_PAIR);
         char *field = token[0];
         char *value = token[1];
 
@@ -866,12 +871,12 @@ Sleeves payload_decode_sleeves(char *payload) {
     return sleeves;
 }
 
-int payload_encode_type_rows(char *payload, Type *type, int row_count) {
+int payload_encode_type_rows(char *payload, Type *type_rows, int row_count) {
     
     for (int i = 0; i < row_count; i++) {
         char tmp[STR_LENGTH] = {0};
         strcat(payload, "\n");
-        payload_encode_type(tmp, sizeof(tmp), type[i + 1]);
+        payload_encode_type(tmp, sizeof(tmp), &type_rows[i + 1]);
         strcat(payload, tmp);
     }
 
@@ -884,7 +889,7 @@ int payload_decode_type_rows(char *payload, Type *type_rows) {
     
 
     for (int i = 0; i < num_tokens; i++) {
-        type_rows = payload_decode_type(tokens[i]);
+        type_rows[i] = payload_decode_type(tokens[i]);
     }
 
     return num_tokens;
@@ -907,7 +912,8 @@ Type payload_decode_type(char *payload) {
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS);
     
     for (int i = 0; i < num_tokens; i++) {
-        char **token = str_split(tokens[i], "=");
+        char *token[TOKEN_PAIR];
+        str_split(tokens[i], "=", token, TOKEN_PAIR);
         char *field = token[0];
         char *value = token[1];
 
@@ -923,12 +929,12 @@ Type payload_decode_type(char *payload) {
     return type;
 }
 
-int payload_encode_condition_rows(char *payload, Condition *condition, int row_count) {
+int payload_encode_condition_rows(char *payload, Condition *condition_rows, int row_count) {
     
     for (int i = 0; i < row_count; i++) {
         char tmp[STR_LENGTH] = {0};
         strcat(payload, "\n");
-        payload_encode_condition(tmp, sizeof(tmp), condition[i + 1]);
+        payload_encode_condition(tmp, sizeof(tmp), &condition_rows[i + 1]);
         strcat(payload, tmp);
     }
 
@@ -964,7 +970,8 @@ Condition payload_decode_condition(char *payload) {
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS);
     
     for (int i = 0; i < num_tokens; i++) {
-        char **token = str_split(tokens[i], "=");
+        char *token[TOKEN_PAIR];        
+        str_split(tokens[i], "=", token, TOKEN_PAIR);
         char *field = token[0];
         char *value = token[1];
 
@@ -980,12 +987,12 @@ Condition payload_decode_condition(char *payload) {
     return condition;
 }
 
-int payload_encode_size_rows(char *payload, Size *size, int row_count) {
+int payload_encode_size_rows(char *payload, Size *size_rows, int row_count) {
     
     for (int i = 0; i < row_count; i++) {
         char tmp[STR_LENGTH] = {0};
         strcat(payload, "\n");
-        payload_encode_size(tmp, sizeof(tmp), size[i + 1]);
+        payload_encode_size(tmp, sizeof(tmp), &size_rows[i + 1]);
         strcat(payload, tmp);
     }
 
@@ -998,7 +1005,7 @@ int payload_decode_size_rows(char *payload, Size *size_rows) {
     
     
     for (int i = 0; i < num_tokens; i++) {
-        size_rows = payload_decode_size(tokens[i]);
+        size_rows[i] = payload_decode_size(tokens[i]);
     }
 
     return num_tokens;
@@ -1021,7 +1028,8 @@ Size payload_decode_size(char *payload) {
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS);
     
     for (int i = 0; i < num_tokens; i++) {
-        char **token = str_split(tokens[i], "=");
+        char *token[TOKEN_PAIR];
+        str_split(tokens[i], "=", token, TOKEN_PAIR);
         char *field = token[0];
         char *value = token[1];
 
@@ -1048,7 +1056,8 @@ int payload_decode_id(char *payload) {
     char *tokens[MAX_TOKENS];
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS); 
     for (int i = 0; i < num_tokens; i++) {
-        char **token = str_split(tokens[i], "=");
+        char *token[TOKEN_PAIR];
+        str_split(tokens[i], "=", token, TOKEN_PAIR);
         char *field = token[0];
         char *value = token[1];
 
@@ -1063,7 +1072,7 @@ int payload_decode_id(char *payload) {
 }
 
 int payload_encode_pagination(char *payload, int payload_size, Pagination *pagination) {
-    snprintf(payload, payload_size, "SECTION=PAGINATION LIMIT=%d OFFSET=%d", pagination.limit, pagination.offset);
+    snprintf(payload, payload_size, "SECTION=PAGINATION LIMIT=%d OFFSET=%d", pagination->limit, pagination->offset);
     return strlen(payload);
 }
 
@@ -1073,7 +1082,8 @@ Pagination payload_decode_pagination(char *payload) {
     char *tokens[MAX_TOKENS];
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS);
     for (int i = 0; i < num_tokens; i++) {
-        char **token = str_split(tokens[i], "=");
+        char *token[TOKEN_PAIR];
+        str_split(tokens[i], "=", token, TOKEN_PAIR);
         char *field = token[0];
         char *value = token[1];
 

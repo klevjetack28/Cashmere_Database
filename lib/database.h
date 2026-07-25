@@ -17,7 +17,7 @@ void db_read_sweater(Sweater **sweater_rows, int limit, int offset);
 void db_read_note(Note **note_rows, int limit, int offset);
 void db_read_piece(Piece ** piece_rows, int limit, int offset);
 void db_read_piece_type(PieceType **piece_type_rows, int limit, int offset);
-void db_read_brand(Brand **brand_rows, int limit int offset);
+void db_read_brand(Brand **brand_rows, int limit, int offset);
 void db_read_color_faimily(ColorFamily **color_family_rows, int limit, int offset);
 void db_read_color(Color **color_rows, int limit, int offset);
 void db_read_neckline(Neckline **neckline_rows, int limit, int offset);

@@ -14,8 +14,8 @@ typedef struct {
     int brand_ids[MAX_FILTER_IDS];
     int brand_count;
 
-    int color_ids[MAX_FILTER_IDS];
-    int color_count;
+    int color_family_ids[MAX_FILTER_IDS];
+    int color_family_count;
 
     int neckline_ids[MAX_FILTER_IDS];
     int neckline_count;
@@ -38,7 +38,7 @@ typedef struct {
 
 typedef struct {
     SweaterFilter sweater_filter;
-    Pagination page;
+    Pagination pagination;
 } SweaterSearch;
 
 typedef struct {
@@ -56,7 +56,7 @@ typedef struct {
 
     SweaterFilter sweater_filter;
 
-    Pagination page;
+    Pagination pagination;
 } PieceSearch;
 
 typedef struct {
@@ -67,7 +67,7 @@ typedef struct {
 
     SweaterFilter sweater_filter;
 
-    Pagination page;
+    Pagination pagination;
 } NoteSearch;
 
 int normalize_key(char *out, char *in);
