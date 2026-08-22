@@ -1,6 +1,8 @@
 #ifndef QUERY_H
 #define QUERY_H
 
+#include <string.h>
+
 #include "constants.h"
 
 #define MAX_FILTER_IDS 16

@@ -163,21 +163,17 @@ SweaterSearch payload_decode_sweater_search(char *payload) {
         char *tokens[MAX_TOKENS];
 	    int num_tokens = str_split(sections[i], " ", tokens, MAX_TOKENS);
         
-        char *section_payload = join(tokens[1], " ");
-        int index = 0;
-        for (; index < num_tokens; index++) {
-            char *token[TOKEN_PAIR];
-            str_split(tokens[i], "=", token, TOKEN_PAIR);
-            char *field = token[0];
-            char *value = token[1];
+        char *section[TOKEN_PAIR];
+        str_split(tokens[i], "=", section, TOKEN_PAIR);
+        char *field = section[0];
+        char *value = section[1];
 
-            if (strcmp(field, "SWEATER_FILTER") == 0) {
-                sweater_search.sweater_filter = payload_decode_sweater_filter(section_payload);
-            } else if (strcmp(field, "PAGINATION") == 0) {
-                sweater_search.pagination = payload_decode_pagination(section_payload);
-            } else {
+        if (strcmp(field, "SWEATER_FILTER") == 0) {
+            sweater_search.sweater_filter = payload_decode_sweater_filter(sections[i]);
+        } else if (strcmp(field, "PAGINATION") == 0) {
+            sweater_search.pagination = payload_decode_pagination(sections[i]);
+        } else {
 
-            }
         }
     }
 
@@ -289,30 +285,26 @@ NoteSearch payload_decode_note_search(char *payload) {
         char *tokens[MAX_TOKENS];
 	    int num_tokens = str_split(sections[i], " ", tokens, MAX_TOKENS);
         
-        char *section_payload = join(tokens[1], " ");
-        int index = 0;
-        for (; index < num_tokens; index++) {
-            char *token[TOKEN_PAIR];
-            str_split(tokens[i], "=", token, TOKEN_PAIR);
-            char *field = token[0];
-            char *value = token[1];
+        char *section[TOKEN_PAIR];
+        str_split(tokens[i], "=", section, TOKEN_PAIR);
+        char *field = section[0];
+        char *value = section[1];
 
-            if (strcmp(field, "SWEATER_IDS") == 0) {
-                char *ids[MAX_TOKENS];
-                int num_ids = str_split(value, ",", ids, MAX_TOKENS);
+        if (strcmp(field, "SWEATER_IDS") == 0) {
+            char *ids[MAX_TOKENS];
+            int num_ids = str_split(value, ",", ids, MAX_TOKENS);
 
-                for (int j = 0; j < num_ids; j++) {
-                    note_search.sweater_ids[j] = atoi(ids[j]);
-                }
-            } else if (strcmp(field, "CONTENT") == 0) {
-                strcpy(note_search.content, field);
-            } else if (strcmp(field, "SWEATER_FILTER") == 0) {
-                note_search.sweater_filter = payload_decode_sweater_filter(section_payload);
-            } else if (strcmp(field, "PAGINATION") == 0) {
-                note_search.pagination = payload_decode_pagination(section_payload);
-            } else {
-
+            for (int j = 0; j < num_ids; j++) {
+                note_search.sweater_ids[j] = atoi(ids[j]);
             }
+        } else if (strcmp(field, "CONTENT") == 0) {
+            strcpy(note_search.content, field);
+        } else if (strcmp(field, "SWEATER_FILTER") == 0) {
+            note_search.sweater_filter = payload_decode_sweater_filter(sections[i]);
+        } else if (strcmp(field, "PAGINATION") == 0) {
+            note_search.pagination = payload_decode_pagination(sections[i]);
+        } else {
+
         }
     }
 
@@ -416,43 +408,39 @@ PieceSearch payload_decode_piece_search(char *payload) {
         char *tokens[MAX_TOKENS];
 	    int num_tokens = str_split(sections[i], " ", tokens, MAX_TOKENS);
         
-        char *section_payload = join(tokens[1], " ");
-        int index = 0;
-        for (; index < num_tokens; index++) {
-            char *token[TOKEN_PAIR];
-            str_split(tokens[i], "=", token, TOKEN_PAIR);
-            char *field = token[0];
-            char *value = token[1];
+        char *section[TOKEN_PAIR];
+        str_split(tokens[i], "=", section, TOKEN_PAIR);
+        char *field = section[0];
+        char *value = section[1];
 
-            if (strcmp(field, "SWEATER_IDS") == 0) {
-                char *ids[MAX_TOKENS];
-                int num_ids = str_split(value, ",", ids, MAX_TOKENS);
+        if (strcmp(field, "SWEATER_IDS") == 0) {
+            char *ids[MAX_TOKENS];
+            int num_ids = str_split(value, ",", ids, MAX_TOKENS);
 
-                for (int j = 0; j < num_ids; j++) {
-                    piece_search.sweater_ids[j] = atoi(ids[j]);
-                }
-            } else if (strcmp(field, "PIECE_TYPE_IDS") == 0) {
-                char *ids[MAX_TOKENS];
-                int num_ids = str_split(value, ",", ids, MAX_TOKENS);
-
-                for (int j = 0; j < num_ids; j++) {
-                    piece_search.piece_type_ids[j] = atoi(ids[j]);
-                }
-            } else if (strcmp(field, "MIN_ORIGINAL_WEIGHT") == 0) {
-                piece_search.min_original_weight = atoi(value);
-            } else if (strcmp(field, "MAX_ORIGINAL_WEIGHT") == 0) {
-                piece_search.max_original_weight = atoi(value);
-            } else if (strcmp(field, "MIN_CURRENT_WEIGHT") == 0) {
-                piece_search.min_current_weight = atoi(value);
-            } else if (strcmp(field, "MAX_CURRENT_WEIGHT") == 0) {
-                piece_search.max_current_weight = atoi(value);
-            } else if (strcmp(field, "SWEATER_FILTER") == 0) {
-                piece_search.sweater_filter = payload_decode_sweater_filter(section_payload);
-            } else if (strcmp(field, "PAGINATION") == 0) {
-                piece_search.pagination = payload_decode_pagination(section_payload);
-            } else {
-
+            for (int j = 0; j < num_ids; j++) {
+                piece_search.sweater_ids[j] = atoi(ids[j]);
             }
+        } else if (strcmp(field, "PIECE_TYPE_IDS") == 0) {
+            char *ids[MAX_TOKENS];
+            int num_ids = str_split(value, ",", ids, MAX_TOKENS);
+
+            for (int j = 0; j < num_ids; j++) {
+                piece_search.piece_type_ids[j] = atoi(ids[j]);
+            }
+        } else if (strcmp(field, "MIN_ORIGINAL_WEIGHT") == 0) {
+            piece_search.min_original_weight = atoi(value);
+        } else if (strcmp(field, "MAX_ORIGINAL_WEIGHT") == 0) {
+            piece_search.max_original_weight = atoi(value);
+        } else if (strcmp(field, "MIN_CURRENT_WEIGHT") == 0) {
+            piece_search.min_current_weight = atoi(value);
+        } else if (strcmp(field, "MAX_CURRENT_WEIGHT") == 0) {
+            piece_search.max_current_weight = atoi(value);
+        } else if (strcmp(field, "SWEATER_FILTER") == 0) {
+            piece_search.sweater_filter = payload_decode_sweater_filter(sections[i]);
+        } else if (strcmp(field, "PAGINATION") == 0) {
+            piece_search.pagination = payload_decode_pagination(sections[i]);
+        } else {
+
         }
     }
 

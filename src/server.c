@@ -35,7 +35,7 @@ Packet import_database(Packet *request) {
 }
 
 Packet delete_record(Packet *request) {
-    Packet response
+    Packet response;
     switch (request->header.table) {
         case TABLE_SWEATER:
             break;
@@ -46,7 +46,13 @@ Packet delete_record(Packet *request) {
         case TABLE_PIECE_TYPE:
             break;
         case TABLE_BRAND:
+            int id = payload_decode_id(request->payload);            
+            int status = db_delete_brand(id);
+            char payload[PAYLOAD_MAX_LENGTH];
+            int payload_length = payload_encode_id(payload, PAYLOAD_MAX_LENGTH, status);
+            response = packet_create_response_init(TABLE_SIZE, PACKET_STATUS_OK, payload);
             break;
+           break;
         case TABLE_COLOR_FAMILY:
             break;
         case TABLE_COLOR:
@@ -69,7 +75,7 @@ Packet delete_record(Packet *request) {
 }
 
 Packet update_record(Packet *request) {
-    Packet response
+    Packet response;
     switch (request->header.table) {
         case TABLE_SWEATER:
             break;
@@ -80,6 +86,11 @@ Packet update_record(Packet *request) {
         case TABLE_PIECE_TYPE:
             break;
         case TABLE_BRAND:
+            Brand brand = payload_decode_brand(request->payload);            
+            db_update_brand(&brand);
+            char payload[PAYLOAD_MAX_LENGTH];
+            int payload_length = payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &brand);
+            response = packet_create_response_init(TABLE_SIZE, PACKET_STATUS_OK, payload);
             break;
         case TABLE_COLOR_FAMILY:
             break;
@@ -107,117 +118,24 @@ Packet update_record(Packet *request) {
 Packet create_record(Packet *request) {
     Packet response;
     switch (request->header.table) {
-        case TABLE_SWEATER: {
-            Sweater sweater = payload_decode_sweater(request->payload);            
-            sweater.id = db_create_sweater(&sweater);
-            char *payload = payload_encode_sweater(&sweater);
-            response = packet_create_response_init(TABLE_SWEATER, PACKET_STATUS_OK, payload);
-            free(payload);
-            break;
-        }
-        case TABLE_NOTE: {
-            Note note = payload_decode_note(request->payload);            
-            note.id = db_create_note(&note);
-            char *payload = payload_encode_note(&note);
-            response = packet_create_response_init(TABLE_NOTE, PACKET_STATUS_OK, payload);
-            free(payload);
-            break;
-            }
-
-        case TABLE_PIECE: {
-            Piece piece = payload_decode_piece(request->payload);            
-            piece.id = db_create_piece(&piece);
-            char *payload = payload_encode_piece(&piece);
-            response = packet_create_response_init(TABLE_PIECE, PACKET_STATUS_OK, payload);
-            free(payload);
-            break;
-        }
-
-        case TABLE_PIECE_TYPE: {
-            PieceType piece_type = payload_decode_piece_type(request->payload);            
-            piece_type.id = db_create_piece_type(&piece_type);
-            char *payload = payload_encode_piece_type(&piece_type);
-            response = packet_create_response_init(TABLE_PIECE_TYPE, PACKET_STATUS_OK, payload);
-            free(payload);
-            break;
-        }
-
-        case TABLE_BRAND: {
-            packet_print(request);
+        case TABLE_SWEATER:
+        case TABLE_NOTE:
+        case TABLE_PIECE:
+        case TABLE_PIECE_TYPE:
+        case TABLE_BRAND:
             Brand brand = payload_decode_brand(request->payload);            
-            printf("%s\n", request->payload);
             brand.id = db_create_brand(&brand);
-            char *payload = payload_encode_brand(&brand);
-            printf("%s\n", payload);
-            response = packet_create_response_init(TABLE_BRAND, PACKET_STATUS_OK, payload);
-            packet_print(&response);
-            free(payload);
-            break;
-        }
-        
-        case TABLE_COLOR_FAMILY: {
-            ColorFamily color_family = payload_decode_color_family(request->payload);            
-            color_family.id = db_create_color_family(&color_family);
-            char *payload = payload_encode_color_family(&color_family);
-            response = packet_create_response_init(TABLE_COLOR_FAMILY, PACKET_STATUS_OK, payload);
-            free(payload);
-            break;
-        }
-
-        case TABLE_COLOR: {
-            Color color = payload_decode_color(request->payload);            
-            color.id = db_create_color(&color);
-            char *payload = payload_encode_color(&color);
-            response = packet_create_response_init(TABLE_COLOR, PACKET_STATUS_OK, payload);
-            free(payload);
-            break;
-        }
-
-        case TABLE_NECKLINE: {
-            Neckline neckline = payload_decode_neckline(request->payload);            
-            neckline.id = db_create_neckline(&neckline);
-            char *payload = payload_encode_neckline(&neckline);
-            response = packet_create_response_init(TABLE_NECKLINE, PACKET_STATUS_OK, payload);
-            free(payload);
-            break;
-        }
-
-        case TABLE_SLEEVES: {
-            Sleeves sleeves = payload_decode_sleeves(request->payload);            
-            sleeves.id = db_create_sleeves(&sleeves);
-            char *payload = payload_encode_sleeves(&sleeves);
-            response = packet_create_response_init(TABLE_SLEEVES, PACKET_STATUS_OK, payload);
-            free(payload);
-            break;
-        }
-
-        case TABLE_TYPE: {
-            Type type = payload_decode_type(request->payload);            
-            type.id = db_create_type(&type);
-            char *payload = payload_encode_type(&type);
-            response = packet_create_response_init(TABLE_TYPE, PACKET_STATUS_OK, payload);
-            free(payload);
-            break;
-        }
-
-        case TABLE_CONDITION: {
-            Condition condition = payload_decode_condition(request->payload);            
-            condition.id = db_create_condition(&condition);
-            char *payload = payload_encode_condition(&condition);
-            response = packet_create_response_init(TABLE_CONDITION, PACKET_STATUS_OK, payload);
-            free(payload);
-            break;
-        }
-
-        case TABLE_SIZE: {
-            Size size = payload_decode_size(request->payload);            
-            size.id = db_create_size(&size);
-            char *payload = payload_encode_size(&size);
+            char payload[PAYLOAD_MAX_LENGTH];
+            int payload_length = payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &brand);
             response = packet_create_response_init(TABLE_SIZE, PACKET_STATUS_OK, payload);
-            free(payload);
             break;
-        }
-
+        case TABLE_COLOR_FAMILY:
+        case TABLE_COLOR:
+        case TABLE_NECKLINE:
+        case TABLE_SLEEVES:
+        case TABLE_TYPE:
+        case TABLE_CONDITION:
+        case TABLE_SIZE:
         default:
             printf("OHH NO LUKAS WHAT HAVE YOU DOOOOONE ~ 0xCA75 04/16/2026");
     }
@@ -226,7 +144,7 @@ Packet create_record(Packet *request) {
 }
 
 Packet info_record(Packet *request) {
-    Packet response
+    Packet response;
     switch (request->header.table) {
         case TABLE_SWEATER:
             break;
@@ -237,6 +155,11 @@ Packet info_record(Packet *request) {
         case TABLE_PIECE_TYPE:
             break;
         case TABLE_BRAND:
+            int id = payload_decode_id(request->payload);            
+            Brand brand = db_info_brand(id);
+            char payload[PAYLOAD_MAX_LENGTH];
+            int payload_length = payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &brand);
+            response = packet_create_response_init(TABLE_SIZE, PACKET_STATUS_OK, payload);
             break;
         case TABLE_COLOR_FAMILY:
             break;
@@ -260,7 +183,7 @@ Packet info_record(Packet *request) {
 }
 
 Packet read_records(Packet *request) {
-    Packet response
+    Packet response;
     switch (request->header.table) {
         case TABLE_SWEATER:
             break;
@@ -271,6 +194,12 @@ Packet read_records(Packet *request) {
         case TABLE_PIECE_TYPE:
             break;
         case TABLE_BRAND:
+            Pagination pagination = payload_decode_pagination(request->payload);
+            Brand brand_rows[MAX_TOKENS];
+            int count = db_read_brand(&brand_rows, &pagination);
+            char payload[PAYLOAD_MAX_LENGTH];
+            int payload_length = payload_encode_brand_rows(payload, PAYLOAD_MAX_LENGTH, &brand_rows);
+            response = packet_create_response_init(TABLE_SIZE, PACKET_STATUS_OK, payload);
             break;
         case TABLE_COLOR_FAMILY:
             break;
@@ -311,16 +240,16 @@ void cashmere_database(int client_fd) {
                 response = update_record(&request);
                 break;
             case REQUEST_TYPE_DELETE:
-                response = delete_record(&request);
+                //response = delete_record(&request);
                 break;
             case REQUEST_TYPE_IMPORT:
-                response = import_record(&request);
+                //response = import_record(&request);
                 break;
             case REQUEST_TYPE_EXPORT:
-                response = export_record(&request);
+                //response = export_record(&request);
                 break;
             case REQUEST_TYPE_EXIT:
-                response = exit_record(&request);
+                //response = exit_record(&request);
                 break;
             default:
         }

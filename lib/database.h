@@ -63,16 +63,16 @@ int db_update_type(Type *type);
 int db_update_condition(Condition *condition);
 int db_update_size(Size *size);
 
-int db_delete_sweater_by_id(int id);
-int db_delete_note_by_id(int id);
-int db_delete_piece_by_id(int id);
-int db_delete_piece_type_by_id(int id);
-int db_delete_brand_by_id(int id);
-int db_delete_color_by_id(int id);
-int db_delete_neckline_by_id(int id);
-int db_delete_sleeves_by_id(int id);
-int db_delete_type_by_id(int id);
-int db_delete_condition_by_id(int id);
-int db_delete_size_by_id(int id);
+int db_delete_sweater(int id);
+int db_delete_note(int id);
+int db_delete_piece(int id);
+int db_delete_piece_type(int id);
+int db_delete_brand(int id);
+int db_delete_color(int id);
+int db_delete_neckline(int id);
+int db_delete_sleeves(int id);
+int db_delete_type(int id);
+int db_delete_condition(int id);
+int db_delete_size(int id);
 
 #endif // DATABASE_H
