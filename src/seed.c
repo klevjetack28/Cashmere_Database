@@ -1,5 +1,7 @@
 #include "seed.h"
 
+#define MAX_RECORD_SIZE 512
+
 static const Table LOOKUP_TABLES[] = {
     TABLE_PIECE_TYPE,
     TABLE_BRAND,
@@ -14,7 +16,7 @@ static const Table LOOKUP_TABLES[] = {
 
 static const int NUM_LOOKUPS = sizeof(LOOKUP_TABLES) / sizeof(LOOKUP_TABLES[0]);
 
-static void seed_create_lookup_item(Table table, char *value) {
+static void seed_create_lookup_record(Table table, char *value) {
     switch(table) {
         case TABLE_PIECE_TYPE:
             PieceType piece_type = payload_decode_piece_type(value);
@@ -65,7 +67,7 @@ static const Table SWEATER_TABLES[] = {
 
 static const int NUM_SWEATERS = sizeof(SWEATER_TABLES) / sizeof(SWEATER_TABLES[0]);
 
-static void seed_create_sweater_item(Table table, char *value) {
+static void seed_create_sweater_record(Table table, char *value) {
     switch(table) {
         case TABLE_SWEATER:
             Sweater sweater = payload_decode_sweater(value);
@@ -95,10 +97,10 @@ int seed_load_lookups(void) {
         char filename[STR_LENGTH];
         snprintf(filename, STR_LENGTH, "../data/seeds/%s.txt", TABLE_NAMES[table]);
         char *file = read_entire_file(filename);
-        char **items = str_split(file, "\n");
-        int num_items = ptr_array_length(items);
-        for (int j = 0; j < num_items; j++) {
-            seed_create_lookup_item(table, items[j]);
+        char *records[MAX_RECORD_SIZE];
+        int num_records = str_split(file, "\n", records, MAX_RECORD_SIZE); 
+        for (int j = 0; j < num_records; j++) {
+            seed_create_lookup_record(table, records[j]);
         }
     }
 }
@@ -109,10 +111,11 @@ int seed_load_sweater(void) {
         char filename[STR_LENGTH];
         snprintf(filename, STR_LENGTH, "../data/seeds/%s.txt", TABLE_NAMES[table]);
         char *file = read_entire_file(filename);
-        char **items = str_split(file, "\n");
-        int num_items = ptr_array_length(items);
-        for (int j = 0; j < num_items; j++) {
-            seed_create_sweater_item(table, items[j]);
+        char *records[MAX_RECORD_SIZE];
+        int num_records = str_split(file, "\n", records, MAX_RECORD_SIZE);
+        
+        for (int j = 0; j < num_records; j++) {
+            seed_create_sweater_record(table, records[j]);
         }
     }
 }

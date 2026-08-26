@@ -1,4 +1,4 @@
-#include "database.h"
+#include "db_core.h"
 
 sqlite3 *db = NULL;
 

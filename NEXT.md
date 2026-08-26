@@ -4,6 +4,27 @@ Notes for next session on where I left off. I want to include things that didn't
 
 When writing notes put the next session notes above the previous so the most frequent notes apear on top.
 
+## August 26, 2026
+
+This issue with the get_string_input was inside of the normalization function. It was adding the offset to lowercase letters.
+
+
+
+## August 21, 2026
+
+Completed fixing the join errors. It was an unnecessary function that I could have used the section we splot already instead of trying to rejoin a split string.
+
+Something is wring with reading strings from user on client side. SOmething with trying to inline the string name with the get_string_input function. 
+Start filling in the rest of the tables their basic CRUDs because brands work just need to go through and make them all similar. READ is a beast we will tackle depending on how we feel after filling in the rest of the functions.
+
+TODO:
+- Fix get_string_input to properly capture data
+- Fix the segfaults on the server side for info (and probably others)
+- Once those two are complete copy and paste the forat for the other basic tables.
+- After those are done finish up with the Read functions
+
+That should conclude a working MVP1.1 with MVP1.2 staring a better UI, testing, docs, and import/export.
+
 ## July 25, 2026
 
 Complete 99% of errors for compiling the program. left with undefined join operation in the search functions.

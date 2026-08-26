@@ -1,15 +1,14 @@
 #include "misc.h"
 
-char **str_split(char *str, char *delim) {
-    char **result = malloc(2 * STR_LENGTH * sizeof(char*));
-    int i = 0;
+int str_split(char *str, const char *delim, char **tokens, int max_tokens) {
+    int count = 0;
+    char *saveptr = NULL;
+    char *token = strtok_r(str, delim, &saveptr);
 
-    char *token = strtok(str, delim);
-    while (token && i < KEY_LENGTH) {
-        result[i++] = strdup(token);
-        token = strtok(NULL, delim);
+    while (token != NULL && count < max_tokens) {
+        tokens[count++] = token;
+        token = strtok_r(NULL, delim, &saveptr);
     }
 
-    result[i] = NULL;
-    return result;
+    return count;
 }

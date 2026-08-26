@@ -6,7 +6,7 @@
 #include <stdbool.h>
 
 #include "0xca75.h"
-#include "database.h"
+#include "db_core.h"
 #include "network.h"
 #include "packet.h"
 #include "payload.h"
@@ -14,13 +14,13 @@
 #include "db_tables.h"
 #include "misc.h"
 #include "query.h"
+#include "db_print.h"
 
 void get_input(char *input) {
     char buffer[KEY_LENGTH] = {0};
     fgets(buffer, sizeof(buffer), stdin);
     buffer[strcspn(buffer, "\n")] = 0;
     normalize_key(input, buffer);
-    return buffer;
 }
 
 int get_int_input(char *prompt) {
@@ -33,6 +33,8 @@ int get_int_input(char *prompt) {
 int get_string_input(char *prompt, char* input) {
     printf("%s", prompt);
     get_input(input);
+    int length = strlen(input);
+    input[length] = '\0';
     return strlen(input);
 }
 
@@ -186,8 +188,9 @@ PieceType update_piece_type_input() {
     return piece_type;
 }
 
-Brand update_brand_input() {
-    Brand brand;
+Brand update_brand_input(int id) {
+    Brand brand = {0};
+    get_int_input("Brand ID to Update: ")
     get_string_input("Brand: ", brand.brand);
     return brand;   
 }
@@ -242,13 +245,12 @@ Packet update_record(Table table) {
 
     while (1) {
         switch(table) {
-            case TABLE_SWEATER: {
+            case TABLE_SWEATER:
                 Sweater sweater = update_sweater_input();
                 char payload[PAYLOAD_MAX_LENGTH];
                 payload_encode_sweater(payload, PAYLOAD_MAX_LENGTH, &sweater);
                 request = packet_update_request_init(table, payload);
                 return request;
-            }
             case TABLE_NOTE:
                 break;
             case TABLE_PIECE:
@@ -256,7 +258,11 @@ Packet update_record(Table table) {
             case TABLE_PIECE_TYPE:
                 break;
             case TABLE_BRAND:
-                break;
+                Brand brand = update_brand_input();
+                char payload[MAX_PAYLOAD_LENGTH];
+                payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &brand);
+                request = packet_update_request_init(table, payload);
+                return request;
             case TABLE_COLOR_FAMILY:
                 break;
             case TABLE_COLOR:
@@ -326,8 +332,9 @@ PieceType create_piece_type_input() {
 }
 
 Brand create_brand_input() {
-    Brand brand;
+    Brand brand = {0};
     get_string_input("Brand: ", brand.brand);
+    printf("Immediately after input: '%s'\n", brand.brand);
     return brand;   
 }
 
@@ -527,35 +534,23 @@ Packet info_record(Table table) {
 
     while (1) {
         switch(table) {
-            case TABLE_SWEATER: {
-                int id = info_sweater_input();
+            case TABLE_SWEATER:
+            case TABLE_NOTE:
+            case TABLE_PIECE:
+            case TABLE_PIECE_TYPE:
+            case TABLE_BRAND:
+                int id = info_brand_input();
                 char payload[PAYLOAD_MAX_LENGTH];
                 payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
                 request = packet_info_request_init(table, payload);
                 return request;
-            }
-            case TABLE_NOTE:
-                break;
-            case TABLE_PIECE:
-                break;
-            case TABLE_PIECE_TYPE:
-                break;
-            case TABLE_BRAND:
-                break;
             case TABLE_COLOR_FAMILY:
-                break;
             case TABLE_COLOR:
-                break;
             case TABLE_NECKLINE:
-                break;
             case TABLE_SLEEVES:
-                break;
             case TABLE_TYPE:
-                break;
             case TABLE_CONDITION:
-                break;
             case TABLE_SIZE:
-                break;
             default:
                 printf("Something went wrong...\n");
                 continue;

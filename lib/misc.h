@@ -7,6 +7,6 @@
 
 #include "constants.h"
 
-char **str_split(char *str, char *delim);
+int str_split(char *str, const char *delim, char **tokens, int max_tokens);
 
 # endif // MISC_H

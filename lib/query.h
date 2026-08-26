@@ -72,6 +72,6 @@ typedef struct {
     Pagination pagination;
 } NoteSearch;
 
-int normalize_key(char *out, char *in);
+void normalize_key(char *out, char *in);
 
 #endif //QUERY_H

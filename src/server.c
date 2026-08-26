@@ -11,12 +11,13 @@
 #include "network.h"
 #include "packet.h"
 #include "payload.h"
-#include "database.h"
+#include "db_core.h"
 #include "constants.h"
 #include "db_tables.h"
 #include "misc.h"
 #include "seed.h" 
 #include "query.h"
+#include "db_print.h"
 
 #define UPPERCASE_OFFSET -32
 
@@ -124,6 +125,7 @@ Packet create_record(Packet *request) {
         case TABLE_PIECE_TYPE:
         case TABLE_BRAND:
             Brand brand = payload_decode_brand(request->payload);            
+            print_brand(&brand);
             brand.id = db_create_brand(&brand);
             char payload[PAYLOAD_MAX_LENGTH];
             int payload_length = payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &brand);

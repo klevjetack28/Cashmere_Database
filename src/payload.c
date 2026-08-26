@@ -607,21 +607,28 @@ int payload_encode_brand(char *payload, int payload_size, Brand *brand) {
 }
 
 Brand payload_decode_brand(char *payload) {
-    Brand brand;
+    Brand brand = {0};
 
     char *tokens[MAX_TOKENS];
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS);
     
     for (int i = 0; i < num_tokens; i++) {
-        char *token[TOKEN_PAIR];
-        str_split(tokens[i], "=", token, TOKEN_PAIR);
-        char *field = token[0];
-        char *value = token[1];
+        char *pair[TOKEN_PAIR];
+        int pair_count = str_split(tokens[i], "=", pair, TOKEN_PAIR);
+
+        if (pair_count != 2) {
+            continue;
+        }
+
+        char *field = pair[0];
+        char *value = pair[1];
 
         if (strcmp(field, "ID") == 0) {
              brand.id = atoi(value);           
         } else if (strcmp(field, "BRAND") == 0) {
-             strcpy(brand.brand, value);
+             strncpy(brand.brand, value, KEY_LENGTH - 1);
+             int length = strlen(brand.brand);
+             brand.brand[length] = '\0';
         } else {
 
         }
