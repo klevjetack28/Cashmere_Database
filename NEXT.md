@@ -8,7 +8,12 @@ When writing notes put the next session notes above the previous so the most fre
 
 This issue with the get_string_input was inside of the normalization function. It was adding the offset to lowercase letters.
 
+I got all the basic CRUD operation for Brand working except Read Many. This means I can just copy and paste the code from brand to all of the likewise tables (color, sleeves, condition, etc.).
 
+TODO:
+- And functionality to read_brands_input() functions. It should be simple to workd and not require any major functionality other than slightly different sequential questions and the result is a for loop over decoding the results + printing those decoded results.
+- Fix segfaults (maybe?? It might just be the str_split that was broken and it works now.)
+- Complete the Many Reads for multi relation tables.
 
 ## August 21, 2026
 
