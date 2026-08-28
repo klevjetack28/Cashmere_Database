@@ -118,12 +118,27 @@ Packet delete_record(Table table) {
                 request = packet_delete_request_init(table, payload);
                 return request;
             }
-            case TABLE_NOTE:
-                break;
-            case TABLE_PIECE:
-                break;
-            case TABLE_PIECE_TYPE:
-                break;
+            case TABLE_NOTE: {
+                int id = delete_note_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_delete_request_init(table, payload);
+                return request;
+            }
+            case TABLE_PIECE: {
+                int id = delete_piece_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_delete_request_init(table, payload);
+                return request;
+            }
+            case TABLE_PIECE_TYPE: {
+                int id = delete_piece_type_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_delete_request_init(table, payload);
+                return request;
+            }
             case TABLE_BRAND: {
                 int id = delete_brand_input();
                 char payload[PAYLOAD_MAX_LENGTH];
@@ -131,20 +146,55 @@ Packet delete_record(Table table) {
                 request = packet_delete_request_init(table, payload);
                 return request;
             }
-            case TABLE_COLOR_FAMILY:
-                break;
-            case TABLE_COLOR:
-                break;
-            case TABLE_NECKLINE:
-                break;
-            case TABLE_SLEEVES:
-                break;
-            case TABLE_TYPE:
-                break;
-            case TABLE_CONDITION:
-                break;
-            case TABLE_SIZE:
-                break;
+            case TABLE_COLOR_FAMILY: {
+                int id = delete_color_family_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_delete_request_init(table, payload);
+                return request;
+            }
+            case TABLE_COLOR: {
+                int id = delete_color_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_delete_request_init(table, payload);
+                return request;
+            }
+            case TABLE_NECKLINE: {
+                int id = delete_neckline_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_delete_request_init(table, payload);
+                return request;
+            }
+            case TABLE_SLEEVES: {
+                int id = delete_sleeves_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_delete_request_init(table, payload);
+                return request;
+            }
+            case TABLE_TYPE: {
+                int id = delete_type_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_delete_request_init(table, payload);
+                return request;
+            }
+            case TABLE_CONDITION: {
+                int id = delete_condition_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_delete_request_init(table, payload);
+                return request;
+            }
+            case TABLE_SIZE: {
+                int id = delete_size_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_delete_request_init(table, payload);
+                return request;
+            }
             default:
                 printf("Something went wrong...\n");
                 continue;
@@ -258,38 +308,88 @@ Packet update_record(Table table) {
                 request = packet_update_request_init(table, payload);
                 return request;
             }
-            case TABLE_NOTE:
-                break;
-            case TABLE_PIECE:
-                break;
-            case TABLE_PIECE_TYPE:
-                break;
-            case TABLE_BRAND:
+            case TABLE_NOTE: {
+                Note note = update_note_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_note(payload, PAYLOAD_MAX_LENGTH, &note);
+                request = packet_update_request_init(table, payload);
+                return request;
+            }
+            case TABLE_PIECE: {
+                Piece piece = update_piece_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_piece(payload, PAYLOAD_MAX_LENGTH, &piece);
+                request = packet_update_request_init(table, payload);
+                return request;
+            }
+            case TABLE_PIECE_TYPE: {
+                PieceType piece_type = update_piece_type_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_piece_type(payload, PAYLOAD_MAX_LENGTH, &piece_type);
+                request = packet_update_request_init(table, payload);
+                return request;
+            }
+            case TABLE_BRAND: {
                 Brand brand = update_brand_input();
                 char payload[PAYLOAD_MAX_LENGTH];
                 payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &brand);
                 request = packet_update_request_init(table, payload);
                 return request;
-            case TABLE_COLOR_FAMILY:
-                break;
-            case TABLE_COLOR:
-                break;
-            case TABLE_NECKLINE:
-                break;
-            case TABLE_SLEEVES:
-                break;
-            case TABLE_TYPE:
-                break;
-            case TABLE_CONDITION:
-                break;
-            case TABLE_SIZE:
-                break;
+            }
+            case TABLE_COLOR_FAMILY: {
+                ColorFamily color_family = update_color_family_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_color_family(payload, PAYLOAD_MAX_LENGTH, &color_family);
+                request = packet_update_request_init(table, payload);
+                return request;
+            }
+            case TABLE_COLOR: {
+                Color color = update_color_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_color(payload, PAYLOAD_MAX_LENGTH, &color);
+                request = packet_update_request_init(table, payload);
+                return request;
+            }
+            case TABLE_NECKLINE: {
+                Neckline neckline = update_neckline_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_neckline(payload, PAYLOAD_MAX_LENGTH, &neckline);
+                request = packet_update_request_init(table, payload);
+                return request;
+            }
+            case TABLE_SLEEVES: {
+                Sleeves sleeves = update_sleeves_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_sleeves(payload, PAYLOAD_MAX_LENGTH, &sleeves);
+                request = packet_update_request_init(table, payload);
+                return request;
+            }
+            case TABLE_TYPE: {
+                Type type = update_type_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_type(payload, PAYLOAD_MAX_LENGTH, &type);
+                request = packet_update_request_init(table, payload);
+                return request;
+            }
+            case TABLE_CONDITION: {
+                Condition condition = update_condition_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_condition(payload, PAYLOAD_MAX_LENGTH, &condition);
+                request = packet_update_request_init(table, payload);
+                return request;
+            }
+            case TABLE_SIZE: {
+                Size size = update_size_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_size(payload, PAYLOAD_MAX_LENGTH, &size);
+                request = packet_update_request_init(table, payload);
+                return request;
+            }
             default:
                 printf("Something went wrong...\n");
                 continue;
         }
     }
-
 }
 
 
@@ -485,7 +585,6 @@ Packet create_record(Table table) {
                 continue;
         }
     }
-    return request;
 }
 
 int info_sweater_input() {
@@ -541,23 +640,90 @@ Packet info_record(Table table) {
 
     while (1) {
         switch(table) {
-            case TABLE_SWEATER:
-            case TABLE_NOTE:
-            case TABLE_PIECE:
-            case TABLE_PIECE_TYPE:
-            case TABLE_BRAND:
+            case TABLE_SWEATER: {
+                int id = info_sweater_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_info_request_init(table, payload);
+                return request;
+            }
+            case TABLE_NOTE: {
+                int id = info_note_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_info_request_init(table, payload);
+                return request;
+            }
+            case TABLE_PIECE: {
+                int id = info_piece_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_info_request_init(table, payload);
+                return request;
+            }
+            case TABLE_PIECE_TYPE: {
+                int id = info_piece_type_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_info_request_init(table, payload);
+                return request;
+            }
+            case TABLE_BRAND: {
                 int id = info_brand_input();
                 char payload[PAYLOAD_MAX_LENGTH];
                 payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
                 request = packet_info_request_init(table, payload);
                 return request;
-            case TABLE_COLOR_FAMILY:
-            case TABLE_COLOR:
-            case TABLE_NECKLINE:
-            case TABLE_SLEEVES:
-            case TABLE_TYPE:
-            case TABLE_CONDITION:
-            case TABLE_SIZE:
+            }
+            case TABLE_COLOR_FAMILY: {
+                int id = info_color_family_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_info_request_init(table, payload);
+                return request;
+            }
+            case TABLE_COLOR: {
+                int id = info_color_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_info_request_init(table, payload);
+                return request;
+            }
+            case TABLE_NECKLINE: {
+                int id = info_neckline_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_info_request_init(table, payload);
+                return request;
+            }
+            case TABLE_SLEEVES: {
+                int id = info_sleeves_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_info_request_init(table, payload);
+                return request;
+            }
+            case TABLE_TYPE: {
+                int id = info_type_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_info_request_init(table, payload);
+                return request;
+            }
+            case TABLE_CONDITION: {
+                int id = info_condition_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_info_request_init(table, payload);
+                return request;
+            }
+            case TABLE_SIZE: {
+                int id = info_size_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_info_request_init(table, payload);
+                return request;
+            }
             default:
                 printf("Something went wrong...\n");
                 continue;
@@ -615,29 +781,17 @@ Packet read_records(Table table) {
     while (1) {
         switch(table) {
             case TABLE_SWEATER:
-                break;
             case TABLE_NOTE:
-                break;
             case TABLE_PIECE:
-                break;
             case TABLE_PIECE_TYPE:
-                break;
             case TABLE_BRAND:
-                break;
             case TABLE_COLOR_FAMILY:
-                break;
             case TABLE_COLOR:
-                break;
             case TABLE_NECKLINE:
-                break;
             case TABLE_SLEEVES:
-                break;
             case TABLE_TYPE:
-                break;
             case TABLE_CONDITION:
-                break;
             case TABLE_SIZE:
-                break;
             default:
                 printf("Something went wrong...\n");
                 continue;
