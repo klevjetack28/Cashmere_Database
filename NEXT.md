@@ -4,7 +4,20 @@ Notes for next session on where I left off. I want to include things that didn't
 
 When writing notes put the next session notes above the previous so the most frequent notes apear on top.
 
-## August 27, 2027
+## August 28, 2026
+
+I completed adding all the CRUD implementations to ever table with the exception of the read implementatin. 
+
+What I need to do for the Read operation for standard table, tables with no relationships, is ask for the number of tables, and the offset. I can return a pagination struct and send it to the read operations on the server. The complex tables with many relationships are going to need to ask questions about what  filters they are looking for in addition to the offset and count.
+
+I also started test files because I realized how valuable they actually are. I will be adding the implementation next before I complete the READ operation because then I can confirm everything works without manually testing. I can also garuantee minimal errors and the program works as intended.
+
+TODO: (In this order)
+- Complete basic testing implementation.
+- Implement standard table read operation.
+- Implement complex table read operation.
+
+## August 27, 2026
 
 Completed a lot of bug fixes but now the brand can be officially updated and deleted with the original create and info.
 
