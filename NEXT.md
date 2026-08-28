@@ -4,6 +4,14 @@ Notes for next session on where I left off. I want to include things that didn't
 
 When writing notes put the next session notes above the previous so the most frequent notes apear on top.
 
+## August 27, 2027
+
+Completed a lot of bug fixes but now the brand can be officially updated and deleted with the original create and info.
+
+A new task that I need to complete is handling errors or edge cases, like infoing a record after deleting should return an obvious "DOES NOT EXIST".
+
+All previous TODOs apply to next session.
+
 ## August 26, 2026
 
 This issue with the get_string_input was inside of the normalization function. It was adding the offset to lowercase letters.
