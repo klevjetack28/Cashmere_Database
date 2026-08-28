@@ -50,7 +50,7 @@ typedef struct {
     char payload[PAYLOAD_MAX_LENGTH];
 } Packet;
 
-void packet_print(Packet *packet);
+void print_packet(Packet *packet);
 
 PacketHeader packet_header_init(PacketType packet_type, RequestType request_type, Table table, PacketStatus status, int payload_length);
 Packet packet_init(PacketHeader header, char *payload);

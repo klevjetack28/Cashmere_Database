@@ -19,10 +19,6 @@
 #include "query.h"
 #include "db_print.h"
 
-#define UPPERCASE_OFFSET -32
-
-
-
 Packet exit_database(Packet *request) {
 
 }
@@ -46,14 +42,14 @@ Packet delete_record(Packet *request) {
             break;
         case TABLE_PIECE_TYPE:
             break;
-        case TABLE_BRAND:
+        case TABLE_BRAND: {
             int id = payload_decode_id(request->payload);            
             int status = db_delete_brand(id);
             char payload[PAYLOAD_MAX_LENGTH];
             int payload_length = payload_encode_id(payload, PAYLOAD_MAX_LENGTH, status);
-            response = packet_create_response_init(TABLE_SIZE, PACKET_STATUS_OK, payload);
+            response = packet_create_response_init(TABLE_BRAND, PACKET_STATUS_OK, payload);
             break;
-           break;
+        }
         case TABLE_COLOR_FAMILY:
             break;
         case TABLE_COLOR:
@@ -86,13 +82,14 @@ Packet update_record(Packet *request) {
             break;
         case TABLE_PIECE_TYPE:
             break;
-        case TABLE_BRAND:
+        case TABLE_BRAND: {
             Brand brand = payload_decode_brand(request->payload);            
             db_update_brand(&brand);
             char payload[PAYLOAD_MAX_LENGTH];
             int payload_length = payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &brand);
-            response = packet_create_response_init(TABLE_SIZE, PACKET_STATUS_OK, payload);
+            response = packet_create_response_init(TABLE_BRAND, PACKET_STATUS_OK, payload);
             break;
+        }
         case TABLE_COLOR_FAMILY:
             break;
         case TABLE_COLOR:
@@ -123,14 +120,15 @@ Packet create_record(Packet *request) {
         case TABLE_NOTE:
         case TABLE_PIECE:
         case TABLE_PIECE_TYPE:
-        case TABLE_BRAND:
+        case TABLE_BRAND: {
             Brand brand = payload_decode_brand(request->payload);            
             print_brand(&brand);
             brand.id = db_create_brand(&brand);
             char payload[PAYLOAD_MAX_LENGTH];
             int payload_length = payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &brand);
-            response = packet_create_response_init(TABLE_SIZE, PACKET_STATUS_OK, payload);
+            response = packet_create_response_init(TABLE_BRAND, PACKET_STATUS_OK, payload);
             break;
+        }
         case TABLE_COLOR_FAMILY:
         case TABLE_COLOR:
         case TABLE_NECKLINE:
@@ -156,13 +154,14 @@ Packet info_record(Packet *request) {
             break;
         case TABLE_PIECE_TYPE:
             break;
-        case TABLE_BRAND:
+        case TABLE_BRAND: {
             int id = payload_decode_id(request->payload);            
             Brand brand = db_info_brand(id);
             char payload[PAYLOAD_MAX_LENGTH];
             int payload_length = payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &brand);
-            response = packet_create_response_init(TABLE_SIZE, PACKET_STATUS_OK, payload);
+            response = packet_create_response_init(TABLE_BRAND, PACKET_STATUS_OK, payload);
             break;
+        }
         case TABLE_COLOR_FAMILY:
             break;
         case TABLE_COLOR:
@@ -201,7 +200,7 @@ Packet read_records(Packet *request) {
             int count = db_read_brand(&brand_rows, &pagination);
             char payload[PAYLOAD_MAX_LENGTH];
             int payload_length = payload_encode_brand_rows(payload, PAYLOAD_MAX_LENGTH, &brand_rows);
-            response = packet_create_response_init(TABLE_SIZE, PACKET_STATUS_OK, payload);
+            response = packet_create_response_init(TABLE_BRAND, PACKET_STATUS_OK, payload);
             break;
         case TABLE_COLOR_FAMILY:
             break;
@@ -228,6 +227,7 @@ void cashmere_database(int client_fd) {
     while (1) {
         Packet request, response;
         network_recv_packet(client_fd, &request);
+        print_packet(&request);
         switch (request.header.request_type) {
             case REQUEST_TYPE_READ:
                 response = read_records(&request);
@@ -242,7 +242,7 @@ void cashmere_database(int client_fd) {
                 response = update_record(&request);
                 break;
             case REQUEST_TYPE_DELETE:
-                //response = delete_record(&request);
+                response = delete_record(&request);
                 break;
             case REQUEST_TYPE_IMPORT:
                 //response = import_record(&request);
@@ -255,7 +255,7 @@ void cashmere_database(int client_fd) {
                 break;
             default:
         }
-
+        print_packet(&response);
         network_send_packet(client_fd, &response);
     }
 }

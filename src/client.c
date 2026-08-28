@@ -111,20 +111,26 @@ Packet delete_record(Table table) {
 
     while (1) {
         switch(table) {
-            case TABLE_SWEATER:
+            case TABLE_SWEATER: {
                 int id = delete_sweater_input();
                 char payload[PAYLOAD_MAX_LENGTH];
                 payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
                 request = packet_delete_request_init(table, payload);
                 return request;
+            }
             case TABLE_NOTE:
                 break;
             case TABLE_PIECE:
                 break;
             case TABLE_PIECE_TYPE:
                 break;
-            case TABLE_BRAND:
-                break;
+            case TABLE_BRAND: {
+                int id = delete_brand_input();
+                char payload[PAYLOAD_MAX_LENGTH];
+                payload_encode_id(payload, PAYLOAD_MAX_LENGTH, id);
+                request = packet_delete_request_init(table, payload);
+                return request;
+            }
             case TABLE_COLOR_FAMILY:
                 break;
             case TABLE_COLOR:
@@ -188,9 +194,9 @@ PieceType update_piece_type_input() {
     return piece_type;
 }
 
-Brand update_brand_input(int id) {
+Brand update_brand_input() {
     Brand brand = {0};
-    get_int_input("Brand ID to Update: ")
+    brand.id = get_int_input("Brand ID to Update: ");
     get_string_input("Brand: ", brand.brand);
     return brand;   
 }
@@ -245,12 +251,13 @@ Packet update_record(Table table) {
 
     while (1) {
         switch(table) {
-            case TABLE_SWEATER:
+            case TABLE_SWEATER: {
                 Sweater sweater = update_sweater_input();
                 char payload[PAYLOAD_MAX_LENGTH];
                 payload_encode_sweater(payload, PAYLOAD_MAX_LENGTH, &sweater);
                 request = packet_update_request_init(table, payload);
                 return request;
+            }
             case TABLE_NOTE:
                 break;
             case TABLE_PIECE:
@@ -259,7 +266,7 @@ Packet update_record(Table table) {
                 break;
             case TABLE_BRAND:
                 Brand brand = update_brand_input();
-                char payload[MAX_PAYLOAD_LENGTH];
+                char payload[PAYLOAD_MAX_LENGTH];
                 payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &brand);
                 request = packet_update_request_init(table, payload);
                 return request;
@@ -686,10 +693,10 @@ void cashmere_database(int server_fd) {
             default:
         }
     
-        packet_print(&request);
+        print_packet(&request);
         network_send_packet(server_fd, &request);
         network_recv_packet(server_fd, &response);
-        packet_print(&response);
+        print_packet(&response);
     }
 }
 

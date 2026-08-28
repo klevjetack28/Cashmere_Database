@@ -671,7 +671,17 @@ int db_update_piece_type(PieceType *piece_type) {
 }
 
 int db_update_brand(Brand *brand) {
+    print_brand(brand);
+    const char *sql = "UPDATE brand SET brand = ? WHERE id = ?;";
+    sqlite3_stmt *stmt;
 
+    sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
+    sqlite3_bind_text(stmt, 1, brand->brand, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt, 2, brand->id);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+
+    return brand->id;
 }
 
 int db_update_color_family(ColorFamily *color_family) {
@@ -703,120 +713,145 @@ int db_update_size(Size *size) {
 }
 int db_delete_sweater(int id) {
     const char *sql = "DELETE FROM sweater WHERE id = ?;";
+    
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
     sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
+    
     return id;
 }
 
 int db_delete_note(int id) {
     const char *sql = "DELETE FROM note WHERE id = ?;";
+    
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
     sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
+    
     return id;
 }
 
 int db_delete_piece(int id) {
     const char *sql = "DELETE FROM piece WHERE id = ?;";
+    
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
     sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
+   
     return id;
 }
 
 int db_delete_piece_type(int id) {
     const char *sql = "DELETE FROM piece_type WHERE id = ?;";
+    
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
     sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
+    
     return id;
 }
 
 int db_delete_brand(int id) {
+    printf("%d\n", id);
     const char *sql = "DELETE FROM brand WHERE id = ?;";
+    
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
     sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
+    
     return id;
 }
 
 int db_delete_color_family(int id) {
     const char *sql = "DELETE FROM color_family WHERE id = ?;";
+    
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
     sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
+    
     return id;
 }
 
 int db_delete_color(int id) {
     const char *sql = "DELETE FROM color WHERE id = ?;";
+    
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
     sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
+    
     return id;
 }
 
 int db_delete_neckline(int id) {
     const char *sql = "DELETE FROM neckline WHERE id = ?;";
+    
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
     sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
+    
     return id;
 }
 
 int db_delete_sleeves(int id) {
     const char *sql = "DELETE FROM sleeves WHERE id = ?;";
+    
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
     sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
+    
     return id;
 }
 
 int db_delete_type(int id) {
     const char *sql = "DELETE FROM type WHERE id = ?;";
+    
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
     sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
+    
     return id;
 }
 
 int db_delete_condition(int id) {
     const char *sql = "DELETE FROM condition WHERE id = ?;";
+    
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
     sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
+    
     return id;
 }
 
 int db_delete_size(int id) {
     const char *sql = "DELETE FROM size WHERE id = ?;";
+    
     sqlite3_stmt *stmt;
     sqlite3_prepare_v3(db, sql, -1, 0, &stmt, NULL);
     sqlite3_bind_int(stmt, 1, id);
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
+    
     return id;
 }

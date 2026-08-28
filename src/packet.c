@@ -1,6 +1,6 @@
 #include "packet.h"
 
-void packet_print(Packet *packet) {
+void print_packet(Packet *packet) {
     printf("Packet Type: %d\n", packet->header.packet_type);
     printf("Request Type: %d\n", packet->header.request_type);
     printf("Table: %d\n", packet->header.table);

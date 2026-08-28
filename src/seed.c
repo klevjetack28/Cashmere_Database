@@ -86,11 +86,6 @@ static void seed_create_sweater_record(Table table, char *value) {
     }
 }
 
-int seed_load_all(void) {
-    seed_load_lookups();
-    seed_load_sweater();
-}
-
 int seed_load_lookups(void) {
     for (int i = 0; i < NUM_LOOKUPS; i++) {
         Table table = LOOKUP_TABLES[i];
@@ -118,4 +113,9 @@ int seed_load_sweater(void) {
             seed_create_sweater_record(table, records[j]);
         }
     }
+}
+
+int seed_load_all(void) {
+    seed_load_lookups();
+    seed_load_sweater();
 }
