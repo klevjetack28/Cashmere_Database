@@ -49,22 +49,22 @@ debug-server: s
 # Valgrind
 
 memcheck-test: t
-	valgrind --leak-check=full \
+	cd ./tests/ && valgrind --leak-check=full \
 	         --show-leak-kinds=all \
 	         --track-origins=yes \
-	         ./tests/t
+	         ./t
 
 memcheck-client: c
-	valgrind --leak-check=full \
+	cd ./client/ && valgrind --leak-check=full \
 	         --show-leak-kinds=all \
 	         --track-origins=yes \
-	         ./client/c
+	         ./c
 
 memcheck-server: s
-	valgrind --leak-check=full \
+	cd ./server/ && valgrind --leak-check=full \
 	         --show-leak-kinds=all \
 	         --track-origins=yes \
-	         ./server/s
+	         ./s
 
 # Sanitizers
 
