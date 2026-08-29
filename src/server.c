@@ -16,7 +16,7 @@
 #include "db_tables.h"
 #include "misc.h"
 #include "seed.h" 
-#include "query.h"
+#include "db_filters.h"
 #include "db_print.h"
 
 Packet exit_database(Packet *request) {

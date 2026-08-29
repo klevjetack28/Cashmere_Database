@@ -64,7 +64,7 @@ int payload_encode_sweater_filter(char *payload, int payload_size, SweaterFilter
 }
 
 SweaterFilter payload_decode_sweater_filter(char *payload) {
-    SweaterFilter sweater_filter;
+    SweaterFilter sweater_filter = {0};
 
     char *tokens[MAX_TOKENS];
 	int num_tokens = str_split(payload, " ", tokens, MAX_TOKENS);
@@ -78,7 +78,7 @@ SweaterFilter payload_decode_sweater_filter(char *payload) {
         if (strcmp(field, "BRAND_IDS") == 0) {
             char *ids[MAX_TOKENS];
             int num_ids = str_split(value, ",", ids, MAX_TOKENS);
-
+            // this is where i would have the condition for if str_split return -1
             for (int j = 0; j < num_ids; j++) {
                 sweater_filter.brand_ids[j] = atoi(value);
             }

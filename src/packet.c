@@ -4,18 +4,17 @@ void print_packet(Packet *packet) {
     printf("Packet Type: %d\n", packet->header.packet_type);
     printf("Request Type: %d\n", packet->header.request_type);
     printf("Table: %d\n", packet->header.table);
-    printf("Status: %d\n", packet->header.status);
+    printf("Packet Status: %d\n", packet->header.packet_status);
     printf("Payload Length: %d\n", packet->header.payload_length);
     printf("Payload: %s\n", packet->payload);
 }
 
-PacketHeader packet_header_init(PacketType packet_type, RequestType request_type, Table table, PacketStatus status, int payload_length) {
-    PacketHeader header;
-    memset(&header, 0, sizeof(PacketHeader));
+PacketHeader packet_header_init(PacketType packet_type, RequestType request_type, Table table, PacketStatus packet_status, int payload_length) {
+    PacketHeader header = {0};
 
     header.packet_type = packet_type;
     header.request_type = request_type;
-    header.status = status;
+    header.packet_status = packet_status;
     header.table = table;
     header.payload_length = payload_length;
 
@@ -23,9 +22,7 @@ PacketHeader packet_header_init(PacketType packet_type, RequestType request_type
 }
 
 Packet packet_init(PacketHeader header, char *payload) {
-    Packet packet;
-
-    memset(&packet, 0, sizeof(Packet));
+    Packet packet = {0};
 
     packet.header = header;
 
@@ -38,19 +35,19 @@ Packet packet_init(PacketHeader header, char *payload) {
 }
 
 Packet packet_connect_init(char *payload) {
-    PacketHeader header;
+    PacketHeader header = {0};
     header = packet_header_init(PACKET_TYPE_CONNECT, REQUEST_TYPE_NONE, TABLE_NULL, PACKET_STATUS_OK, strlen(payload));
     return packet_init(header, payload);
 }
 
 Packet packet_disconnect_init(char* payload) {
-    PacketHeader header;
+    PacketHeader header = {0};
     header = packet_header_init(PACKET_TYPE_DISCONNECT, REQUEST_TYPE_NONE, TABLE_NULL, PACKET_STATUS_OK, strlen(payload));
     return packet_init(header, payload);
 }
 
 Packet packet_request_init(RequestType request_type, Table table, char *payload) {
-    PacketHeader header;
+    PacketHeader header = {0};
     header = packet_header_init(PACKET_TYPE_REQUEST, request_type, table, PACKET_STATUS_OK, strlen(payload));
     return packet_init(header, payload);
 }
@@ -122,7 +119,7 @@ int packet_serialize(const Packet *packet, unsigned char byte_array[BUFFER_LENGT
     PacketType packet_type = packet->header.packet_type;
     RequestType request_type = packet->header.request_type;
     Table table = packet->header.table;
-    PacketStatus status = packet->header.status;
+    PacketStatus status = packet->header.packet_status;
     int payload_length = packet->header.payload_length;
 
     memcpy(byte_array + offset, &packet_type, sizeof(packet_type));

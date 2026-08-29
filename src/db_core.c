@@ -2,6 +2,22 @@
 
 sqlite3 *db = NULL;
 
+void normalize_key(char *out, char *in) {
+    int index = 0;
+    in = trim_whitespace(in);
+    
+    for(int i = 0; i < strlen(in); i++) {
+        if (in[i] == '.' || in[i] == ',') {
+            continue;
+        } else if (in[i] >= 'a' && in[i] <= 'z') {
+            out[index++] = in[i] - UPPERCASE_OFFSET;
+        } else {
+            out[index++] = in[i];
+        }
+    }
+    out[index] = '\0';
+}
+
 int db_init(const char *filename) {
     if (sqlite3_open("cashmere.db", &db) != SQLITE_OK) {
         printf("sqlite3_open: %s\n", sqlite3_errmsg(db));

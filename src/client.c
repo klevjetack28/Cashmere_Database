@@ -13,7 +13,7 @@
 #include "constants.h"
 #include "db_tables.h"
 #include "misc.h"
-#include "query.h"
+#include "db_filters.h"
 #include "db_print.h"
 
 void get_input(char *input) {

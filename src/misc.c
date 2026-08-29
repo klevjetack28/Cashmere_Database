@@ -10,5 +10,9 @@ int str_split(char *str, const char *delim, char **tokens, int max_tokens) {
         token = strtok_r(NULL, delim, &saveptr);
     }
 
+    if (token != NULL) {
+        return -1;
+    }
+
     return count;
 }
