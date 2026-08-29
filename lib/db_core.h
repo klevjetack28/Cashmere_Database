@@ -1,5 +1,5 @@
-#ifndef DATABASE_H
-#define DATABASE_H
+#ifndef DB_CORE_H
+#define DB_CORE_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,8 +7,17 @@
 #include <string.h>
 
 #include "db_tables.h"
+#include "db_filters.h"
 #include "0xca75.h"
-#include "query.h"
+#include "db_print.h"
+
+typedef enum {
+    DB_STATUS_OK = 0,
+    DB_STATUS_NOT_FOUND,
+    DB_STATUS_ERROR
+} DbStatus;
+
+void normalize_key(char *out, char *in);
 
 int db_init(const char *filename);
 int db_close();
@@ -78,4 +87,4 @@ int db_delete_type(int id);
 int db_delete_condition(int id);
 int db_delete_size(int id);
 
-#endif // DATABASE_H
+#endif // DB_CORE_H

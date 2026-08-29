@@ -8,7 +8,8 @@
 
 #include "constants.h"
 #include "db_tables.h"
-#include "query.h"
+#include "db_core.h"
+#include "db_filters.h"
 
 typedef enum {
     PACKET_TYPE_CONNECT = 0,
@@ -31,14 +32,16 @@ typedef enum {
 
 typedef enum {
     PACKET_STATUS_OK = 0,
-    PACKEY_STATUS_ERROR,
+    PACKET_STATUS_BAD_REQUEST,
+    PACKET_STATUS_NOT_FOUND,
+    PACKEY_STATUS_INTERNAL_ERROR
 } PacketStatus;
 
 typedef struct {
     PacketType packet_type;
     RequestType request_type;
     Table table;
-    PacketStatus status;
+    PacketStatus packet_status;
     int payload_length;
 } PacketHeader;
 
@@ -52,7 +55,7 @@ typedef struct {
 
 void print_packet(Packet *packet);
 
-PacketHeader packet_header_init(PacketType packet_type, RequestType request_type, Table table, PacketStatus status, int payload_length);
+PacketHeader packet_header_init(PacketType packet_type, RequestType request_type, Table table, PacketStatus packet_status, int payload_length);
 Packet packet_init(PacketHeader header, char *payload);
 
 Packet packet_connect_init(char *payload);

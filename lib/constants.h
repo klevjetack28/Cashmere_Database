@@ -8,5 +8,7 @@
 #define BUFFER_LENGTH 8192
 #define PORT 5000
 #define UPPERCASE_OFFSET 32
+#define MAX_TOKENS 128
+#define TOKEN_PAIR 2
 
 #endif // CONSTANTS_H

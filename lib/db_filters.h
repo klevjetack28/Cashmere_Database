@@ -1,11 +1,9 @@
-#ifndef QUERY_H
-#define QUERY_H
+#ifndef DB_FILTERS_H
+#define DB_FILTERS_H
 
 #include <string.h>
 
 #include "constants.h"
-
-#define MAX_FILTER_IDS 16
 
 typedef struct {
     int offset;
@@ -13,25 +11,25 @@ typedef struct {
 } Pagination;
 
 typedef struct {
-    int brand_ids[MAX_FILTER_IDS];
+    int brand_ids[MAX_TOKENS];
     int brand_count;
 
-    int color_family_ids[MAX_FILTER_IDS];
+    int color_family_ids[MAX_TOKENS];
     int color_family_count;
 
-    int neckline_ids[MAX_FILTER_IDS];
+    int neckline_ids[MAX_TOKENS];
     int neckline_count;
 
-    int sleeves_ids[MAX_FILTER_IDS];
+    int sleeves_ids[MAX_TOKENS];
     int sleeves_count;
 
-    int type_ids[MAX_FILTER_IDS];
+    int type_ids[MAX_TOKENS];
     int type_count;
 
-    int condition_ids[MAX_FILTER_IDS];
+    int condition_ids[MAX_TOKENS];
     int condition_count;
 
-    int size_ids[MAX_FILTER_IDS];
+    int size_ids[MAX_TOKENS];
     int size_count;
 
     int min_weight;
@@ -44,10 +42,10 @@ typedef struct {
 } SweaterSearch;
 
 typedef struct {
-    int piece_type_ids[MAX_FILTER_IDS];
+    int piece_type_ids[MAX_TOKENS];
     int piece_type_count;
 
-    int sweater_ids[MAX_FILTER_IDS];
+    int sweater_ids[MAX_TOKENS];
     int sweater_count;
 
     int min_original_weight;
@@ -62,7 +60,7 @@ typedef struct {
 } PieceSearch;
 
 typedef struct {
-    int sweater_ids[MAX_FILTER_IDS];
+    int sweater_ids[MAX_TOKENS];
     int sweater_count;
 
     char content[STR_LENGTH];
@@ -72,6 +70,4 @@ typedef struct {
     Pagination pagination;
 } NoteSearch;
 
-void normalize_key(char *out, char *in);
-
-#endif //QUERY_H
+#endif // DB_FILTERS_H

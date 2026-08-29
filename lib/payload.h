@@ -4,10 +4,14 @@
 #include "db_tables.h"
 #include "packet.h"
 #include "0xca75.h"
-#include "query.h"
+#include "db_filters.h"
+#include "constants.h"
 
-#define MAX_TOKENS 32
-#define TOKEN_PAIR 2
+
+typedef enum {
+    PAYLOAD_STATUS_OK = 0,
+    PAYLOAD_STATUS_ERROR
+} PayloadStatus;
 
 int payload_encode_sweater_filter(char *payload, int payload_size, SweaterFilter *sweater_filter);
 SweaterFilter payload_decode_sweater_filter(char *payload);

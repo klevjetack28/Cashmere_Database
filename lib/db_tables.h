@@ -24,6 +24,7 @@ typedef enum {
 
 extern const char *TABLE_NAMES[NUM_TABLES];
 
+
 typedef struct {
     int id;
     char cashmere_code[KEY_LENGTH];
