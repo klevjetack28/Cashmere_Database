@@ -3,9 +3,12 @@
 Notes for next session on where I left off. I want to include things that didn't get done, where I stopped the session, and any bugs to worry about.
 
 When writing notes put the next session notes above the previous so the most frequent notes apear on top.
-## September 10, 2026
-To fix the error about the error, in the event a payload has multiple of the same parameters i.e. "ID=1 ID=2" in an * brand request, I am going to make bitmasks enums to keep track of what has and has not been decoded.
 
+## September 10, 2026
+Bitmask defonitions need written. I have the header, tests, and function outlines written I just need to go through the tests and write functionality. The tests are written exactly how I would use them in an outside function. I did this before writing the definitions because now I can match the definitions to pass tests replicating how I would use them in my day to day programming.
+
+## September 9, 2026
+To fix the error about the error, in the event a payload has multiple of the same parameters i.e. "ID=1 ID=2" in an * brand request, I am going to make bitmasks enums to keep track of what has and has not been decoded.
 
 ## September 7, 2026
 
