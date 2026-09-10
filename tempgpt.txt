@@ -1,0 +1,53 @@
+Yes:
+
+0  = conversion succeeded
+-1 = conversion failed
+
+The converted integer is written through out_value.
+
+#include <errno.h>
+#include <limits.h>
+#include <stdlib.h>
+
+int str_to_int(const char *str, int *out_value) {
+    if (str == NULL || out_value == NULL || str[0] == '\0') {
+        return -1;
+    }
+
+    char *end;
+    errno = 0;
+
+    long value = strtol(str, &end, 10);
+
+    if (errno == ERANGE ||
+        end == str ||
+        *end != '\0' ||
+        value < INT_MIN ||
+        value > INT_MAX) {
+        return -1;
+    }
+
+    *out_value = (int)value;
+    return 0;
+}
+
+Example:
+
+int id;
+
+if (str_to_int(value, &id) == -1) {
+    fprintf(stderr, "%s: ID is not an integer\n", __func__);
+    return PAYLOAD_STATUS_ERROR;
+}
+
+if (id < 0) {
+    fprintf(stderr, "%s: ID cannot be negative\n", __func__);
+    return PAYLOAD_STATUS_ERROR;
+}
+
+Results:
+
+str_to_int("27", &id);    // returns 0,  id becomes 27
+str_to_int("-1", &id);    // returns 0,  id becomes -1
+str_to_int("taco", &id);  // returns -1
+str_to_int("12abc", &id); // returns -1

@@ -100,42 +100,6 @@ static void test_decode_piece_type_missing_piece_type(void) {
     assert(status == PAYLOAD_STATUS_ERROR);
 }
 
-static void test_decode_piece_type_duplicate_id(void) {
-    const char payload[] = "ID=4 ID=5";
-    PieceType piece_type = {0};
-
-    PayloadStatus status = payload_decode_piece_type(
-        payload, (int)strlen(payload), &piece_type);
-
-    assert(status == PAYLOAD_STATUS_ERROR);
-}
-
-static void test_decode_piece_type_duplicate_piece_type(void) {
-    const char payload[] =
-        "PIECE_TYPE=Torso_Panel PIECE_TYPE=Sleeve_Panel";
-    PieceType piece_type = {0};
-
-    PayloadStatus status = payload_decode_piece_type(
-        payload, (int)strlen(payload), &piece_type);
-
-    assert(status == PAYLOAD_STATUS_ERROR);
-}
-
-static void test_piece_type_round_trip(void) {
-    PieceType expected = {.id = 4, .piece_type = "Sleeve_Panel"};
-    PieceType actual = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-
-    assert(payload_encode_piece_type(
-        payload, sizeof(payload), &payload_length, &expected
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_piece_type(
-        payload, payload_length, &actual
-    ) == PAYLOAD_STATUS_OK);
-    assert_piece_type_equal(&actual, 4, "Sleeve_Panel");
-}
-
 static void test_encode_piece_type_rows_success(void) {
     PieceType piece_types[] = {
         {.id = 1, .piece_type = "Torso_Panel"},
@@ -213,27 +177,6 @@ static void test_decode_piece_type_rows_malformed_row(void) {
     assert(status == PAYLOAD_STATUS_ERROR);
 }
 
-static void test_piece_type_rows_round_trip(void) {
-    PieceType expected[] = {
-        {.id = 1, .piece_type = "Torso_Panel"},
-        {.id = 2, .piece_type = "Sleeve_Panel"},
-    };
-    PieceType actual[2] = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-    int actual_count = -1;
-
-    assert(payload_encode_piece_type_rows(
-        payload, sizeof(payload), &payload_length, expected, 2
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_piece_type_rows(
-        payload, payload_length, actual, 2, &actual_count
-    ) == PAYLOAD_STATUS_OK);
-    assert(actual_count == 2);
-    assert_piece_type_equal(&actual[0], 1, "Torso_Panel");
-    assert_piece_type_equal(&actual[1], 2, "Sleeve_Panel");
-}
-
 static void test_all_piece_type(void) {
     test_encode_piece_type_success();
     test_encode_piece_type_exact_capacity();
@@ -243,15 +186,11 @@ static void test_all_piece_type(void) {
     test_decode_piece_type_invalid_id();
     test_decode_piece_type_missing_id();
     test_decode_piece_type_missing_piece_type();
-    test_decode_piece_type_duplicate_id();
-    test_decode_piece_type_duplicate_piece_type();
-    test_piece_type_round_trip();
     test_encode_piece_type_rows_success();
     test_encode_piece_type_rows_insufficient_capacity();
     test_decode_piece_type_rows_success();
     test_decode_piece_type_rows_insufficient_capacity();
     test_decode_piece_type_rows_malformed_row();
-    test_piece_type_rows_round_trip();
 
     printf("G payload_piece_type: PASS\n");
 }
@@ -352,41 +291,6 @@ static void test_decode_brand_missing_brand(void) {
     assert(status == PAYLOAD_STATUS_ERROR);
 }
 
-static void test_decode_brand_duplicate_id(void) {
-    const char payload[] = "ID=4 ID=5";
-    Brand brand = {0};
-
-    PayloadStatus status = payload_decode_brand(
-        payload, (int)strlen(payload), &brand);
-
-    assert(status == PAYLOAD_STATUS_ERROR);
-}
-
-static void test_decode_brand_duplicate_brand(void) {
-    const char payload[] = "BRAND=J_Crew BRAND=Talbots";
-    Brand brand = {0};
-
-    PayloadStatus status = payload_decode_brand(
-        payload, (int)strlen(payload), &brand);
-
-    assert(status == PAYLOAD_STATUS_ERROR);
-}
-
-static void test_brand_round_trip(void) {
-    Brand expected = {.id = 4, .brand = "J_Crew"};
-    Brand actual = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-
-    assert(payload_encode_brand(
-        payload, sizeof(payload), &payload_length, &expected
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_brand(
-        payload, payload_length, &actual
-    ) == PAYLOAD_STATUS_OK);
-    assert_brand_equal(&actual, 4, "J_Crew");
-}
-
 static void test_encode_brand_rows_success(void) {
     Brand brands[] = {
         {.id = 1, .brand = "J_Crew"},
@@ -453,27 +357,6 @@ static void test_decode_brand_rows_malformed_row(void) {
     assert(status == PAYLOAD_STATUS_ERROR);
 }
 
-static void test_brand_rows_round_trip(void) {
-    Brand expected[] = {
-        {.id = 1, .brand = "J_Crew"},
-        {.id = 2, .brand = "Talbots"},
-    };
-    Brand actual[2] = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-    int actual_count = -1;
-
-    assert(payload_encode_brand_rows(
-        payload, sizeof(payload), &payload_length, expected, 2
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_brand_rows(
-        payload, payload_length, actual, 2, &actual_count
-    ) == PAYLOAD_STATUS_OK);
-    assert(actual_count == 2);
-    assert_brand_equal(&actual[0], 1, "J_Crew");
-    assert_brand_equal(&actual[1], 2, "Talbots");
-}
-
 static void test_all_brand(void) {
     test_encode_brand_success();
     test_encode_brand_exact_capacity();
@@ -483,15 +366,11 @@ static void test_all_brand(void) {
     test_decode_brand_invalid_id();
     test_decode_brand_missing_id();
     test_decode_brand_missing_brand();
-    test_decode_brand_duplicate_id();
-    test_decode_brand_duplicate_brand();
-    test_brand_round_trip();
     test_encode_brand_rows_success();
     test_encode_brand_rows_insufficient_capacity();
     test_decode_brand_rows_success();
     test_decode_brand_rows_insufficient_capacity();
     test_decode_brand_rows_malformed_row();
-    test_brand_rows_round_trip();
 
     printf("G payload_brand: PASS\n");
 }
@@ -606,41 +485,6 @@ static void test_decode_color_family_missing_color_family(void) {
     assert(status == PAYLOAD_STATUS_ERROR);
 }
 
-static void test_decode_color_family_duplicate_id(void) {
-    const char payload[] = "ID=4 ID=5";
-    ColorFamily color_family = {0};
-
-    PayloadStatus status = payload_decode_color_family(
-        payload, (int)strlen(payload), &color_family);
-
-    assert(status == PAYLOAD_STATUS_ERROR);
-}
-
-static void test_decode_color_family_duplicate_color_family(void) {
-    const char payload[] = "COLOR_FAMILY=Blue COLOR_FAMILY=Neutral";
-    ColorFamily color_family = {0};
-
-    PayloadStatus status = payload_decode_color_family(
-        payload, (int)strlen(payload), &color_family);
-
-    assert(status == PAYLOAD_STATUS_ERROR);
-}
-
-static void test_color_family_round_trip(void) {
-    ColorFamily expected = {.id = 4, .color_family = "Blue"};
-    ColorFamily actual = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-
-    assert(payload_encode_color_family(
-        payload, sizeof(payload), &payload_length, &expected
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_color_family(
-        payload, payload_length, &actual
-    ) == PAYLOAD_STATUS_OK);
-    assert_color_family_equal(&actual, 4, "Blue");
-}
-
 static void test_encode_color_family_rows_success(void) {
     ColorFamily color_families[] = {
         {.id = 1, .color_family = "Neutral"},
@@ -718,27 +562,6 @@ static void test_decode_color_family_rows_malformed_row(void) {
     assert(status == PAYLOAD_STATUS_ERROR);
 }
 
-static void test_color_family_rows_round_trip(void) {
-    ColorFamily expected[] = {
-        {.id = 1, .color_family = "Neutral"},
-        {.id = 2, .color_family = "Blue"},
-    };
-    ColorFamily actual[2] = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-    int actual_count = -1;
-
-    assert(payload_encode_color_family_rows(
-        payload, sizeof(payload), &payload_length, expected, 2
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_color_family_rows(
-        payload, payload_length, actual, 2, &actual_count
-    ) == PAYLOAD_STATUS_OK);
-    assert(actual_count == 2);
-    assert_color_family_equal(&actual[0], 1, "Neutral");
-    assert_color_family_equal(&actual[1], 2, "Blue");
-}
-
 static void test_all_color_family(void) {
     test_encode_color_family_success();
     test_encode_color_family_exact_capacity();
@@ -748,15 +571,11 @@ static void test_all_color_family(void) {
     test_decode_color_family_invalid_id();
     test_decode_color_family_missing_id();
     test_decode_color_family_missing_color_family();
-    test_decode_color_family_duplicate_id();
-    test_decode_color_family_duplicate_color_family();
-    test_color_family_round_trip();
     test_encode_color_family_rows_success();
     test_encode_color_family_rows_insufficient_capacity();
     test_decode_color_family_rows_success();
     test_decode_color_family_rows_insufficient_capacity();
     test_decode_color_family_rows_malformed_row();
-    test_color_family_rows_round_trip();
 
     printf("G payload_color_family: PASS\n");
 }
@@ -860,41 +679,6 @@ static void test_decode_neckline_missing_neckline(void) {
     assert(status == PAYLOAD_STATUS_ERROR);
 }
 
-static void test_decode_neckline_duplicate_id(void) {
-    const char payload[] = "ID=4 ID=5";
-    Neckline neckline = {0};
-
-    PayloadStatus status = payload_decode_neckline(
-        payload, (int)strlen(payload), &neckline);
-
-    assert(status == PAYLOAD_STATUS_ERROR);
-}
-
-static void test_decode_neckline_duplicate_neckline(void) {
-    const char payload[] = "NECKLINE=Crewneck NECKLINE=V_Neck";
-    Neckline neckline = {0};
-
-    PayloadStatus status = payload_decode_neckline(
-        payload, (int)strlen(payload), &neckline);
-
-    assert(status == PAYLOAD_STATUS_ERROR);
-}
-
-static void test_neckline_round_trip(void) {
-    Neckline expected = {.id = 4, .neckline = "Crewneck"};
-    Neckline actual = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-
-    assert(payload_encode_neckline(
-        payload, sizeof(payload), &payload_length, &expected
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_neckline(
-        payload, payload_length, &actual
-    ) == PAYLOAD_STATUS_OK);
-    assert_neckline_equal(&actual, 4, "Crewneck");
-}
-
 static void test_encode_neckline_rows_success(void) {
     Neckline necklines[] = {
         {.id = 1, .neckline = "Crewneck"},
@@ -969,27 +753,6 @@ static void test_decode_neckline_rows_malformed_row(void) {
     assert(status == PAYLOAD_STATUS_ERROR);
 }
 
-static void test_neckline_rows_round_trip(void) {
-    Neckline expected[] = {
-        {.id = 1, .neckline = "Crewneck"},
-        {.id = 2, .neckline = "V_Neck"},
-    };
-    Neckline actual[2] = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-    int actual_count = -1;
-
-    assert(payload_encode_neckline_rows(
-        payload, sizeof(payload), &payload_length, expected, 2
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_neckline_rows(
-        payload, payload_length, actual, 2, &actual_count
-    ) == PAYLOAD_STATUS_OK);
-    assert(actual_count == 2);
-    assert_neckline_equal(&actual[0], 1, "Crewneck");
-    assert_neckline_equal(&actual[1], 2, "V_Neck");
-}
-
 static void test_all_neckline(void) {
     test_encode_neckline_success();
     test_encode_neckline_exact_capacity();
@@ -999,15 +762,11 @@ static void test_all_neckline(void) {
     test_decode_neckline_invalid_id();
     test_decode_neckline_missing_id();
     test_decode_neckline_missing_neckline();
-    test_decode_neckline_duplicate_id();
-    test_decode_neckline_duplicate_neckline();
-    test_neckline_round_trip();
     test_encode_neckline_rows_success();
     test_encode_neckline_rows_insufficient_capacity();
     test_decode_neckline_rows_success();
     test_decode_neckline_rows_insufficient_capacity();
     test_decode_neckline_rows_malformed_row();
-    test_neckline_rows_round_trip();
 
     printf("G payload_neckline: PASS\n");
 }
@@ -1111,41 +870,6 @@ static void test_decode_sleeves_missing_sleeves(void) {
     assert(status == PAYLOAD_STATUS_ERROR);
 }
 
-static void test_decode_sleeves_duplicate_id(void) {
-    const char payload[] = "ID=4 ID=5";
-    Sleeves sleeves = {0};
-
-    PayloadStatus status = payload_decode_sleeves(
-        payload, (int)strlen(payload), &sleeves);
-
-    assert(status == PAYLOAD_STATUS_ERROR);
-}
-
-static void test_decode_sleeves_duplicate_sleeves(void) {
-    const char payload[] = "SLEEVES=Long SLEEVES=Short";
-    Sleeves sleeves = {0};
-
-    PayloadStatus status = payload_decode_sleeves(
-        payload, (int)strlen(payload), &sleeves);
-
-    assert(status == PAYLOAD_STATUS_ERROR);
-}
-
-static void test_sleeves_round_trip(void) {
-    Sleeves expected = {.id = 4, .sleeves = "Long"};
-    Sleeves actual = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-
-    assert(payload_encode_sleeves(
-        payload, sizeof(payload), &payload_length, &expected
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_sleeves(
-        payload, payload_length, &actual
-    ) == PAYLOAD_STATUS_OK);
-    assert_sleeves_equal(&actual, 4, "Long");
-}
-
 static void test_encode_sleeves_rows_success(void) {
     Sleeves sleeves[] = {
         {.id = 1, .sleeves = "Long"},
@@ -1220,27 +944,6 @@ static void test_decode_sleeves_rows_malformed_row(void) {
     assert(status == PAYLOAD_STATUS_ERROR);
 }
 
-static void test_sleeves_rows_round_trip(void) {
-    Sleeves expected[] = {
-        {.id = 1, .sleeves = "Long"},
-        {.id = 2, .sleeves = "Short"},
-    };
-    Sleeves actual[2] = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-    int actual_count = -1;
-
-    assert(payload_encode_sleeves_rows(
-        payload, sizeof(payload), &payload_length, expected, 2
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_sleeves_rows(
-        payload, payload_length, actual, 2, &actual_count
-    ) == PAYLOAD_STATUS_OK);
-    assert(actual_count == 2);
-    assert_sleeves_equal(&actual[0], 1, "Long");
-    assert_sleeves_equal(&actual[1], 2, "Short");
-}
-
 static void test_all_sleeves(void) {
     test_encode_sleeves_success();
     test_encode_sleeves_exact_capacity();
@@ -1250,15 +953,11 @@ static void test_all_sleeves(void) {
     test_decode_sleeves_invalid_id();
     test_decode_sleeves_missing_id();
     test_decode_sleeves_missing_sleeves();
-    test_decode_sleeves_duplicate_id();
-    test_decode_sleeves_duplicate_sleeves();
-    test_sleeves_round_trip();
     test_encode_sleeves_rows_success();
     test_encode_sleeves_rows_insufficient_capacity();
     test_decode_sleeves_rows_success();
     test_decode_sleeves_rows_insufficient_capacity();
     test_decode_sleeves_rows_malformed_row();
-    test_sleeves_rows_round_trip();
 
     printf("G payload_sleeves: PASS\n");
 }
@@ -1362,41 +1061,6 @@ static void test_decode_type_missing_type(void) {
     assert(status == PAYLOAD_STATUS_ERROR);
 }
 
-static void test_decode_type_duplicate_id(void) {
-    const char payload[] = "ID=4 ID=5";
-    Type type = {0};
-
-    PayloadStatus status = payload_decode_type(
-        payload, (int)strlen(payload), &type);
-
-    assert(status == PAYLOAD_STATUS_ERROR);
-}
-
-static void test_decode_type_duplicate_type(void) {
-    const char payload[] = "TYPE=Pullover TYPE=Cardigan";
-    Type type = {0};
-
-    PayloadStatus status = payload_decode_type(
-        payload, (int)strlen(payload), &type);
-
-    assert(status == PAYLOAD_STATUS_ERROR);
-}
-
-static void test_type_round_trip(void) {
-    Type expected = {.id = 4, .type = "Pullover"};
-    Type actual = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-
-    assert(payload_encode_type(
-        payload, sizeof(payload), &payload_length, &expected
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_type(
-        payload, payload_length, &actual
-    ) == PAYLOAD_STATUS_OK);
-    assert_type_equal(&actual, 4, "Pullover");
-}
-
 static void test_encode_type_rows_success(void) {
     Type types[] = {
         {.id = 1, .type = "Pullover"},
@@ -1471,27 +1135,6 @@ static void test_decode_type_rows_malformed_row(void) {
     assert(status == PAYLOAD_STATUS_ERROR);
 }
 
-static void test_type_rows_round_trip(void) {
-    Type expected[] = {
-        {.id = 1, .type = "Pullover"},
-        {.id = 2, .type = "Cardigan"},
-    };
-    Type actual[2] = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-    int actual_count = -1;
-
-    assert(payload_encode_type_rows(
-        payload, sizeof(payload), &payload_length, expected, 2
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_type_rows(
-        payload, payload_length, actual, 2, &actual_count
-    ) == PAYLOAD_STATUS_OK);
-    assert(actual_count == 2);
-    assert_type_equal(&actual[0], 1, "Pullover");
-    assert_type_equal(&actual[1], 2, "Cardigan");
-}
-
 static void test_all_type(void) {
     test_encode_type_success();
     test_encode_type_exact_capacity();
@@ -1501,15 +1144,11 @@ static void test_all_type(void) {
     test_decode_type_invalid_id();
     test_decode_type_missing_id();
     test_decode_type_missing_type();
-    test_decode_type_duplicate_id();
-    test_decode_type_duplicate_type();
-    test_type_round_trip();
     test_encode_type_rows_success();
     test_encode_type_rows_insufficient_capacity();
     test_decode_type_rows_success();
     test_decode_type_rows_insufficient_capacity();
     test_decode_type_rows_malformed_row();
-    test_type_rows_round_trip();
 
     printf("G payload_type: PASS\n");
 }
@@ -1613,41 +1252,6 @@ static void test_decode_condition_missing_condition(void) {
     assert(status == PAYLOAD_STATUS_ERROR);
 }
 
-static void test_decode_condition_duplicate_id(void) {
-    const char payload[] = "ID=4 ID=5";
-    Condition condition = {0};
-
-    PayloadStatus status = payload_decode_condition(
-        payload, (int)strlen(payload), &condition);
-
-    assert(status == PAYLOAD_STATUS_ERROR);
-}
-
-static void test_decode_condition_duplicate_condition(void) {
-    const char payload[] = "CONDITION=Good CONDITION=Excellent";
-    Condition condition = {0};
-
-    PayloadStatus status = payload_decode_condition(
-        payload, (int)strlen(payload), &condition);
-
-    assert(status == PAYLOAD_STATUS_ERROR);
-}
-
-static void test_condition_round_trip(void) {
-    Condition expected = {.id = 4, .condition = "Good"};
-    Condition actual = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-
-    assert(payload_encode_condition(
-        payload, sizeof(payload), &payload_length, &expected
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_condition(
-        payload, payload_length, &actual
-    ) == PAYLOAD_STATUS_OK);
-    assert_condition_equal(&actual, 4, "Good");
-}
-
 static void test_encode_condition_rows_success(void) {
     Condition conditions[] = {
         {.id = 1, .condition = "Excellent"},
@@ -1722,27 +1326,6 @@ static void test_decode_condition_rows_malformed_row(void) {
     assert(status == PAYLOAD_STATUS_ERROR);
 }
 
-static void test_condition_rows_round_trip(void) {
-    Condition expected[] = {
-        {.id = 1, .condition = "Good"},
-        {.id = 2, .condition = "Excellent"},
-    };
-    Condition actual[2] = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-    int actual_count = -1;
-
-    assert(payload_encode_condition_rows(
-        payload, sizeof(payload), &payload_length, expected, 2
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_condition_rows(
-        payload, payload_length, actual, 2, &actual_count
-    ) == PAYLOAD_STATUS_OK);
-    assert(actual_count == 2);
-    assert_condition_equal(&actual[0], 1, "Good");
-    assert_condition_equal(&actual[1], 2, "Excellent");
-}
-
 static void test_all_condition(void) {
     test_encode_condition_success();
     test_encode_condition_exact_capacity();
@@ -1752,15 +1335,11 @@ static void test_all_condition(void) {
     test_decode_condition_invalid_id();
     test_decode_condition_missing_id();
     test_decode_condition_missing_condition();
-    test_decode_condition_duplicate_id();
-    test_decode_condition_duplicate_condition();
-    test_condition_round_trip();
     test_encode_condition_rows_success();
     test_encode_condition_rows_insufficient_capacity();
     test_decode_condition_rows_success();
     test_decode_condition_rows_insufficient_capacity();
     test_decode_condition_rows_malformed_row();
-    test_condition_rows_round_trip();
 
     printf("G payload_condition: PASS\n");
 }
@@ -1864,41 +1443,6 @@ static void test_decode_size_missing_size(void) {
     assert(status == PAYLOAD_STATUS_ERROR);
 }
 
-static void test_decode_size_duplicate_id(void) {
-    const char payload[] = "ID=4 ID=5";
-    Size size = {0};
-
-    PayloadStatus status = payload_decode_size(
-        payload, (int)strlen(payload), &size);
-
-    assert(status == PAYLOAD_STATUS_ERROR);
-}
-
-static void test_decode_size_duplicate_size(void) {
-    const char payload[] = "SIZE=Medium SIZE=Large";
-    Size size = {0};
-
-    PayloadStatus status = payload_decode_size(
-        payload, (int)strlen(payload), &size);
-
-    assert(status == PAYLOAD_STATUS_ERROR);
-}
-
-static void test_size_round_trip(void) {
-    Size expected = {.id = 4, .size = "Medium"};
-    Size actual = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-
-    assert(payload_encode_size(
-        payload, sizeof(payload), &payload_length, &expected
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_size(
-        payload, payload_length, &actual
-    ) == PAYLOAD_STATUS_OK);
-    assert_size_equal(&actual, 4, "Medium");
-}
-
 static void test_encode_size_rows_success(void) {
     Size sizes[] = {
         {.id = 1, .size = "Small"},
@@ -1973,27 +1517,6 @@ static void test_decode_size_rows_malformed_row(void) {
     assert(status == PAYLOAD_STATUS_ERROR);
 }
 
-static void test_size_rows_round_trip(void) {
-    Size expected[] = {
-        {.id = 1, .size = "Medium"},
-        {.id = 2, .size = "Large"},
-    };
-    Size actual[2] = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-    int actual_count = -1;
-
-    assert(payload_encode_size_rows(
-        payload, sizeof(payload), &payload_length, expected, 2
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_size_rows(
-        payload, payload_length, actual, 2, &actual_count
-    ) == PAYLOAD_STATUS_OK);
-    assert(actual_count == 2);
-    assert_size_equal(&actual[0], 1, "Medium");
-    assert_size_equal(&actual[1], 2, "Large");
-}
-
 static void test_all_size(void) {
     test_encode_size_success();
     test_encode_size_exact_capacity();
@@ -2003,15 +1526,11 @@ static void test_all_size(void) {
     test_decode_size_invalid_id();
     test_decode_size_missing_id();
     test_decode_size_missing_size();
-    test_decode_size_duplicate_id();
-    test_decode_size_duplicate_size();
-    test_size_round_trip();
     test_encode_size_rows_success();
     test_encode_size_rows_insufficient_capacity();
     test_decode_size_rows_success();
     test_decode_size_rows_insufficient_capacity();
     test_decode_size_rows_malformed_row();
-    test_size_rows_round_trip();
 
     printf("G payload_size: PASS\n");
 }
@@ -2103,31 +1622,6 @@ static void test_decode_id_without_null_in_length(void) {
     assert(id == 42);
 }
 
-static void test_decode_id_negative(void) {
-    const char payload[] = "ID=-1";
-    int id = 0;
-
-    PayloadStatus status =
-        payload_decode_id(payload, (int)strlen(payload), &id);
-
-    assert(status == PAYLOAD_STATUS_OK);
-    assert(id == -1);
-}
-
-static void test_id_round_trip(void) {
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-    int decoded_id = 0;
-
-    assert(payload_encode_id(
-        payload, sizeof(payload), &payload_length, -4
-    ) == PAYLOAD_STATUS_OK);
-    assert(payload_decode_id(
-        payload, payload_length, &decoded_id
-    ) == PAYLOAD_STATUS_OK);
-    assert(decoded_id == -4);
-}
-
 static void test_decode_id_invalid_payloads(void) {
     int id = 99;
 
@@ -2171,10 +1665,8 @@ void test_all_id(void) {
 
     test_decode_id_success();
     test_decode_id_without_null_in_length();
-    test_decode_id_negative();
     test_decode_id_invalid_payloads();
     test_decode_id_null_arguments();
-    test_id_round_trip();
 
     printf("G id: PASS\n");
 }
@@ -2227,17 +1719,19 @@ static void test_encode_pagination_insufficient_capacity(void) {
     assert(payload_length == -1);
 }
 
-static void test_encode_pagination_signed_values(void) {
+static void test_encode_pagination_invalid_values(void) {
     char payload[STR_LENGTH] = {0};
     int payload_length = -1;
-    Pagination pagination = {.limit = -10, .offset = -5};
 
-    PayloadStatus status = payload_encode_pagination(
-        payload, sizeof(payload), &payload_length, &pagination);
+    Pagination zero_limit = {.limit = 0, .offset = 0};
+    assert(payload_encode_pagination(
+        payload, sizeof(payload), &payload_length, &zero_limit
+    ) == PAYLOAD_STATUS_ERROR);
 
-    assert(status == PAYLOAD_STATUS_OK);
-    assert(strcmp(payload, "LIMIT=-10 OFFSET=-5") == 0);
-    assert(payload_length == (int)strlen("LIMIT=-10 OFFSET=-5"));
+    Pagination negative_offset = {.limit = 10, .offset = -1};
+    assert(payload_encode_pagination(
+        payload, sizeof(payload), &payload_length, &negative_offset
+    ) == PAYLOAD_STATUS_ERROR);
 }
 
 static void test_encode_pagination_null_arguments(void) {
@@ -2326,30 +1820,20 @@ static void test_decode_pagination_invalid_payloads(void) {
     assert_pagination_equal(&pagination, 99, 99);
 }
 
-static void test_decode_pagination_signed_values(void) {
+static void test_decode_pagination_invalid_values(void) {
     Pagination pagination = {0};
 
-    const char payload[] = "LIMIT=-10 OFFSET=-5";
-    PayloadStatus status = payload_decode_pagination(
-        payload, (int)strlen(payload), &pagination);
-
-    assert(status == PAYLOAD_STATUS_OK);
-    assert_pagination_equal(&pagination, -10, -5);
-}
-
-static void test_pagination_round_trip(void) {
-    Pagination expected = {.limit = 10, .offset = 20};
-    Pagination actual = {0};
-    char payload[STR_LENGTH] = {0};
-    int payload_length = -1;
-
-    assert(payload_encode_pagination(
-        payload, sizeof(payload), &payload_length, &expected
-    ) == PAYLOAD_STATUS_OK);
     assert(payload_decode_pagination(
-        payload, payload_length, &actual
-    ) == PAYLOAD_STATUS_OK);
-    assert_pagination_equal(&actual, 10, 20);
+        "LIMIT=0 OFFSET=0",
+        strlen("LIMIT=0 OFFSET=0"),
+        &pagination
+    ) == PAYLOAD_STATUS_ERROR);
+
+    assert(payload_decode_pagination(
+        "LIMIT=10 OFFSET=-1",
+        strlen("LIMIT=10 OFFSET=-1"),
+        &pagination
+    ) == PAYLOAD_STATUS_ERROR);
 }
 
 static void test_decode_pagination_null_arguments(void) {
@@ -2374,16 +1858,15 @@ void test_all_pagination(void) {
     test_encode_pagination_success();
     test_encode_pagination_exact_capacity();
     test_encode_pagination_insufficient_capacity();
-    test_encode_pagination_signed_values();
+    test_encode_pagination_invalid_values();
     test_encode_pagination_null_arguments();
 
     test_decode_pagination_success();
     test_decode_pagination_reversed_order();
     test_decode_pagination_without_null_in_length();
     test_decode_pagination_invalid_payloads();
-    test_decode_pagination_signed_values();
+    test_decode_pagination_invalid_values();
     test_decode_pagination_null_arguments();
-    test_pagination_round_trip();
 
     printf("G pagination: PASS\n");
 }

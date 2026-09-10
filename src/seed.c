@@ -17,14 +17,14 @@ static const Table LOOKUP_TABLES[] = {
 static const int NUM_LOOKUPS = sizeof(LOOKUP_TABLES) / sizeof(LOOKUP_TABLES[0]);
 
 static void seed_create_lookup_record(Table table, char *value) {
-    switch(table) {
+/*    switch(table) {
         case TABLE_PIECE_TYPE:
             PieceType piece_type = payload_decode_piece_type(value);
             db_create_piece_type(&piece_type);
             break;
         case TABLE_BRAND:
-            Brand brand = payload_decode_brand(value);
-            db_create_brand(&brand);
+            //Brand brand = payload_decode_brand(value);
+            //db_create_brand(&brand);
             break;
         case TABLE_COLOR_FAMILY:
             ColorFamily color_family = payload_decode_color_family(value);
@@ -56,7 +56,7 @@ static void seed_create_lookup_record(Table table, char *value) {
             break;
         default:
             printf("ERROR: %s\n", value);
-    }
+    }*/
 }
 
 static const Table SWEATER_TABLES[] = {

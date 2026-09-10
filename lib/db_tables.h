@@ -22,8 +22,8 @@ typedef enum {
     NUM_TABLES
 } Table;
 
-extern const char *TABLE_NAMES[NUM_TABLES];
 
+extern const char *TABLE_NAMES[NUM_TABLES];
 
 typedef struct {
     int id;

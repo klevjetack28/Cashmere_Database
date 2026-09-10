@@ -1,6 +1,6 @@
 #include "test_db_tables.h"
 
-void test_all_db_tables(void) {
+static void test_table_from_string(void) {
     // Exact valid input
     assert(table_from_string("NULL") == TABLE_NULL);
     assert(table_from_string("SWEATER") == TABLE_SWEATER);
@@ -31,6 +31,11 @@ void test_all_db_tables(void) {
 
     // Partial name
     assert(table_from_string("SWEAT") == TABLE_NULL);
+    
+    printf("F table_from_string: PASS\n");
+}   
+void test_all_db_tables(void) {
+    test_table_from_string();
 
-    printf("db_tables: PASS\n");
+    printf("db_tables: PASS\n----------\n");
 }

@@ -8,8 +8,6 @@
 
 #include "constants.h"
 #include "db_tables.h"
-#include "db_core.h"
-#include "db_filters.h"
 
 typedef enum {
     PACKET_TYPE_CONNECT = 0,

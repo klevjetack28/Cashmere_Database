@@ -7,6 +7,8 @@
 #include <ctype.h>
 #include <string.h>
 
+#include "bitmask.h"
+
 int remove_file(const char *path);
 char *read_entire_file(const char* filename);
 char *trim_whitespace(char *str);

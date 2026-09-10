@@ -3,6 +3,26 @@
 Notes for next session on where I left off. I want to include things that didn't get done, where I stopped the session, and any bugs to worry about.
 
 When writing notes put the next session notes above the previous so the most frequent notes apear on top.
+## September 10, 2026
+To fix the error about the error, in the event a payload has multiple of the same parameters i.e. "ID=1 ID=2" in an * brand request, I am going to make bitmasks enums to keep track of what has and has not been decoded.
+
+
+## September 7, 2026
+
+Every axiom table needs to update how it handles when the payload contains duplicate fields. It can pass the test of FIELD COUNT but we need a way to determin if a field has already been read or not. after that is complete I should have most of the testing for axiom tables completed and just need to complete tables with relationships. 
+
+The same fix for the axiom tables will work for the ID and Pagination encoders and decoders.
+
+## September 6, 2026
+Something I might want to add to the db_tables.(h/c) is a new struct for like table info. I want to be able to create the array of their name, the enum table value, number of fields, etc. Just at thought this might change later. 
+
+NEED TO HOT FIX THE payload.c axiom tables. Jut need to renuke and fix the replace regex. The last one used was :.,+141s/\vbrand(_|s)/piece_type\1/gc and it did not get the brand( token. Needs fixed in the .h file to.
+
+## September 2, 2026
+
+I started working on adding some PayloadStatus to the brands but stopped halfway because I thought a more effective use of my time is to develop the tests for payloads first. Then develop based off of if I am passing tests or not.
+
+Work through developing tests and once tests are completed I can develop using the results from the tests to determine how accurate my program is to the functionality I am looking for.
 
 ## August 29, 2026
 

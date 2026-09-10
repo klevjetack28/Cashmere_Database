@@ -173,10 +173,12 @@ Packet update_record(Packet *request) {
             break;
         }
         case TABLE_BRAND: {
-            Brand brand = payload_decode_brand(request->payload);            
+            Brand brand = {0};
+            payload_decode_brand(request->payload, PAYLOAD_MAX_LENGTH, &brand);            
             db_update_brand(&brand);
             char payload[PAYLOAD_MAX_LENGTH];
-            int payload_length = payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &brand);
+            int payload_length = 0;
+            payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &payload_length, &brand);
             response = packet_create_response_init(request->header.table, PACKET_STATUS_OK, payload);
             break;
         }
@@ -285,11 +287,13 @@ Packet create_record(Packet *request) {
             break;
         }
         case TABLE_BRAND: {
-            Brand brand = payload_decode_brand(request->payload);            
+            Brand brand = {0};
+            payload_decode_brand(request->payload, PAYLOAD_MAX_LENGTH, &brand);            
             print_brand(&brand);
             brand.id = db_create_brand(&brand);
             char payload[PAYLOAD_MAX_LENGTH];
-            int payload_length = payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &brand);
+            int payload_length = 0;
+            payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &payload_length, &brand);
             response = packet_create_response_init(request->header.table, PACKET_STATUS_OK, payload);
             break;
         }
@@ -402,7 +406,8 @@ Packet info_record(Packet *request) {
             int id = payload_decode_id(request->payload);            
             Brand brand = db_info_brand(id);
             char payload[PAYLOAD_MAX_LENGTH];
-            int payload_length = payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &brand);
+            int payload_length = 0;
+            payload_encode_brand(payload, PAYLOAD_MAX_LENGTH, &payload_length, &brand);
             response = packet_create_response_init(request->header.table, PACKET_STATUS_OK, payload);
             break;
         }
@@ -481,7 +486,7 @@ Packet read_records(Packet *request) {
             Brand brand_rows[MAX_TOKENS];
             int count = db_read_brand(&brand_rows, &pagination);
             char payload[PAYLOAD_MAX_LENGTH];
-            int payload_length = payload_encode_brand_rows(payload, PAYLOAD_MAX_LENGTH, &brand_rows);
+            int payload_length = 0; //payload_encode_brand_rows(payload, PAYLOAD_MAX_LENGTH, &brand_rows);
             response = packet_create_response_init(request->header.table, PACKET_STATUS_OK, payload);
             break;
         case TABLE_COLOR_FAMILY:
