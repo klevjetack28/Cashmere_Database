@@ -2,7 +2,7 @@
 #define CONSTANTS_H
 
 #include "0xca75.h"
-#include "field_count.h"
+#include "fields.h"
 
 #define KEY_LENGTH 32
 #define STR_LENGTH 256

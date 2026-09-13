@@ -1,8 +1,9 @@
 #ifndef BITMASK_H
-#efine BITMASK_H
+#define BITMASK_H
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
 
 #define BITMASK_WIDTH 32U
 #define BITMASK_BIT(bit) (UINT32_C(1) << (bit))

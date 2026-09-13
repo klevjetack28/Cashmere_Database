@@ -8,6 +8,7 @@
 
 #include "constants.h"
 #include "db_tables.h"
+#include "0xca75.h"
 
 typedef enum {
     PACKET_TYPE_CONNECT = 0,

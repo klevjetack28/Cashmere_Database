@@ -562,7 +562,7 @@ PayloadStatus payload_decode_piece_type_rows(const char payload_in[], int payloa
         *piece_type_count_out = 0;
         return PAYLOAD_STATUS_OK;
     }
-    
+
     char payload_copy[PAYLOAD_MAX_LENGTH];
     memcpy(payload_copy, payload_in, payload_length);
     payload_copy[payload_length] = '\0';
@@ -624,6 +624,9 @@ PayloadStatus payload_decode_piece_type(const char payload_in[], int payload_len
         return PAYLOAD_STATUS_ERROR;
     }
 
+    PieceType tmp = {0};
+    Bitmask fields_seen = 0;
+
     char payload_copy[PAYLOAD_MAX_LENGTH];
     memcpy(payload_copy, payload_in, payload_length);
     payload_copy[payload_length] = '\0';
@@ -646,18 +649,23 @@ PayloadStatus payload_decode_piece_type(const char payload_in[], int payload_len
         char *field = pair[0];
         char *value = pair[1];
         if (strcmp(field, "ID") == 0) {
-            if (!str_to_int(value, &piece_type_out->id)) {
+            if (!bitmask_try_set(&fields_seen, PIECE_TYPE_FIELD_ID)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            if (!str_to_int(value, &tmp.id)) {
                 return PAYLOAD_STATUS_ERROR;
             }
         } else if (strcmp(field, "PIECE_TYPE") == 0) {
-             strncpy(piece_type_out->piece_type, value, KEY_LENGTH - 1);
-             int length = strlen(piece_type_out->piece_type);
-             piece_type_out->piece_type[length] = '\0';
+            if (!bitmask_try_set(&fields_seen, PIECE_TYPE_FIELD_PIECE_TYPE)) {
+                return PAYLOAD_STATUS_ERROR;
+            } 
+            strncpy(tmp.piece_type, value, KEY_LENGTH - 1);
         } else {
-
+           return PAYLOAD_STATUS_ERROR; 
         }
     }
 
+    memcpy(piece_type_out, &tmp, sizeof(PieceType));
     return PAYLOAD_STATUS_OK;
 }
 
@@ -769,7 +777,10 @@ PayloadStatus payload_decode_brand(const char payload_in[], int payload_length, 
     if (payload_in == NULL || brand_out == NULL || payload_length <= 0 || payload_length >= PAYLOAD_MAX_LENGTH) {
         return PAYLOAD_STATUS_ERROR;
     }
-    
+   
+    Brand tmp = {0};
+    Bitmask fields_seen = 0;
+
     char payload_copy[PAYLOAD_MAX_LENGTH];
     memcpy(payload_copy, payload_in, payload_length);
     payload_copy[payload_length] = '\0';
@@ -792,18 +803,23 @@ PayloadStatus payload_decode_brand(const char payload_in[], int payload_length, 
         char *field = pair[0];
         char *value = pair[1];
         if (strcmp(field, "ID") == 0) {
-            if (!str_to_int(value, &brand_out->id)) {
+            if (!bitmask_try_set(&fields_seen, BRAND_FIELD_ID)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            if (!str_to_int(value, &tmp.id)) {
                 return PAYLOAD_STATUS_ERROR;
             }
         } else if (strcmp(field, "BRAND") == 0) {
-             strncpy(brand_out->brand, value, KEY_LENGTH - 1);
-             int length = strlen(brand_out->brand);
-             brand_out->brand[length] = '\0';
+            if (!bitmask_try_set(&fields_seen, BRAND_FIELD_BRAND)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            strncpy(tmp.brand, value, KEY_LENGTH - 1);
         } else {
-
+           return PAYLOAD_STATUS_ERROR; 
         }
     }
 
+    memcpy(brand_out, &tmp, sizeof(Brand));
     return PAYLOAD_STATUS_OK;
 }
 // COLOR FAMILY SECTION START
@@ -915,7 +931,10 @@ PayloadStatus payload_decode_color_family(const char payload_in[], int payload_l
     if (payload_in == NULL || color_family_out == NULL || payload_length <= 0 || payload_length >= PAYLOAD_MAX_LENGTH) {
         return PAYLOAD_STATUS_ERROR;
     }
-    
+
+    ColorFamily tmp = {0};
+    Bitmask fields_seen = 0;
+
     char payload_copy[PAYLOAD_MAX_LENGTH];
     memcpy(payload_copy, payload_in, payload_length);
     payload_copy[payload_length] = '\0';
@@ -938,18 +957,23 @@ PayloadStatus payload_decode_color_family(const char payload_in[], int payload_l
         char *field = pair[0];
         char *value = pair[1];
         if (strcmp(field, "ID") == 0) {
-            if (!str_to_int(value, &color_family_out->id)) {
+            if (!bitmask_try_set(&fields_seen, COLOR_FAMILY_FIELD_ID)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            if (!str_to_int(value, &tmp.id)) {
                 return PAYLOAD_STATUS_ERROR;
             }
         } else if (strcmp(field, "COLOR_FAMILY") == 0) {
-             strncpy(color_family_out->color_family, value, KEY_LENGTH - 1);
-             int length = strlen(color_family_out->color_family);
-             color_family_out->color_family[length] = '\0';
+            if (!bitmask_try_set(&fields_seen, COLOR_FAMILY_FIELD_COLOR_FAMILY)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            strncpy(tmp.color_family, value, KEY_LENGTH - 1);
         } else {
-
+           return PAYLOAD_STATUS_ERROR; 
         }
     }
 
+    memcpy(color_family_out, &tmp, sizeof(ColorFamily));
     return PAYLOAD_STATUS_OK;
 }
 // COLOR FAMILY SECTION END
@@ -1090,10 +1114,8 @@ PayloadStatus payload_decode_color(const char payload_in[], int payload_length, 
             }
         } else if (strcmp(field, "COLOR") == 0) {
              strncpy(color_out->color, value, KEY_LENGTH - 1);
-             int length = strlen(color_out->color);
-             color_out->color[length] = '\0';
         } else {
-
+            return PAYLOAD_STATUS_ERROR;
         }
     }
 
@@ -1208,7 +1230,10 @@ PayloadStatus payload_decode_neckline(const char payload_in[], int payload_lengt
     if (payload_in == NULL || neckline_out == NULL || payload_length <= 0 || payload_length >= PAYLOAD_MAX_LENGTH) {
         return PAYLOAD_STATUS_ERROR;
     }
-    
+  
+    Neckline tmp = {0};
+    Bitmask fields_seen = 0;
+
     char payload_copy[PAYLOAD_MAX_LENGTH];
     memcpy(payload_copy, payload_in, payload_length);
     payload_copy[payload_length] = '\0';
@@ -1231,18 +1256,23 @@ PayloadStatus payload_decode_neckline(const char payload_in[], int payload_lengt
         char *field = pair[0];
         char *value = pair[1];
         if (strcmp(field, "ID") == 0) {
-            if (!str_to_int(value, &neckline_out->id)) {
+            if (!bitmask_try_set(&fields_seen, NECKLINE_FIELD_ID)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            if (!str_to_int(value, &tmp.id)) {
                 return PAYLOAD_STATUS_ERROR;
             }
         } else if (strcmp(field, "NECKLINE") == 0) {
-             strncpy(neckline_out->neckline, value, KEY_LENGTH - 1);
-             int length = strlen(neckline_out->neckline);
-             neckline_out->neckline[length] = '\0';
+            if (!bitmask_try_set(&fields_seen, NECKLINE_FIELD_NECKLINE)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            strncpy(tmp.neckline, value, KEY_LENGTH - 1);
         } else {
-
+            return PAYLOAD_STATUS_ERROR;
         }
     }
 
+    memcpy(neckline_out, &tmp, sizeof(Neckline));
     return PAYLOAD_STATUS_OK;
 }
 
@@ -1354,7 +1384,10 @@ PayloadStatus payload_decode_sleeves(const char payload_in[], int payload_length
     if (payload_in == NULL || sleeves_out == NULL || payload_length <= 0 || payload_length >= PAYLOAD_MAX_LENGTH) {
         return PAYLOAD_STATUS_ERROR;
     }
-    
+  
+    Sleeves tmp = {0};
+    Bitmask fields_seen = 0;
+
     char payload_copy[PAYLOAD_MAX_LENGTH];
     memcpy(payload_copy, payload_in, payload_length);
     payload_copy[payload_length] = '\0';
@@ -1377,18 +1410,23 @@ PayloadStatus payload_decode_sleeves(const char payload_in[], int payload_length
         char *field = pair[0];
         char *value = pair[1];
         if (strcmp(field, "ID") == 0) {
-            if (!str_to_int(value, &sleeves_out->id)) {
+            if (!bitmask_try_set(&fields_seen, SLEEVES_FIELD_ID)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            if (!str_to_int(value, &tmp.id)) {
                 return PAYLOAD_STATUS_ERROR;
             }
         } else if (strcmp(field, "SLEEVES") == 0) {
-             strncpy(sleeves_out->sleeves, value, KEY_LENGTH - 1);
-             int length = strlen(sleeves_out->sleeves);
-             sleeves_out->sleeves[length] = '\0';
+            if (!bitmask_try_set(&fields_seen, SLEEVES_FIELD_SLEEVES)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            strncpy(tmp.sleeves, value, KEY_LENGTH - 1);
         } else {
-
+           return PAYLOAD_STATUS_ERROR; 
         }
     }
 
+    memcpy(sleeves_out, &tmp, sizeof(Sleeves));
     return PAYLOAD_STATUS_OK;
 }
 
@@ -1501,6 +1539,9 @@ PayloadStatus payload_decode_type(const char payload_in[], int payload_length, T
         return PAYLOAD_STATUS_ERROR;
     }
     
+    Type tmp = {0};
+    Bitmask fields_seen = 0;
+
     char payload_copy[PAYLOAD_MAX_LENGTH];
     memcpy(payload_copy, payload_in, payload_length);
     payload_copy[payload_length] = '\0';
@@ -1523,18 +1564,23 @@ PayloadStatus payload_decode_type(const char payload_in[], int payload_length, T
         char *field = pair[0];
         char *value = pair[1];
         if (strcmp(field, "ID") == 0) {
-            if (!str_to_int(value, &type_out->id)) {
+            if (!bitmask_try_set(&fields_seen, TYPE_FIELD_ID)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            if (!str_to_int(value, &tmp.id)) {
                 return PAYLOAD_STATUS_ERROR;
             }
         } else if (strcmp(field, "TYPE") == 0) {
-             strncpy(type_out->type, value, KEY_LENGTH - 1);
-             int length = strlen(type_out->type);
-             type_out->type[length] = '\0';
+            if (!bitmask_try_set(&fields_seen, TYPE_FIELD_TYPE)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            strncpy(tmp.type, value, KEY_LENGTH - 1);
         } else {
-
+            return PAYLOAD_STATUS_ERROR;
         }
     }
 
+    memcpy(type_out, &tmp, sizeof(Type));
     return PAYLOAD_STATUS_OK;
 }
 
@@ -1646,7 +1692,10 @@ PayloadStatus payload_decode_condition(const char payload_in[], int payload_leng
     if (payload_in == NULL || condition_out == NULL || payload_length <= 0 || payload_length >= PAYLOAD_MAX_LENGTH) {
         return PAYLOAD_STATUS_ERROR;
     }
-    
+  
+    Condition tmp = {0};
+    Bitmask fields_seen = 0;
+
     char payload_copy[PAYLOAD_MAX_LENGTH];
     memcpy(payload_copy, payload_in, payload_length);
     payload_copy[payload_length] = '\0';
@@ -1669,18 +1718,23 @@ PayloadStatus payload_decode_condition(const char payload_in[], int payload_leng
         char *field = pair[0];
         char *value = pair[1];
         if (strcmp(field, "ID") == 0) {
-            if (!str_to_int(value, &condition_out->id)) {
+            if (!bitmask_try_set(&fields_seen, CONDITION_FIELD_ID)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            if (!str_to_int(value, &tmp.id)) {
                 return PAYLOAD_STATUS_ERROR;
             }
         } else if (strcmp(field, "CONDITION") == 0) {
-             strncpy(condition_out->condition, value, KEY_LENGTH - 1);
-             int length = strlen(condition_out->condition);
-             condition_out->condition[length] = '\0';
+            if (!bitmask_try_set(&fields_seen, CONDITION_FIELD_CONDITION)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            strncpy(tmp.condition, value, KEY_LENGTH - 1);
         } else {
-
+            return PAYLOAD_STATUS_ERROR;
         }
     }
-
+    
+    memcpy(condition_out, &tmp, sizeof(Condition));
     return PAYLOAD_STATUS_OK;
 }
 
@@ -1792,7 +1846,10 @@ PayloadStatus payload_decode_size(const char payload_in[], int payload_length, S
     if (payload_in == NULL || size_out == NULL || payload_length <= 0 || payload_length >= PAYLOAD_MAX_LENGTH) {
         return PAYLOAD_STATUS_ERROR;
     }
-    
+  
+    Size tmp = {0};
+    Bitmask fields_seen = 0; 
+
     char payload_copy[PAYLOAD_MAX_LENGTH];
     memcpy(payload_copy, payload_in, payload_length);
     payload_copy[payload_length] = '\0';
@@ -1815,18 +1872,23 @@ PayloadStatus payload_decode_size(const char payload_in[], int payload_length, S
         char *field = pair[0];
         char *value = pair[1];
         if (strcmp(field, "ID") == 0) {
-            if (!str_to_int(value, &size_out->id)) {
+            if (!bitmask_try_set(&fields_seen, SIZE_FIELD_ID)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            if (!str_to_int(value, &tmp.id)) {
                 return PAYLOAD_STATUS_ERROR;
             }
         } else if (strcmp(field, "SIZE") == 0) {
-             strncpy(size_out->size, value, KEY_LENGTH - 1);
-             int length = strlen(size_out->size);
-             size_out->size[length] = '\0';
+            if (!bitmask_try_set(&fields_seen, SIZE_FIELD_SIZE)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            strncpy(tmp.size, value, KEY_LENGTH - 1);
         } else {
             return PAYLOAD_STATUS_ERROR;
         }
     }
 
+    memcpy(size_out, &tmp, sizeof(Size));
     return PAYLOAD_STATUS_OK;
 }
 
@@ -1892,11 +1954,6 @@ PayloadStatus payload_encode_pagination(char *payload_out, int payload_capacity,
         return PAYLOAD_STATUS_ERROR;
     }
 
-    if (pagination_in->limit <= 0 || pagination_in->offset < 0) {
-        payload_out[0] = '\0';
-        return PAYLOAD_STATUS_ERROR;
-    }
-
     int length = snprintf(payload_out, payload_capacity, "LIMIT=%d OFFSET=%d", pagination_in->limit, pagination_in->offset);
     
     if (length < 0 || length >= payload_capacity) {
@@ -1913,6 +1970,9 @@ PayloadStatus payload_decode_pagination(const char *payload_in, int payload_leng
         payload_length <= 0 || payload_length >= PAYLOAD_MAX_LENGTH) {
         return PAYLOAD_STATUS_ERROR;
     }
+    
+    Pagination tmp = {0};
+    Bitmask fields_seen = 0;
 
     char payload_copy[PAYLOAD_MAX_LENGTH];
     memcpy(payload_copy, payload_in, payload_length);
@@ -1937,11 +1997,17 @@ PayloadStatus payload_decode_pagination(const char *payload_in, int payload_leng
         char *value = token[1];
 
         if (strcmp(field, "OFFSET") == 0) {
-            if (!str_to_int(value, &pagination_out->offset)) {
+            if (!bitmask_try_set(&fields_seen, PAGINATION_FIELD_OFFSET)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            if (!str_to_int(value, &tmp.offset)) {
                 return PAYLOAD_STATUS_ERROR;
             }
         } else if (strcmp(field, "LIMIT") == 0) {
-            if (!str_to_int(value, &pagination_out->limit)) {
+            if (!bitmask_try_set(&fields_seen, PAGINATION_FIELD_LIMIT)) {
+                return PAYLOAD_STATUS_ERROR;
+            }
+            if (!str_to_int(value, &tmp.limit)) {
                 return PAYLOAD_STATUS_ERROR;
             }
         } else {
@@ -1949,5 +2015,6 @@ PayloadStatus payload_decode_pagination(const char *payload_in, int payload_leng
         }
     }
 
+    memcpy(pagination_out, &tmp, sizeof(Pagination));
     return PAYLOAD_STATUS_OK;
 }

@@ -1,5 +1,3 @@
-
-
 #include "test_bitmask.h"
     
 static void test_all_misc(void) {
